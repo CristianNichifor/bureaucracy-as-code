@@ -35,24 +35,24 @@ looks like a national transparency view before the guided browser run begins:
 Use the guided run to create a fresh local request, then export a public audit
 receipt for either the live request or any seeded scenario.
 
-## What it does not do yet
+## Browser-only milestone boundary
 
-- It does not integrate ROeID.
-- It does not run a backend API.
-- It does not run a real blockchain node.
-- It does not store raw personal data on a ledger.
-- It does not publish ledger head anchors outside the browser. Local anchors can
-  catch trailing deletion inside an exported state, but production still needs a
-  public anchor, countersignature, or external timestamp.
-- It does not yet enforce credential presentations inside every state-machine
-  transition. The provider can prove roles and purposes; the next backend/API
-  boundary should require those proofs before appending protected events.
-- It does not export signing keys. An imported state can be read and re-verified; new
-  transitions are signed by the identities of the browser doing the importing. Writing a
-  private key into a shareable JSON file is the habit this demo argues against.
-- Audit receipts are presentation artifacts. They package the selected request's public
-  hashes and signed event evidence; they are not a substitute for a production ledger
-  proof or external timestamp.
+This milestone intentionally finishes the app as a browser-only civic demo.
+Cloudflare Pages Functions, D1/KV adapters, and Hardhat contracts remain useful
+engineering references, but the public experience must work without accounts,
+secrets, network calls, or external infrastructure.
+
+For this milestone:
+
+- ROeID integration is out of scope.
+- A real custom identity service is out of scope.
+- Real Cloudflare resources are out of scope.
+- Legal, DPIA, procurement, and institutional sign-off are out of scope.
+- Raw personal data is never written to the ledger.
+- Signing keys are never exported. Imported state can be read and re-verified;
+  new transitions are signed by the browser doing the importing.
+- Audit receipts are presentation artifacts. They package public hashes and
+  signed event evidence for the selected request.
 
 Future ledger providers can implement the same interface as the browser `LocalLedgerProvider`.
 
