@@ -9,6 +9,7 @@ import { dictionaries, type Language } from "./i18n";
 import { RequestFeed } from "./dashboard/RequestFeed";
 import { RequestTrail } from "./dashboard/RequestTrail";
 import { HashVerifier } from "./dashboard/HashVerifier";
+import { AuditReceiptVerifier } from "./dashboard/AuditReceiptVerifier";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
@@ -310,6 +311,7 @@ export function App() {
         <MachineryGraph request={selectedRequest} labels={t.graph} />
         <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
         <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
+        <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
       </div>
     </main>
   );

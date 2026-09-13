@@ -12,25 +12,29 @@ export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; 
     setActualHash(await store.hashFile(file));
   }
 
-  const verified = expectedHash && actualHash && expectedHash === actualHash;
-  const mismatch = expectedHash && actualHash && expectedHash !== actualHash;
+  const verified = Boolean(expectedHash && actualHash && expectedHash === actualHash);
+  const mismatch = Boolean(expectedHash && actualHash && expectedHash !== actualHash);
+  const status = verified ? labels.verified : mismatch ? labels.mismatch : actualHash ? labels.local : labels.waiting;
 
   return (
-    <section className="panel">
+    <section className="panel verifierPanel">
       <div className="panelHeader">
         <h2>{labels.title}</h2>
-        {verified ? <span className="pill ok">{labels.verified}</span> : <span className="pill">{labels.local}</span>}
+        <span className={verified ? "pill ok" : mismatch ? "pill dangerPill" : "pill"}>{status}</span>
       </div>
       <p className="panelCopy">{labels.copy}</p>
-      <input aria-label={labels.chooseFile} type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
+      <label className="fileButton">
+        {labels.chooseFile}
+        <input aria-label={labels.chooseFile} type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
+      </label>
       <dl>
         <div>
           <dt>{labels.onLedgerHash}</dt>
-          <dd>{expectedHash ? `${expectedHash.slice(0, 28)}...` : labels.noFinalResponse}</dd>
+          <dd>{expectedHash ?? labels.noFinalResponse}</dd>
         </div>
         <div>
           <dt>{labels.selectedFileHash}</dt>
-          <dd>{actualHash ? `${actualHash.slice(0, 28)}...` : labels.chooseFileToVerify}</dd>
+          <dd>{actualHash || labels.chooseFileToVerify}</dd>
         </div>
       </dl>
       {mismatch ? <p className="danger">{labels.mismatch}</p> : null}

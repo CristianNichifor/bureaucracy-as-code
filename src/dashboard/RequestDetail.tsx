@@ -17,6 +17,7 @@ export function RequestDetail({
   labels: Dictionary["detail"];
 }) {
   const latestRole = getRequestLatestRole(events);
+  const latestEvent = events.at(-1);
 
   return (
     <section className="panel requestDetailPanel">
@@ -71,6 +72,14 @@ export function RequestDetail({
         <div>
           <dt>{labels.responseHash}</dt>
           <dd>{request.responseDocumentHash ? `${request.responseDocumentHash.slice(0, 28)}...` : labels.noResponse}</dd>
+        </div>
+        <div>
+          <dt>{labels.latestStateHash}</dt>
+          <dd>{latestEvent ? latestEvent.stateHash : labels.noProof}</dd>
+        </div>
+        <div>
+          <dt>{labels.latestSignature}</dt>
+          <dd>{latestEvent ? latestEvent.signature : labels.noProof}</dd>
         </div>
       </dl>
     </section>
