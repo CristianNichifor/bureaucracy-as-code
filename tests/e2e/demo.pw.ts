@@ -56,7 +56,7 @@ test("runs the guided Law 544 flow and proves edited exports are refused", async
     await page.getByRole("button", { name: new RegExp(name, "i") }).click();
   }
 
-  await expect(page.getByText("complete")).toBeVisible();
+  await expect(page.getByText("complete").first()).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
   await expect(page.getByText("Events checked").locator("..")).toContainText("6");
 
