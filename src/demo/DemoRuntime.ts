@@ -1,5 +1,5 @@
 import { InMemoryRequestRepository } from "../api/InMemoryRequestRepository";
-import { TransitionIngestionService, transitionPurpose } from "../api/transitionIngestion";
+import { TransitionIngestionService, createCanonicalSigningEnvelope, transitionPurpose } from "../api/transitionIngestion";
 import type { RequestRepository } from "../api/types";
 import { BrowserIdentityProvider } from "../identity/BrowserIdentityProvider";
 import type { DemoIdentity, IdentityProvider } from "../identity/types";
@@ -108,13 +108,15 @@ export class DemoRuntime {
       documentHash,
       metadata: input.metadata,
     };
-    const proof = await this.identity.signPayload(input.actor, payload);
+    const envelope = await createCanonicalSigningEnvelope(payload);
+    const proof = await this.identity.signPayload(input.actor, envelope);
     const presentation = await this.identity.presentCredential({
       identity: input.actor,
       purpose: transitionPurpose(payload),
     });
     const result = await this.ingestion.ingest({
       payload,
+      envelope,
       proof,
       presentation,
       createRequest:
