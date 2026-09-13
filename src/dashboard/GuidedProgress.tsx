@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import { CheckCircle2, Circle, LockKeyhole } from "lucide-react";
+import { CheckCircle2, Circle, LockKeyhole, PlayCircle } from "lucide-react";
 import type { Dictionary } from "../i18n";
+import { browserGuidedScenarios, type GuidedScenarioId } from "../demo/guidedScenarios";
 import type { Law544Status } from "../law544/types";
 import { demoSteps, getCurrentStepIndex } from "./demoProgress";
 
@@ -8,11 +9,15 @@ export function GuidedProgress({
   status,
   eventsCount,
   onRunStep,
+  onRunScenario,
+  isRunningScenario,
   labels,
 }: {
   status: Law544Status;
   eventsCount: number;
   onRunStep: (stepId: (typeof demoSteps)[number]["id"]) => void;
+  onRunScenario: (scenarioId: GuidedScenarioId) => void;
+  isRunningScenario: boolean;
   labels: Dictionary["guided"];
 }) {
   const currentStepIndex = getCurrentStepIndex(status, eventsCount);
@@ -22,6 +27,21 @@ export function GuidedProgress({
       <div className="panelHeader">
         <h2>{labels.title}</h2>
         <span className="pill">{status === "Resolved" ? labels.complete : labels.nextStep}</span>
+      </div>
+      <div className="scenarioRunBar" aria-label={labels.scenariosLabel}>
+        {browserGuidedScenarios.map((scenario) => (
+          <button
+            className="scenarioButton"
+            disabled={isRunningScenario}
+            key={scenario.id}
+            onClick={() => onRunScenario(scenario.id)}
+            title={scenario.description}
+            type="button"
+          >
+            <PlayCircle size={16} />
+            {labels.scenarios[scenario.id]}
+          </button>
+        ))}
       </div>
       <div className="stepList">
         {demoSteps.map((step, index) => {

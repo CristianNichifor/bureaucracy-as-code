@@ -21,6 +21,8 @@ export type Dictionary = {
     complete: string;
     nextStep: string;
     signs: string;
+    scenariosLabel: string;
+    scenarios: Record<string, string>;
     steps: Record<string, { label: string; actor: string }>;
   };
   integrity: {
@@ -136,6 +138,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       complete: "complete",
       nextStep: "next step",
       signs: "signs",
+      scenariosLabel: "One-click scenario replay",
+      scenarios: {
+        "happy-path": "Run full scenario",
+        extension: "Extension",
+        overdue: "Overdue",
+        rejected: "Rejected",
+      },
       steps: {
         create: { label: "Submit request", actor: "Citizen" },
         register: { label: "Assign registry number", actor: "Registry bot" },
@@ -258,6 +267,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       complete: "complet",
       nextStep: "pasul urmator",
       signs: "semneaza",
+      scenariosLabel: "Reluare scenariu dintr-un click",
+      scenarios: {
+        "happy-path": "Ruleaza complet",
+        extension: "Prelungire",
+        overdue: "Intarziata",
+        rejected: "Respinsa",
+      },
       steps: {
         create: { label: "Depune cererea", actor: "Cetatean" },
         register: { label: "Aloca numar de registru", actor: "Registratura" },
