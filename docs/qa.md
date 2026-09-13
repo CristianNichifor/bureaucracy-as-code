@@ -15,6 +15,16 @@ Run the browser smoke suite separately:
 pnpm verify:e2e
 ```
 
+For a focused browser-only release gate, use:
+
+```bash
+pnpm demo:verify
+```
+
+That builds the Vite app and runs the Playwright demo suite against the local
+preview server. It does not require Cloudflare, external identity services,
+wallets, ROeID, secrets, or networked storage.
+
 If Playwright browsers are not installed but a system Chromium is available,
 point Playwright at it:
 
@@ -26,9 +36,13 @@ The e2e suite checks:
 
 - the app loads at the Cloudflare Pages base path
 - important landmarks and controls are present
+- the public demo renders on desktop Chromium and a mobile Chromium viewport
 - the public receipt export is available
 - Romanian/English presentation mode works
 - the guided Law 544 scenario reaches resolution
+- the signed audit trail shows the final `Request_Resolved` transition
+- the local response verifier rejects an edited file and accepts the exact
+  browser-generated final response bytes
 - the tamper demo rejects an edited export
 - the public page does not render obvious demo PII patterns
 
