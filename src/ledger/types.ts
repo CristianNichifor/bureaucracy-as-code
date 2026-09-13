@@ -31,6 +31,7 @@ export type ChainVerificationResult = {
 export interface LedgerProvider {
   appendTransition(event: UnsignedTransition): Promise<LedgerEvent>;
   listEvents(): Promise<LedgerEvent[]>;
+  replaceEvents(events: LedgerEvent[]): Promise<void>;
   getRequestTrail(requestId: string): Promise<LedgerEvent[]>;
   verifyChain(requestId?: string): Promise<ChainVerificationResult>;
   reset(): Promise<void>;
