@@ -23,6 +23,7 @@ import {
 import { MachineryGraph } from "./graph/MachineryGraph";
 import type { DemoContext } from "./demo/scenarioLaw544";
 import { createBrowserDemoRuntime } from "./demo/DemoRuntime";
+import type { GuidedScenarioId } from "./demo/guidedScenarios";
 import { seededRequestScenarios } from "./demo/seededRequests";
 import type { ChainVerificationResult, LedgerEvent } from "./ledger/types";
 
@@ -40,6 +41,7 @@ export function App() {
   const [filters, setFilters] = useState<RequestExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
   const [language, setLanguage] = useState<Language>("en");
   const [message, setMessage] = useState("Start the scenario to create a signed Law 544 request.");
+  const [isRunningScenario, setIsRunningScenario] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const t = dictionaries[language];
 
@@ -157,6 +159,22 @@ export function App() {
     }
   }
 
+  async function runGuidedScenario(scenarioId: GuidedScenarioId) {
+    try {
+      setIsRunningScenario(true);
+      const result = await runtime.replayGuidedScenario(scenarioId);
+      setContext(result.context);
+      setEvents(result.events);
+      setSelectedRequestId(result.context.request.id);
+      setChainVerification(await runtime.verifyChain());
+      setMessage(`Replayed ${result.scenario.label}: ${result.events.length} signed state changes.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not replay that scenario.");
+    } finally {
+      setIsRunningScenario(false);
+    }
+  }
+
   async function runAction(kind: "create" | "register" | "route" | "start" | "attach" | "resolve") {
     if (!context) return;
 
@@ -271,7 +289,14 @@ export function App() {
       <p className="message">{message}</p>
 
       <div className="grid">
-        <GuidedProgress status={request.status} eventsCount={events.length} onRunStep={(stepId) => void runAction(stepId)} labels={t.guided} />
+        <GuidedProgress
+          status={request.status}
+          eventsCount={events.length}
+          isRunningScenario={isRunningScenario}
+          onRunScenario={(scenarioId) => void runGuidedScenario(scenarioId)}
+          onRunStep={(stepId) => void runAction(stepId)}
+          labels={t.guided}
+        />
         <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
         <RequestFeed
           filters={filters}

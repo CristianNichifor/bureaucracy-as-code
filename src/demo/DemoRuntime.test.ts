@@ -10,6 +10,7 @@ import {
 } from "../ledger/hashChain";
 import type { ChainVerificationResult, LedgerEvent, LedgerHeadAnchor, LedgerProvider, UnsignedTransition } from "../ledger/types";
 import { DemoRuntime, createMemoryDemoRuntime } from "./DemoRuntime";
+import { browserGuidedScenarios } from "./guidedScenarios";
 
 type DemoActorKey = "citizen" | "registryBot" | "director" | "publicServant";
 
@@ -74,6 +75,49 @@ describe("DemoRuntime", () => {
       `Request ${created.request.id} already exists.`,
     );
     await expect(runtime.requests.get(created.request.id)).resolves.toMatchObject({ status: "Created" });
+  });
+
+  it.each(browserGuidedScenarios)("replays the $label guided browser scenario", async (scenario) => {
+    const runtime = await createMemoryDemoRuntime({ ledger: memoryLedger });
+    const result = await runtime.replayGuidedScenario(scenario.id);
+
+    expect(result.scenario).toBe(scenario);
+    expect(result.context.request.status).toBe(scenario.finalStatus);
+    expect(result.events).toHaveLength(scenario.steps.length);
+    expect(result.transitions).toHaveLength(scenario.steps.length);
+    expect(result.events.map((event) => event.action)).toEqual(scenario.steps.map((step) => step.action));
+    expect(result.events.every((event) => event.requestId === result.context.request.id)).toBe(true);
+    await expect(runtime.verifyChain()).resolves.toMatchObject({ valid: true, checkedEvents: scenario.steps.length });
+  });
+
+  it("replays scenarios from a clean browser-local chain each time", async () => {
+    const runtime = await createMemoryDemoRuntime({ ledger: memoryLedger });
+    const first = await runtime.replayGuidedScenario("overdue");
+    const second = await runtime.replayGuidedScenario("rejected");
+
+    expect(first.context.request.status).toBe("Overdue");
+    expect(second.context.request.status).toBe("Rejected");
+    expect(second.events).toHaveLength(5);
+    expect(second.events[0].index).toBe(0);
+    expect(second.events.every((event) => event.requestId === second.context.request.id)).toBe(true);
+    expect(second.events.some((event) => event.requestId === first.context.request.id)).toBe(false);
+  });
+
+  it("records scenario metadata and final documents on replayed flows", async () => {
+    const runtime = await createMemoryDemoRuntime({ ledger: memoryLedger });
+    const extension = await runtime.replayGuidedScenario("extension");
+
+    expect(extension.events.find((event) => event.action === "Registry_Assigned")?.metadata).toMatchObject({
+      registryNumber: "MF-544-2026-0001",
+    });
+    expect(extension.events.find((event) => event.action === "Task_Routed")?.metadata?.assignedToDidHash).toBe(
+      extension.context.request.assignedToDidHash,
+    );
+    expect(extension.events.find((event) => event.action === "Extension_Requested")?.metadata).toMatchObject({
+      reason: "large-volume-public-records",
+    });
+    expect(extension.context.request.responseDocumentHash).toBeTruthy();
+    expect(extension.events.at(-1)?.documentHash).toBe(extension.context.request.responseDocumentHash);
   });
 });
 
