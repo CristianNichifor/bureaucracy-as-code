@@ -15,6 +15,11 @@ credential-shaped role claims and signs payload hashes with browser crypto.
 The demo does not integrate ROeID. A future identity adapter can implement the
 same interface without changing the Law 544 workflow or dashboard.
 
+The custom identity demo repo should implement the documented
+[`IdentityProvider`](identity-adapter.md) boundary. This keeps this repository
+focused on bureaucracy-as-code while allowing the identity implementation to
+evolve independently.
+
 ### Logic
 
 The Law 544 domain layer owns request states, legal workflow steps, deadlines,
