@@ -15,7 +15,7 @@
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "ledger:compile": "hardhat compile",
-    "ledger:test": "hardhat test test/hardhat/Law544Ledger.ts",
+    "ledger:test": "hardhat test test/hardhat/Law544Ledger.ts test/hardhat/Law544LedgerIndexer.ts",
     "ledger:node": "hardhat node",
     "ledger:deploy": "hardhat run scripts/deploy-law544-ledger.ts",
     "privacy:scan": "node scripts/scan-pii-fixtures.mjs",

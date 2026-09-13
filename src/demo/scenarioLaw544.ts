@@ -1,6 +1,6 @@
-import type { DemoIdentity } from "../identity/types";
+import type { DemoIdentity, IdentityProvider } from "../identity/types";
 import { InMemoryRequestRepository } from "../api/InMemoryRequestRepository";
-import { TransitionIngestionService, transitionPurpose } from "../api/transitionIngestion";
+import { TransitionIngestionService, createCanonicalSigningEnvelope, transitionPurpose } from "../api/transitionIngestion";
 import { calculateLaw544Deadline } from "../law544/deadlines";
 import { assertAllowedTransition } from "../law544/stateMachine";
 import { findTransitionRule } from "../law544/transitions";
@@ -19,8 +19,7 @@ export type DemoContext = {
   request: Law544Request;
 };
 
-export async function createInitialDemoContext(): Promise<DemoContext> {
-  const provider = new BrowserIdentityProvider();
+export async function createInitialDemoContext(provider: IdentityProvider = new BrowserIdentityProvider()): Promise<DemoContext> {
   const citizen = await provider.createIdentity({ displayName: "Citizen Demo", role: "Citizen" });
   const registryBot = await provider.createIdentity({
     displayName: "Registry Bot",
@@ -125,13 +124,15 @@ export async function applyDemoActionViaIngestion(input: {
     ledger: input.ledger,
     requests,
   });
+  const envelope = await createCanonicalSigningEnvelope(payload);
   const presentation = await input.provider.presentCredential({
     identity: input.actor,
     purpose: transitionPurpose(payload),
   });
   const result = await service.ingest({
     payload,
-    proof: await input.provider.signPayload(input.actor, payload),
+    envelope,
+    proof: await input.provider.signPayload(input.actor, envelope),
     presentation,
     createRequest:
       input.action === "Request_Created"

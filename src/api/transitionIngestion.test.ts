@@ -6,7 +6,7 @@ import { LocalLedgerProvider } from "../ledger/LocalLedgerProvider";
 import { hashJson, sha256Hex } from "../shared/crypto";
 import { memoryStorage } from "../shared/memoryStorage";
 import { InMemoryRequestRepository } from "./InMemoryRequestRepository";
-import { TransitionIngestionService, transitionPurpose } from "./transitionIngestion";
+import { createCanonicalSigningEnvelope, TransitionIngestionService, transitionPurpose } from "./transitionIngestion";
 import type { ApiTransitionPayload, CreateRequestInput, IngestTransitionCommand } from "./types";
 
 describe("TransitionIngestionService", () => {
@@ -125,6 +125,23 @@ describe("TransitionIngestionService", () => {
     expect(await ledger.listEvents()).toHaveLength(1);
   });
 
+  it("rejects replaying the same signed envelope nonce", async () => {
+    const command = await commandFor("Request_Created", "Draft", "Created", citizen, { createRequest });
+
+    await service.ingest(command);
+
+    await expect(service.ingest(command)).rejects.toMatchObject({ code: "REPLAY_REJECTED" });
+    expect(await ledger.listEvents()).toHaveLength(1);
+  });
+
+  it("rejects a proof that signs a different envelope than the command envelope", async () => {
+    const command = await commandFor("Request_Created", "Draft", "Created", citizen, { createRequest });
+    command.envelope.nonce = "00000000-0000-4000-8000-000000000001";
+
+    await expect(service.ingest(command)).rejects.toMatchObject({ code: "SIGNATURE_REJECTED" });
+    expect(await ledger.listEvents()).toHaveLength(0);
+  });
+
   async function moveToInProgress() {
     await ingest("Request_Created", "Draft", "Created", citizen, { createRequest });
     await ingest("Registry_Assigned", "Created", "Registered", registryBot);
@@ -166,9 +183,12 @@ describe("TransitionIngestionService", () => {
       metadata: options.metadata,
     };
 
+    const envelope = await createCanonicalSigningEnvelope(payload);
+
     return {
       payload,
-      proof: await identity.signPayload(actor, payload),
+      envelope,
+      proof: await identity.signPayload(actor, envelope),
       presentation: await identity.presentCredential({
         identity: actor,
         purpose: transitionPurpose(payload),
