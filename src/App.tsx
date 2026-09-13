@@ -12,6 +12,7 @@ import { HashVerifier } from "./dashboard/HashVerifier";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
+import { buildPublicAuditReceipt } from "./dashboard/auditReceipt";
 import {
   DEFAULT_EXPLORER_FILTERS,
   filterRequestExplorerItems,
@@ -97,42 +98,11 @@ export function App() {
 
     if (!selectedItem) return;
 
-    const receipt = {
-      schema: "law544-audit-receipt/v1",
+    const receipt = buildPublicAuditReceipt({
       exportedAt: new Date().toISOString(),
+      item: selectedItem,
       language,
-      request: {
-        id: selectedItem.request.id,
-        institution: selectedItem.request.institution,
-        subject: selectedItem.request.subject,
-        status: selectedItem.request.status,
-        createdAt: selectedItem.request.createdAt,
-        deadlineAt: selectedItem.request.deadlineAt,
-        registryNumber: selectedItem.request.registryNumber,
-        citizenDidHash: selectedItem.request.citizenDidHash,
-        assignedToDidHash: selectedItem.request.assignedToDidHash,
-        responseDocumentHash: selectedItem.request.responseDocumentHash,
-      },
-      evidence: {
-        source: selectedItem.source,
-        events: selectedItem.events.map((event) => ({
-          index: event.index,
-          action: event.action,
-          fromStatus: event.fromStatus,
-          toStatus: event.toStatus,
-          timestamp: event.timestamp,
-          signerRole: event.signerRole,
-          signerDidHash: event.signerDidHash,
-          credentialHash: event.credentialHash,
-          payloadHash: event.payloadHash,
-          documentHash: event.documentHash,
-          previousStateHash: event.previousStateHash,
-          stateHash: event.stateHash,
-          metadata: event.metadata,
-        })),
-        chainHead: selectedItem.events.at(-1)?.stateHash,
-      },
-    };
+    });
     const url = URL.createObjectURL(new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" }));
     const link = document.createElement("a");
     link.href = url;
