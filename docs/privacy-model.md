@@ -58,3 +58,7 @@ A production system would need:
 - off-chain encrypted storage
 - external anchoring of ledger heads
 - retention and deletion policies for off-chain data
+
+The Phase 14 storage boundary is documented in
+[Storage Adapter](storage-adapter.md). It keeps encrypted document envelopes
+off-ledger and converts stored documents to hash-only ledger references.
