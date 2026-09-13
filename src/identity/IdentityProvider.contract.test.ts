@@ -27,7 +27,7 @@ async function createSubjects(provider: IdentityProvider): Promise<SubjectFactor
   return { citizen, director, publicServant };
 }
 
-function runIdentityProviderContract(name: string, createProvider: () => IdentityProvider) {
+export function runIdentityProviderContract(name: string, createProvider: () => IdentityProvider) {
   describe(`${name} IdentityProvider contract`, () => {
     it("creates DID-backed identities with valid credentials", async () => {
       const provider = createProvider();
@@ -114,4 +114,3 @@ function runIdentityProviderContract(name: string, createProvider: () => Identit
 }
 
 runIdentityProviderContract("BrowserIdentityProvider", () => new BrowserIdentityProvider());
-

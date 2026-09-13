@@ -1,53 +1,54 @@
 import { AlertTriangle, CheckCircle2, Fingerprint } from "lucide-react";
+import type { Dictionary } from "../i18n";
 import type { ChainVerificationResult, LedgerEvent } from "../ledger/types";
 
 export function LedgerIntegrityPanel({
   verification,
   events,
   onTamperDemo,
+  labels,
 }: {
   verification: ChainVerificationResult;
   events: LedgerEvent[];
   onTamperDemo: () => void;
+  labels: Dictionary["integrity"];
 }) {
   const head = events.at(-1)?.stateHash;
 
   return (
     <section className="panel integrityPanel">
       <div className="panelHeader">
-        <h2>Ledger integrity</h2>
+        <h2>{labels.title}</h2>
         <span className={`pill ${verification.valid ? "ok" : "dangerPill"}`}>
-          {verification.valid ? "valid" : "failed"}
+          {verification.valid ? labels.valid : labels.failed}
         </span>
       </div>
       <div className="integritySummary">
         {verification.valid ? <CheckCircle2 size={30} /> : <AlertTriangle size={30} />}
         <div>
-          <strong>{verification.valid ? "Hash chain verifies" : "Hash chain break detected"}</strong>
+          <strong>{verification.valid ? labels.validTitle : labels.failedTitle}</strong>
           <p>
-            {verification.valid
-              ? "Every visible event links to the previous state hash. A production ledger would publish the head externally."
-              : "An imported or stored event no longer matches its recorded hash."}
+            {verification.valid ? labels.validCopy : labels.failedCopy}
           </p>
         </div>
       </div>
       <dl>
         <div>
-          <dt>Events checked</dt>
+          <dt>{labels.eventsChecked}</dt>
           <dd>{verification.checkedEvents}</dd>
         </div>
         <div>
-          <dt>Current head</dt>
-          <dd>{head ? `${head.slice(0, 28)}...` : "No events yet"}</dd>
+          <dt>{labels.currentHead}</dt>
+          <dd>{head ? `${head.slice(0, 28)}...` : labels.noEvents}</dd>
         </div>
         <div>
-          <dt>First invalid event</dt>
-          <dd>{verification.firstInvalidEvent ? `${verification.firstInvalidEvent.slice(0, 28)}...` : "None"}</dd>
+          <dt>{labels.firstInvalidEvent}</dt>
+          <dd>{verification.firstInvalidEvent ? `${verification.firstInvalidEvent.slice(0, 28)}...` : labels.none}</dd>
         </div>
       </dl>
       <button className="panelAction" disabled={events.length === 0} onClick={onTamperDemo}>
         <Fingerprint size={18} />
-        Test edited export
+        {labels.tamperButton}
       </button>
     </section>
   );
