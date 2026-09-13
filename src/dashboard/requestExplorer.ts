@@ -14,6 +14,11 @@ export type RequestExplorerItem = {
   source: "active" | "seed";
 };
 
+export type StatusSummary = {
+  status: Law544Status;
+  count: number;
+};
+
 export const DEFAULT_EXPLORER_FILTERS: RequestExplorerFilters = {
   status: "All",
   institution: "All",
@@ -44,6 +49,18 @@ export function filterRequestExplorerItems(
 
 export function getInstitutionOptions(items: RequestExplorerItem[]): string[] {
   return Array.from(new Set(items.map((item) => item.request.institution))).sort((a, b) => a.localeCompare(b));
+}
+
+export function getStatusSummaries(items: RequestExplorerItem[]): StatusSummary[] {
+  const counts = new Map<Law544Status, number>();
+
+  for (const item of items) {
+    counts.set(item.request.status, (counts.get(item.request.status) ?? 0) + 1);
+  }
+
+  return Array.from(counts.entries())
+    .map(([status, count]) => ({ status, count }))
+    .sort((a, b) => a.status.localeCompare(b.status));
 }
 
 export function getSelectedExplorerItem(

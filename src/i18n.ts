@@ -43,10 +43,13 @@ export type Dictionary = {
   feed: {
     title: string;
     visible: string;
+    request: string;
     status: string;
+    statusSummary: string;
     institution: string;
     signerRole: string;
     all: string;
+    resetFilters: string;
     latestRole: string;
     trail: string;
     deadline: string;
@@ -55,6 +58,7 @@ export type Dictionary = {
     events: string;
     live: string;
     seed: string;
+    emptyTitle: string;
     empty: string;
   };
   detail: {
@@ -70,8 +74,11 @@ export type Dictionary = {
     registryNumber: string;
     assignedDidHash: string;
     responseHash: string;
+    latestStateHash: string;
+    latestSignature: string;
     notAssigned: string;
     noResponse: string;
+    noProof: string;
   };
   graph: {
     title: string;
@@ -88,13 +95,20 @@ export type Dictionary = {
     current: string;
     waiting: string;
     hashEvidence: string;
+    currentOwner: string;
+    finalResponse: string;
   };
   trail: {
     title: string;
+    proofTitle: string;
     state: string;
     signerRole: string;
     signerDidHash: string;
+    credentialHash: string;
+    payloadHash: string;
+    previousStateHash: string;
     stateHash: string;
+    signature: string;
     documentHash: string;
     metadata: string;
     none: string;
@@ -112,6 +126,22 @@ export type Dictionary = {
     chooseFileToVerify: string;
     mismatch: string;
     match: string;
+    waiting: string;
+  };
+  receipt: {
+    title: string;
+    verified: string;
+    failed: string;
+    local: string;
+    copy: string;
+    chooseFile: string;
+    chooseReceipt: string;
+    loadedReceipt: string;
+    eventsChecked: string;
+    chainHead: string;
+    responseHash: string;
+    tamperButton: string;
+    noReceipt: string;
   };
 };
 
@@ -173,10 +203,13 @@ export const dictionaries: Record<Language, Dictionary> = {
     feed: {
       title: "Public request explorer",
       visible: "visible",
+      request: "Request",
       status: "Status",
+      statusSummary: "Status summary",
       institution: "Institution",
       signerRole: "Signer role",
       all: "All",
+      resetFilters: "Reset filters",
       latestRole: "Latest role",
       trail: "Trail",
       deadline: "Deadline",
@@ -185,7 +218,8 @@ export const dictionaries: Record<Language, Dictionary> = {
       events: "events",
       live: "live",
       seed: "seed",
-      empty: "No requests match these filters.",
+      emptyTitle: "No matching requests",
+      empty: "The browser ledger has requests, but none match the current filters.",
     },
     detail: {
       title: "Request detail",
@@ -200,8 +234,11 @@ export const dictionaries: Record<Language, Dictionary> = {
       registryNumber: "Registry number",
       assignedDidHash: "Assigned DID hash",
       responseHash: "Response hash",
+      latestStateHash: "Latest state hash",
+      latestSignature: "Latest signature",
       notAssigned: "Not assigned",
       noResponse: "No response yet",
+      noProof: "No proof yet",
     },
     graph: {
       title: "Bureaucratic machinery",
@@ -218,13 +255,20 @@ export const dictionaries: Record<Language, Dictionary> = {
       current: "current",
       waiting: "waiting",
       hashEvidence: "hash evidence",
+      currentOwner: "Current owner",
+      finalResponse: "Final response",
     },
     trail: {
       title: "Signed audit trail",
+      proofTitle: "Event proof",
       state: "State",
       signerRole: "Signer role",
       signerDidHash: "Signer DID hash",
+      credentialHash: "Credential hash",
+      payloadHash: "Payload hash",
+      previousStateHash: "Previous state hash",
       stateHash: "State hash",
+      signature: "Signature",
       documentHash: "Document hash",
       metadata: "Metadata",
       none: "None",
@@ -243,6 +287,23 @@ export const dictionaries: Record<Language, Dictionary> = {
       chooseFileToVerify: "Choose a file to verify",
       mismatch: "The selected file does not match the recorded hash.",
       match: "The selected file matches the recorded response hash.",
+      waiting: "Waiting for a file",
+    },
+    receipt: {
+      title: "Receipt verifier",
+      verified: "receipt verifies",
+      failed: "receipt failed",
+      local: "local",
+      copy:
+        "Choose an exported audit receipt. The browser checks the receipt schema, event sequence, hash-chain links, signed payload references, and response hash summary.",
+      chooseFile: "Choose receipt",
+      chooseReceipt: "Choose a receipt JSON file",
+      loadedReceipt: "Loaded receipt",
+      eventsChecked: "Events checked",
+      chainHead: "Chain head",
+      responseHash: "Response hash",
+      tamperButton: "Test tampered receipt",
+      noReceipt: "No receipt loaded yet",
     },
   },
   ro: {
@@ -302,10 +363,13 @@ export const dictionaries: Record<Language, Dictionary> = {
     feed: {
       title: "Explorer public de cereri",
       visible: "vizibile",
+      request: "Cerere",
       status: "Status",
+      statusSummary: "Rezumat statusuri",
       institution: "Institutie",
       signerRole: "Rol semnatar",
       all: "Toate",
+      resetFilters: "Reseteaza filtrele",
       latestRole: "Ultimul rol",
       trail: "Traseu",
       deadline: "Termen",
@@ -314,7 +378,8 @@ export const dictionaries: Record<Language, Dictionary> = {
       events: "evenimente",
       live: "live",
       seed: "exemplu",
-      empty: "Nicio cerere nu corespunde filtrelor.",
+      emptyTitle: "Nicio cerere gasita",
+      empty: "Registrul local are cereri, dar niciuna nu corespunde filtrelor curente.",
     },
     detail: {
       title: "Detaliu cerere",
@@ -329,8 +394,11 @@ export const dictionaries: Record<Language, Dictionary> = {
       registryNumber: "Numar de registru",
       assignedDidHash: "Hash DID alocat",
       responseHash: "Hash raspuns",
+      latestStateHash: "Ultimul hash de stare",
+      latestSignature: "Ultima semnatura",
       notAssigned: "Nealocat",
       noResponse: "Fara raspuns final",
+      noProof: "Fara dovada inca",
     },
     graph: {
       title: "Mecanism birocratic",
@@ -347,13 +415,20 @@ export const dictionaries: Record<Language, Dictionary> = {
       current: "curent",
       waiting: "in asteptare",
       hashEvidence: "dovada hash",
+      currentOwner: "Responsabil curent",
+      finalResponse: "Raspuns final",
     },
     trail: {
       title: "Traseu de audit semnat",
+      proofTitle: "Dovada eveniment",
       state: "Stare",
       signerRole: "Rol semnatar",
       signerDidHash: "Hash DID semnatar",
+      credentialHash: "Hash credential",
+      payloadHash: "Hash payload",
+      previousStateHash: "Hash stare precedenta",
       stateHash: "Hash stare",
+      signature: "Semnatura",
       documentHash: "Hash document",
       metadata: "Metadate",
       none: "Niciuna",
@@ -372,6 +447,23 @@ export const dictionaries: Record<Language, Dictionary> = {
       chooseFileToVerify: "Alege un fisier de verificat",
       mismatch: "Fisierul selectat nu corespunde hash-ului inregistrat.",
       match: "Fisierul selectat corespunde hash-ului raspunsului inregistrat.",
+      waiting: "In asteptarea unui fisier",
+    },
+    receipt: {
+      title: "Verificator dovada",
+      verified: "dovada verificata",
+      failed: "dovada esuata",
+      local: "local",
+      copy:
+        "Alege o dovada de audit exportata. Browserul verifica schema, ordinea evenimentelor, legaturile lantului de hash-uri, referintele payload semnate si sumarul hash-ului raspunsului.",
+      chooseFile: "Alege dovada",
+      chooseReceipt: "Alege un fisier JSON de dovada",
+      loadedReceipt: "Dovada incarcata",
+      eventsChecked: "Evenimente verificate",
+      chainHead: "Capat lant",
+      responseHash: "Hash raspuns",
+      tamperButton: "Testeaza dovada modificata",
+      noReceipt: "Nicio dovada incarcata",
     },
   },
 };
