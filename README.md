@@ -40,6 +40,8 @@ Build:
 pnpm build
 ```
 
+Cloudflare Pages notes are in [docs/cloudflare-pages.md](docs/cloudflare-pages.md).
+
 ## GitHub setup
 
 After authenticating `gh`, publish the repo:

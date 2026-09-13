@@ -6,7 +6,22 @@ This repo is a static Vite app intended to live under:
 https://digital.cristian-nichifor.com/bureaucracy-as-code
 ```
 
-## Project
+## Deployment model
+
+Cloudflare Pages custom domains attach at the hostname level, not to a
+subpath of an existing hostname. The final v3 target therefore needs one of
+these shapes:
+
+- preferred: the future `apps/digital` Pages app mounts this static build at
+  `/bureaucracy-as-code`
+- temporary: this standalone repo deploys to its own Pages preview URL or
+  temporary hostname until workspace intake
+
+The app already sets the Vite public base to `/bureaucracy-as-code/` in
+`vite.config.ts`, so copied assets resolve correctly once the build output is
+served from that path.
+
+## Standalone Pages project
 
 Create a Cloudflare Pages project named:
 
@@ -24,29 +39,45 @@ Root directory: /
 Node version: 22
 ```
 
-The app uses:
+Wrangler config is intentionally minimal:
 
 ```txt
-VITE_APP_BASE=/bureaucracy-as-code/
+wrangler.toml
+name = "bureaucracy-as-code"
+pages_build_output_dir = "dist"
 ```
 
-## GitHub Actions secrets
+No GitHub Actions deploy workflow is included. Use Cloudflare Pages Git
+integration or run a manual deploy later when credentials and routing are
+ready.
 
-Add these repository secrets:
+## Digital host integration
+
+When `apps/digital` exists, its build should copy this app's production output
+under the digital app's Pages output directory:
 
 ```txt
-CLOUDFLARE_API_TOKEN
-CLOUDFLARE_ACCOUNT_ID
+<digital-output>/
+  bureaucracy-as-code/
+    index.html
+    assets/
 ```
 
-The API token should be scoped to Cloudflare Pages edit/deploy permissions for the personal Cloudflare account.
-
-## Custom domain
-
-Final v3 target:
+The digital app should then handle SPA fallback for the route:
 
 ```txt
-digital.cristian-nichifor.com/bureaucracy-as-code
+/bureaucracy-as-code/* -> /bureaucracy-as-code/index.html
 ```
 
-If this standalone repo is deployed directly before `apps/digital` exists, use the Pages preview/custom domain as a temporary demo URL, then move the route under `apps/digital` during workspace intake.
+## Local verification
+
+```bash
+pnpm install
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm preview
+```
+
+Open the preview URL and check the page at `/bureaucracy-as-code/`.
