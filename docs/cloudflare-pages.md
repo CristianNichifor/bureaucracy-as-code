@@ -101,10 +101,17 @@ Deployment is wired in the repository, not clicked together in the dashboard —
 rest of this fleet's infrastructure follows. Cloudflare's Pages Git integration is deliberately
 not used; it would put the build configuration somewhere that is not this repository.
 
-The workflow currently deploys a static Pages site only. No Pages Functions are
-required for the demo. If a future phase adds Functions, keep the public
-dashboard static and use Functions only for explicit server-side edges such as
-preview health probes, signed API ingress, or external ledger anchoring.
+The workflow deploys the Vite app together with the lightweight Pages Functions
+scaffold under `functions/`. The public dashboard remains static; Functions are
+reserved for server-side edges:
+
+- `/api/health` for preview and production smoke checks
+- `/api/transitions` for signed Law 544 transition ingress
+- `/api/requests` and `/api/requests/:requestId` for public read projections
+
+The current Functions runtime is intentionally in-memory demo state. It is not a
+durable source of truth; later phases should replace it with Durable Objects,
+D1, R2-backed document metadata, or a real ledger adapter.
 
 ## Digital host integration
 
