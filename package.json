@@ -21,6 +21,7 @@
     "privacy:scan": "node scripts/scan-pii-fixtures.mjs",
     "verify": "node scripts/verify-local.mjs",
     "verify:e2e": "RUN_E2E=1 node scripts/verify-local.mjs",
+    "demo:verify": "node scripts/verify-browser-demo.mjs",
     "security:gitleaks": "gitleaks detect --source . --verbose"
   },
   "dependencies": {
