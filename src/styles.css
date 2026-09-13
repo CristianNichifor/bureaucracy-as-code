@@ -36,6 +36,36 @@ select {
   border-bottom: 1px solid #d8ddd2;
 }
 
+.heroActions {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+}
+
+.languageToggle {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(44px, 1fr));
+  overflow: hidden;
+  border: 1px solid #cbd5ca;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.languageToggle button {
+  min-height: 36px;
+  border: 0;
+  padding: 0 12px;
+  color: #516157;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.languageToggle button[aria-pressed="true"] {
+  color: #ffffff;
+  background: #1d2528;
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: #516157;
@@ -489,6 +519,10 @@ dd {
 
   .integrity {
     justify-self: start;
+  }
+
+  .heroActions {
+    justify-items: start;
   }
 
   dl {

@@ -1,16 +1,19 @@
 import type { LedgerEvent } from "../ledger/types";
+import type { Dictionary } from "../i18n";
 
 export function RequestTrail({
   events,
   requestId,
+  labels,
 }: {
   events: LedgerEvent[];
   requestId: string;
+  labels: Dictionary["trail"];
 }) {
   return (
     <section className="panel timelinePanel">
       <div className="panelHeader">
-        <h2>Signed audit trail</h2>
+        <h2>{labels.title}</h2>
         <span className="pill">{requestId}</span>
       </div>
       {events.length > 0 ? (
@@ -23,37 +26,37 @@ export function RequestTrail({
               </div>
               <dl>
                 <div>
-                  <dt>State</dt>
+                  <dt>{labels.state}</dt>
                   <dd>
                     {event.fromStatus} &rarr; {event.toStatus}
                   </dd>
                 </div>
                 <div>
-                  <dt>Signer role</dt>
+                  <dt>{labels.signerRole}</dt>
                   <dd>{event.signerRole}</dd>
                 </div>
                 <div>
-                  <dt>Signer DID hash</dt>
+                  <dt>{labels.signerDidHash}</dt>
                   <dd>{event.signerDidHash.slice(0, 18)}...</dd>
                 </div>
                 <div>
-                  <dt>State hash</dt>
+                  <dt>{labels.stateHash}</dt>
                   <dd>{event.stateHash.slice(0, 18)}...</dd>
                 </div>
                 <div>
-                  <dt>Document hash</dt>
-                  <dd>{event.documentHash ? `${event.documentHash.slice(0, 18)}...` : "None"}</dd>
+                  <dt>{labels.documentHash}</dt>
+                  <dd>{event.documentHash ? `${event.documentHash.slice(0, 18)}...` : labels.none}</dd>
                 </div>
                 <div>
-                  <dt>Metadata</dt>
-                  <dd>{event.metadata ? Object.entries(event.metadata).map(([key, value]) => `${key}: ${value}`).join(", ") : "None"}</dd>
+                  <dt>{labels.metadata}</dt>
+                  <dd>{event.metadata ? Object.entries(event.metadata).map(([key, value]) => `${key}: ${value}`).join(", ") : labels.none}</dd>
                 </div>
               </dl>
             </li>
           ))}
         </ol>
       ) : (
-        <p className="emptyState">No signed events have been recorded for this request yet.</p>
+        <p className="emptyState">{labels.empty}</p>
       )}
     </section>
   );

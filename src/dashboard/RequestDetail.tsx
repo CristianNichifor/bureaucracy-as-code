@@ -1,4 +1,5 @@
 import { Clock3, FileText, Fingerprint, Landmark } from "lucide-react";
+import type { Dictionary } from "../i18n";
 import { isOverdue } from "../law544/deadlines";
 import type { Law544Request } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
@@ -8,18 +9,20 @@ export function RequestDetail({
   request,
   events,
   source,
+  labels,
 }: {
   request: Law544Request;
   events: LedgerEvent[];
   source: "active" | "seed";
+  labels: Dictionary["detail"];
 }) {
   const latestRole = getRequestLatestRole(events);
 
   return (
     <section className="panel requestDetailPanel">
       <div className="panelHeader">
-        <h2>Request detail</h2>
-        <span className="pill">{source === "active" ? "live browser chain" : "seeded public example"}</span>
+        <h2>{labels.title}</h2>
+        <span className="pill">{source === "active" ? labels.live : labels.seed}</span>
       </div>
       <div className="detailHero">
         <div>
@@ -31,43 +34,43 @@ export function RequestDetail({
       <div className="metricGrid">
         <div className="metric">
           <Landmark size={18} />
-          <span>Institution</span>
+          <span>{labels.institution}</span>
           <strong>{request.institution}</strong>
         </div>
         <div className="metric">
           <Clock3 size={18} />
-          <span>Deadline</span>
+          <span>{labels.deadline}</span>
           <strong className={isOverdue(request.deadlineAt) ? "danger" : ""}>
             {new Date(request.deadlineAt).toLocaleDateString()}
           </strong>
         </div>
         <div className="metric">
           <Fingerprint size={18} />
-          <span>Latest signer role</span>
-          <strong>{latestRole ?? "No signer yet"}</strong>
+          <span>{labels.latestSignerRole}</span>
+          <strong>{latestRole ?? labels.noSigner}</strong>
         </div>
         <div className="metric">
           <FileText size={18} />
-          <span>Events</span>
+          <span>{labels.events}</span>
           <strong>{events.length}</strong>
         </div>
       </div>
       <dl className="detailList">
         <div>
-          <dt>Citizen DID hash</dt>
+          <dt>{labels.citizenDidHash}</dt>
           <dd>{request.citizenDidHash.slice(0, 28)}...</dd>
         </div>
         <div>
-          <dt>Registry number</dt>
-          <dd>{request.registryNumber ?? "Not assigned"}</dd>
+          <dt>{labels.registryNumber}</dt>
+          <dd>{request.registryNumber ?? labels.notAssigned}</dd>
         </div>
         <div>
-          <dt>Assigned DID hash</dt>
-          <dd>{request.assignedToDidHash ? `${request.assignedToDidHash.slice(0, 28)}...` : "Not assigned"}</dd>
+          <dt>{labels.assignedDidHash}</dt>
+          <dd>{request.assignedToDidHash ? `${request.assignedToDidHash.slice(0, 28)}...` : labels.notAssigned}</dd>
         </div>
         <div>
-          <dt>Response hash</dt>
-          <dd>{request.responseDocumentHash ? `${request.responseDocumentHash.slice(0, 28)}...` : "No response yet"}</dd>
+          <dt>{labels.responseHash}</dt>
+          <dd>{request.responseDocumentHash ? `${request.responseDocumentHash.slice(0, 28)}...` : labels.noResponse}</dd>
         </div>
       </dl>
     </section>

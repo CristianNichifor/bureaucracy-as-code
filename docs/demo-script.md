@@ -24,6 +24,11 @@ Presenter note:
 Point out the public feed first. It already contains seeded anonymized requests
 so the dashboard looks useful before the guided scenario begins.
 
+Use the language toggle in the top-right corner to switch between English and
+Romanian presenter modes. The Romanian copy is intentionally concise and public
+demo-oriented, so it works well for walking through the civic concept without
+turning the screen into implementation documentation.
+
 ## 2. Create a Law 544 Request
 
 Submit a sample public information request to an institution. The app creates a
@@ -105,11 +110,28 @@ Then use **Test edited export** in the ledger integrity panel. Explain that the
 demo edits an exported event and proves the import path refuses it because the
 event no longer matches the hash chain.
 
+## 9. Export an Audit Receipt
+
+Select any request from the public feed and use **Export receipt**. The browser
+downloads a JSON receipt containing the selected request metadata, public hashes,
+signed event trail, and current chain head.
+
+Expected result:
+
+- filename follows `<request-id>-audit-receipt.json`
+- receipt includes no raw document or personal data
+- seeded requests and the live browser-created request can both be exported
+- receipt is explainable as public evidence, not as the production source of truth
+
 ## Talking Points
 
 - Bureaucratic action is modeled as signed state transition.
 - The ledger records minimal public evidence, not personal data.
 - Citizens can inspect status, responsibility, and audit history.
+- Romanian/English mode makes the same demo usable for local stakeholders and
+  international technical reviewers.
+- Audit receipt export gives a portable artifact for conversations, procurement
+  notes, or issue reports while keeping the canonical state in the ledger path.
 - The browser ledger is a local demo. Production needs external anchoring or a
   real ledger provider.
 - The Cloudflare Pages build is static today; future Pages Functions should be

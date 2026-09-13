@@ -1,20 +1,21 @@
+import type { Dictionary } from "../i18n";
 import type { Law544Request } from "../law544/types";
 
-export function MachineryGraph({ request }: { request: Law544Request }) {
+export function MachineryGraph({ request, labels }: { request: Law544Request; labels: Dictionary["graph"] }) {
   const nodes = [
-    "Citizen DID",
+    labels.citizenDid,
     request.institution,
-    request.registryNumber ? "Registry assigned" : "Registry queue",
-    request.assignedToDidHash ? "Director routed" : "Director queue",
-    request.assignedToDidHash ? "Public servant" : "Unassigned",
+    request.registryNumber ? labels.registryAssigned : labels.registryQueue,
+    request.assignedToDidHash ? labels.directorRouted : labels.directorQueue,
+    request.assignedToDidHash ? labels.publicServant : labels.unassigned,
     request.status,
   ];
 
   return (
     <section className="panel graphPanel">
       <div className="panelHeader">
-        <h2>Bureaucratic machinery</h2>
-        <span className="pill">current path</span>
+        <h2>{labels.title}</h2>
+        <span className="pill">{labels.currentPath}</span>
       </div>
       <div className="graph">
         {nodes.map((node, index) => (
