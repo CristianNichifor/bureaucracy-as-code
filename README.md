@@ -50,12 +50,29 @@ Build:
 pnpm build
 ```
 
+Full local verification:
+
+```bash
+pnpm verify
+```
+
+Browser smoke checks:
+
+```bash
+pnpm verify:e2e
+```
+
 Cloudflare Pages notes are in [docs/cloudflare-pages.md](docs/cloudflare-pages.md).
 
 ## Documentation
 
 - [Architecture](docs/architecture.md)
 - [Privacy model](docs/privacy-model.md)
+- [Threat model](docs/threat-model.md)
+- [Law 544 legal caveat](docs/law-544-legal-caveat.md)
+- [DPIA notes](docs/dpia-notes.md)
+- [Production readiness](docs/production-readiness.md)
+- [QA](docs/qa.md)
 - [Demo script](docs/demo-script.md)
 - [Future ledger adapters](docs/future-ledger-adapters.md)
 - [Cloudflare Pages](docs/cloudflare-pages.md)

@@ -12,6 +12,18 @@ pnpm test
 pnpm build
 ```
 
+The standard local gate is:
+
+```bash
+pnpm verify
+```
+
+For browser smoke checks, run:
+
+```bash
+pnpm verify:e2e
+```
+
 ## Pull Requests
 
 - Open pull requests against `main`.

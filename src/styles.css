@@ -16,7 +16,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -156,11 +157,78 @@ h2 {
   margin-bottom: 14px;
 }
 
+.requestFeedPanel {
+  grid-column: 1 / -1;
+}
+
+.filterBar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(170px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.filterBar label {
+  display: grid;
+  gap: 6px;
+}
+
+.filterBar label span {
+  color: #69746d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.filterBar select {
+  min-height: 40px;
+  border: 1px solid #cbd5ca;
+  border-radius: 6px;
+  padding: 0 10px;
+  color: #1d2528;
+  background: #ffffff;
+}
+
+.feedTable {
+  display: grid;
+  gap: 8px;
+}
+
+.feedHeader,
 .feedRow {
   display: grid;
-  grid-template-columns: minmax(220px, 1.6fr) minmax(140px, 1fr) auto auto;
-  gap: 14px;
+  grid-template-columns: minmax(220px, 1.7fr) minmax(160px, 1fr) minmax(120px, auto) minmax(112px, auto) minmax(72px, auto) minmax(96px, auto) minmax(68px, auto);
+  gap: 12px;
   align-items: center;
+}
+
+.feedHeader {
+  padding: 0 12px;
+  color: #69746d;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.feedRow {
+  width: 100%;
+  border: 1px solid #d8ddd2;
+  border-radius: 8px;
+  padding: 12px;
+  color: #1d2528;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.feedRow:hover,
+.feedRow.selected {
+  border-color: #1d2528;
+  background: #f8faf7;
+}
+
+.feedRow.selected {
+  box-shadow: inset 0 0 0 1px #1d2528;
 }
 
 .feedRow div:first-child {
@@ -188,6 +256,61 @@ h2 {
 .status-overdue,
 .danger {
   color: #a23a2f;
+}
+
+.requestDetailPanel,
+.graphPanel {
+  min-height: 100%;
+}
+
+.detailHero {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.detailHero h3 {
+  margin: 10px 0 6px;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.detailHero p {
+  margin-bottom: 0;
+  color: #516157;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.metric {
+  display: grid;
+  min-height: 104px;
+  gap: 7px;
+  align-content: start;
+  border: 1px solid #d8ddd2;
+  border-radius: 8px;
+  padding: 10px;
+  background: #f8faf7;
+}
+
+.metric span {
+  color: #69746d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  overflow-wrap: anywhere;
+}
+
+.detailList {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .timeline {
@@ -352,7 +475,9 @@ dd {
 @media (max-width: 860px) {
   .hero,
   .grid,
-  .feedRow {
+  .filterBar,
+  .metricGrid,
+  .detailList {
     grid-template-columns: 1fr;
   }
 
@@ -365,6 +490,14 @@ dd {
   }
 
   .stepList {
+    grid-template-columns: 1fr;
+  }
+
+  .feedHeader {
+    display: none;
+  }
+
+  .feedRow {
     grid-template-columns: 1fr;
   }
 }

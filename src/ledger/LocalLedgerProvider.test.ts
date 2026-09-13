@@ -47,7 +47,7 @@ describe("LocalLedgerProvider", () => {
 
     const events = await ledger.listEvents();
     expect(events.map((event) => event.index)).toEqual([0, 1]);
-    expect(await ledger.verifyChain()).toEqual({ valid: true, checkedEvents: 2, firstInvalidEvent: undefined });
+    expect(await ledger.verifyChain()).toMatchObject({ valid: true, checkedEvents: 2, firstInvalidEvent: undefined });
   });
 
   it("keeps a request's trail verifiable once a second request shares the ledger", async () => {
@@ -93,6 +93,22 @@ describe("LocalLedgerProvider", () => {
     expect(verified.firstInvalidEvent).toBe(events[1].stateHash);
   });
 
+  it("creates a local head anchor and uses it to detect trailing deletion", async () => {
+    await ledger.appendTransition(transition());
+    await ledger.appendTransition(
+      transition({ action: "Registry_Assigned", fromStatus: "Created", toStatus: "Registered" }),
+    );
+
+    const anchor = await ledger.getHeadAnchor();
+    const events = storedEvents();
+    overwriteStoredEvents([events[0]]);
+
+    const verified = await ledger.verifyChain(undefined, anchor);
+    expect(verified.valid).toBe(false);
+    expect(verified.headHash).toBe(events[0].stateHash);
+    expect(verified.expectedHeadHash).toBe(events[1].stateHash);
+  });
+
   it("fails a trail whose chain was broken by another request's forged event", async () => {
     // A shared chain shares its fate: an edit before this request's last event breaks the
     // link it stands on, even though its own events were left alone.
@@ -118,6 +134,6 @@ describe("LocalLedgerProvider", () => {
     await ledger.reset();
 
     expect(await ledger.listEvents()).toEqual([]);
-    expect(await ledger.verifyChain()).toEqual({ valid: true, checkedEvents: 0, firstInvalidEvent: undefined });
+    expect(await ledger.verifyChain()).toMatchObject({ valid: true, checkedEvents: 0, firstInvalidEvent: undefined });
   });
 });

@@ -1,13 +1,27 @@
-import { createLedgerEvent, verifyLedgerEvents } from "./hashChain";
-import type { ChainVerificationResult, LedgerEvent, LedgerProvider, UnsignedTransition } from "./types";
+import {
+  createLedgerEvent,
+  createLedgerHeadAnchor,
+  getLedgerHeadHash,
+  verifyLedgerEvents,
+  verifyLedgerHeadAnchor,
+} from "./hashChain";
+import { LEDGER_EVENT_SCHEMA_VERSION } from "./types";
+import type { ChainVerificationResult, LedgerEvent, LedgerHeadAnchor, LedgerProvider, UnsignedTransition } from "./types";
 
 export const STORAGE_KEY = "bureaucracy-as-code:ledger:v1";
 
-function result(firstInvalidEvent: string | null, checkedEvents: number): ChainVerificationResult {
+function result(input: {
+  firstInvalidEvent: string | null;
+  checkedEvents: number;
+  headHash?: string;
+  expectedHeadHash?: string;
+}): ChainVerificationResult {
   return {
-    valid: firstInvalidEvent === null,
-    checkedEvents,
-    firstInvalidEvent: firstInvalidEvent ?? undefined,
+    valid: input.firstInvalidEvent === null,
+    checkedEvents: input.checkedEvents,
+    firstInvalidEvent: input.firstInvalidEvent ?? undefined,
+    headHash: input.headHash,
+    expectedHeadHash: input.expectedHeadHash,
   };
 }
 
@@ -28,18 +42,42 @@ export class LocalLedgerProvider implements LedgerProvider {
   }
 
   async replaceEvents(events: LedgerEvent[]): Promise<void> {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(events.map(normalizeLedgerEvent)));
   }
 
   async getRequestTrail(requestId: string): Promise<LedgerEvent[]> {
     return (await this.listEvents()).filter((event) => event.requestId === requestId);
   }
 
-  async verifyChain(requestId?: string): Promise<ChainVerificationResult> {
+  async getHeadAnchor(requestId?: string): Promise<LedgerHeadAnchor> {
+    const events = await this.eventsForVerification(requestId);
+    return createLedgerHeadAnchor({
+      events,
+      requestId,
+      ledgerProvider: "local-browser",
+    });
+  }
+
+  async verifyChain(requestId?: string, anchor?: LedgerHeadAnchor): Promise<ChainVerificationResult> {
+    const events = await this.eventsForVerification(requestId);
+    const firstInvalidEvent = await verifyLedgerEvents(events);
+    const anchorValid = anchor ? await verifyLedgerHeadAnchor({ events, anchor }) : true;
+    const expectedHeadHash = anchor?.headHash;
+    const headHash = getLedgerHeadHash(events);
+
+    return result({
+      firstInvalidEvent: firstInvalidEvent ?? (anchorValid ? null : headHash),
+      checkedEvents: requestId ? events.filter((event) => event.requestId === requestId).length : events.length,
+      headHash,
+      expectedHeadHash,
+    });
+  }
+
+  private async eventsForVerification(requestId?: string): Promise<LedgerEvent[]> {
     const events = await this.listEvents();
 
     if (!requestId) {
-      return result(await verifyLedgerEvents(events), events.length);
+      return events;
     }
 
     // One request's events are not a chain of their own. Every event links to whatever was
@@ -53,13 +91,18 @@ export class LocalLedgerProvider implements LedgerProvider {
       }
     }
 
-    const upToTrail = events.slice(0, lastIndex + 1);
-    const trailLength = upToTrail.filter((event) => event.requestId === requestId).length;
-
-    return result(await verifyLedgerEvents(upToTrail), trailLength);
+    return events.slice(0, lastIndex + 1);
   }
 
   async reset(): Promise<void> {
     localStorage.removeItem(STORAGE_KEY);
   }
+}
+
+function normalizeLedgerEvent(event: LedgerEvent): LedgerEvent {
+  return {
+    schemaVersion: LEDGER_EVENT_SCHEMA_VERSION,
+    eventType: "law544.transition",
+    ...event,
+  };
 }

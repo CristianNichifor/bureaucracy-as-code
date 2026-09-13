@@ -1,5 +1,15 @@
 import { exportPublicKey, hashJson, sha256Hex, signText, verifyText } from "../shared/crypto";
-import type { DemoCredential, DemoIdentity, DemoRole, IdentityProvider, SignedPayload } from "./types";
+import {
+  CREDENTIAL_PRESENTATION_SCHEMA_VERSION,
+  type CredentialPresentation,
+  type DemoCredential,
+  type DemoIdentity,
+  type DemoRole,
+  type IdentityProvider,
+  type PresentationVerificationInput,
+  type PresentationVerificationResult,
+  type SignedPayload,
+} from "./types";
 
 const ISSUER_DID = "did:demo:romanian-civic-lab";
 
@@ -66,6 +76,112 @@ export class BrowserIdentityProvider implements IdentityProvider {
   }
 
   async verifyCredential(credential: DemoCredential): Promise<boolean> {
-    return credential.issuerDid === ISSUER_DID && credential.subjectDid.startsWith("did:demo:");
+    const expiresAt = credential.expiresAt ? Date.parse(credential.expiresAt) : undefined;
+
+    return (
+      credential.issuerDid === ISSUER_DID &&
+      credential.subjectDid.startsWith("did:demo:") &&
+      (!expiresAt || expiresAt > Date.now())
+    );
+  }
+
+  async presentCredential(input: {
+    identity: DemoIdentity;
+    purpose: string;
+    disclose?: {
+      role?: boolean;
+      institution?: boolean;
+    };
+  }): Promise<CredentialPresentation> {
+    const disclosedClaims = {
+      role: input.disclose?.role === false ? undefined : input.identity.role,
+      institution: input.disclose?.institution === false ? undefined : input.identity.institution,
+    };
+    const credentialHash = await hashJson(input.identity.credential);
+    const proofPayload = {
+      schemaVersion: CREDENTIAL_PRESENTATION_SCHEMA_VERSION,
+      presentationType: "credential.role-proof",
+      subjectDid: input.identity.did,
+      credentialHash,
+      disclosedClaims,
+      purpose: input.purpose,
+    };
+
+    return {
+      ...proofPayload,
+      schemaVersion: CREDENTIAL_PRESENTATION_SCHEMA_VERSION,
+      presentationType: "credential.role-proof",
+      publicKeyJwk: input.identity.publicKeyJwk,
+      credential: input.identity.credential,
+      proof: await this.signPayload(input.identity, proofPayload),
+    };
+  }
+
+  async verifyPresentation(input: PresentationVerificationInput): Promise<PresentationVerificationResult> {
+    const { presentation } = input;
+
+    if (
+      presentation.schemaVersion !== CREDENTIAL_PRESENTATION_SCHEMA_VERSION ||
+      presentation.presentationType !== "credential.role-proof"
+    ) {
+      return { valid: false, reason: "Unsupported credential presentation schema." };
+    }
+
+    if (presentation.subjectDid !== presentation.credential.subjectDid) {
+      return { valid: false, reason: "Presentation subject does not match credential subject." };
+    }
+
+    if (!(await this.verifyCredential(presentation.credential))) {
+      return { valid: false, reason: "Credential is not valid." };
+    }
+
+    if ((await hashJson(presentation.credential)) !== presentation.credentialHash) {
+      return { valid: false, reason: "Credential hash does not match presented credential." };
+    }
+
+    if (presentation.disclosedClaims.role && presentation.disclosedClaims.role !== presentation.credential.role) {
+      return { valid: false, reason: "Disclosed role does not match credential." };
+    }
+
+    if (
+      presentation.disclosedClaims.institution &&
+      presentation.disclosedClaims.institution !== presentation.credential.institution
+    ) {
+      return { valid: false, reason: "Disclosed institution does not match credential." };
+    }
+
+    if (input.purpose && input.purpose !== presentation.purpose) {
+      return { valid: false, reason: "Presentation purpose does not match." };
+    }
+
+    if (input.requiredRole && presentation.disclosedClaims.role !== input.requiredRole) {
+      return { valid: false, reason: "Required role was not proven." };
+    }
+
+    if (input.requiredInstitution && presentation.disclosedClaims.institution !== input.requiredInstitution) {
+      return { valid: false, reason: "Required institution was not proven." };
+    }
+
+    const proofPayload = {
+      schemaVersion: presentation.schemaVersion,
+      presentationType: presentation.presentationType,
+      subjectDid: presentation.subjectDid,
+      credentialHash: presentation.credentialHash,
+      disclosedClaims: presentation.disclosedClaims,
+      purpose: presentation.purpose,
+    };
+    const payloadHash = await hashJson(proofPayload);
+
+    if (presentation.proof.signerDid !== presentation.subjectDid || presentation.proof.payloadHash !== payloadHash) {
+      return { valid: false, reason: "Presentation proof payload does not match." };
+    }
+
+    const signatureValid = await this.verifySignature({
+      publicKeyJwk: presentation.publicKeyJwk,
+      payloadHash,
+      signature: presentation.proof.signature,
+    });
+
+    return signatureValid ? { valid: true } : { valid: false, reason: "Presentation signature is invalid." };
   }
 }
