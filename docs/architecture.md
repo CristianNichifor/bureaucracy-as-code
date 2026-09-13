@@ -38,9 +38,11 @@ chain, or public anchoring service.
 
 ### Storage
 
-Documents stay off-ledger. The browser stores local document metadata and hashes
-for integrity checks. The ledger records hashes only, never raw request content
-or personal data.
+Documents stay off-ledger. The storage adapter encrypts document bytes before
+they reach a local backend, and exposes only document hashes to the ledger. The
+ledger records hashes only, never raw request content or personal data.
+
+See [Storage Adapter](storage-adapter.md).
 
 ## Public Surfaces
 
