@@ -1,39 +1,96 @@
-# Hardhat Ledger Scaffold
+# Hardhat Ledger Devnet
 
-This phase adds the local Ethereum shape without replacing the browser ledger.
-The Vite demo still runs without chain tooling, while the contract and adapter
-define how a Hardhat node can record the same Law 544 event hashes.
+This repo includes a local Ethereum devnet path for anchoring Law 544/2001
+audit events in `contracts/Law544Ledger.sol`.
 
-## Contract
+The browser demo can still run without a chain. The Hardhat path is a
+developer-facing proof that the same hashed transition records can be compiled,
+deployed, tested, and appended to an append-only ledger.
 
-`contracts/Law544Ledger.sol` is an append-only event ledger. It records:
+## What Runs Locally
+
+- `contracts/Law544Ledger.sol`: append-only Solidity event ledger.
+- `hardhat.config.ts`: Hardhat 3 config using the viem toolbox.
+- `test/hardhat/Law544Ledger.ts`: contract tests against the in-process Hardhat
+  network.
+- `scripts/deploy-law544-ledger.ts`: deploy script for either the in-process
+  network or a running local node.
+
+## Commands
+
+Install dependencies first:
+
+```sh
+pnpm install
+```
+
+Compile the contract:
+
+```sh
+pnpm ledger:compile
+```
+
+Run the contract tests:
+
+```sh
+pnpm ledger:test
+```
+
+Deploy to an in-process Hardhat network:
+
+```sh
+pnpm ledger:deploy
+```
+
+Run a persistent local node in one terminal:
+
+```sh
+pnpm ledger:node
+```
+
+Deploy to that node from another terminal:
+
+```sh
+pnpm exec hardhat run scripts/deploy-law544-ledger.ts --network localhost
+```
+
+## Contract Shape
+
+`Law544Ledger` stores only public audit anchors:
 
 - request id hash
+- payload hash
+- optional document hash
+- signer DID hash
+- signer credential hash
+- previous state hash
+- new state hash
+- event index
 - action and status names
-- payload/document/signer/credential hashes
-- previous state hash and new state hash
 - signer role
-- timestamp string from the signed transition
+- signed transition timestamp
 - optional metadata URI
 
-The contract enforces only chain order:
+No PII and no raw documents belong on-chain.
 
-- `eventIndex` must equal the current contract event count
-- `previousStateHash` must equal the current contract head hash
-- `stateHash` cannot be empty
+The contract enforces append-only ordering:
 
-The legal transition rules remain in the TypeScript Law 544 state machine for
-now. A later phase can move those checks into Solidity or keep them in a
-deterministic backend before anchoring accepted transitions on-chain.
+- `eventIndex` must equal the current contract `eventCount`.
+- `previousStateHash` must equal the current contract `headHash`.
+- `stateHash` must be non-empty.
+
+The Law 544 legal workflow checks remain in the TypeScript state machine and API
+ingestion layer. The contract is intentionally narrow: it anchors accepted state
+transitions and makes skipped or rewritten history visible.
 
 ## Adapter Boundary
 
-`src/ledger/ethereum/Law544EthereumAdapter.ts` implements the existing
-`LedgerProvider` contract against a small `EthereumLedgerContractClient`
-interface. It intentionally avoids importing `ethers`, `viem`, or Hardhat into
-the browser bundle.
+`src/ledger/ethereum/Law544EthereumAdapter.ts` implements the app-level
+`LedgerProvider` interface against an `EthereumLedgerContractClient`.
 
-A future client binding only needs to provide:
+That keeps Hardhat, viem, and RPC-specific code out of the browser bundle. A
+production client can later implement the same small interface with viem or a
+Cloudflare Worker RPC bridge:
 
 ```ts
 interface EthereumLedgerContractClient {
@@ -42,27 +99,17 @@ interface EthereumLedgerContractClient {
 }
 ```
 
-The adapter computes the same canonical ledger event hash as the browser ledger,
-maps it to Solidity-friendly `bytes32` fields, and asks the contract client to
-append it. Destructive demo operations such as `replaceEvents` and `reset` throw
-because a chain ledger is append-only.
+## Production Notes
 
-## Local Hardhat Path
+This devnet is not the production deployment plan. For production, use a
+permissioned chain or a managed RPC endpoint, publish deployment addresses per
+environment, and route writes through the signed API ingestion boundary.
 
-When we decide to wire the runnable local chain, add Hardhat dependencies in a
-dedicated PR:
+Cloudflare Pages cannot rely on a private local Hardhat node in production. The
+production path should be:
 
-```sh
-pnpm add -D hardhat @nomicfoundation/hardhat-toolbox
-pnpm hardhat init
-pnpm hardhat compile
-pnpm hardhat node
-```
-
-Then add a deploy script for `Law544Ledger` and an ethers/viem client that
-implements `EthereumLedgerContractClient`.
-
-Keep this path optional until the browser demo has a backend boundary. A static
-Cloudflare Pages app cannot talk to a private Hardhat node by itself in
-production; it needs either a local demo node, a Worker/API bridge, or a
-hosted RPC endpoint.
+1. Browser signs or presents a transition command.
+2. API/Worker verifies identity, credential presentation, signature, and Law 544
+   state-machine legality.
+3. API/Worker appends the accepted transition to the configured ledger.
+4. Public dashboard reads a projection plus ledger anchors.
