@@ -31,7 +31,8 @@ export function GuidedProgress({
       <div className="scenarioRunBar" aria-label={labels.scenariosLabel}>
         {browserGuidedScenarios.map((scenario) => (
           <button
-            className="scenarioButton"
+            aria-busy={isRunningScenario}
+            className="civicButton scenarioButton"
             disabled={isRunningScenario}
             key={scenario.id}
             onClick={() => onRunScenario(scenario.id)}
@@ -59,10 +60,12 @@ export function GuidedProgress({
 
           return (
             <button
+              aria-current={current ? "step" : undefined}
               className={`stepCard ${complete ? "complete" : ""} ${current ? "current" : ""}`}
               disabled={!current}
               key={step.id}
               onClick={() => onRunStep(step.id)}
+              type="button"
             >
               <span className="stepIcon">{icon}</span>
               <span>

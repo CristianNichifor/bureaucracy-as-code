@@ -23,7 +23,7 @@ export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; 
         <span className={verified ? "pill ok" : mismatch ? "pill dangerPill" : "pill"}>{status}</span>
       </div>
       <p className="panelCopy">{labels.copy}</p>
-      <label className="fileButton">
+      <label className="civicButton civicButtonSecondary fileButton">
         {labels.chooseFile}
         <input aria-label={labels.chooseFile} type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
       </label>

@@ -153,10 +153,12 @@ h2 {
   margin: var(--civic-space-5) 0 var(--civic-space-3);
 }
 
+.civicButton,
 .toolbar button {
   display: inline-flex;
   min-height: var(--civic-control-height);
   align-items: center;
+  justify-content: center;
   gap: 8px;
   border: 1px solid var(--civic-action);
   border-radius: var(--civic-radius);
@@ -164,11 +166,35 @@ h2 {
   color: var(--civic-on-action);
   background: var(--civic-action);
   cursor: pointer;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
 }
 
+.civicButton:hover:not(:disabled),
+.toolbar button:hover:not(:disabled) {
+  background: var(--civic-action-hover);
+}
+
+.civicButton:disabled,
+.toolbar button:disabled {
+  border-color: var(--civic-border-strong);
+  color: var(--civic-subtle);
+  background: var(--civic-raised-bg);
+  cursor: default;
+}
+
+.civicButtonSecondary,
 .toolbar button.secondary {
   color: var(--civic-action);
   background: var(--civic-surface);
+}
+
+.civicButtonSecondary:hover:not(:disabled),
+.toolbar button.secondary:hover:not(:disabled) {
+  color: var(--civic-on-action);
+  background: var(--civic-action);
 }
 
 .message {
@@ -297,24 +323,16 @@ h2 {
   padding: 0 10px;
   color: var(--civic-text);
   background: var(--civic-surface);
+  cursor: pointer;
 }
 
 .filterReset,
 .emptyState button {
-  min-height: var(--civic-control-height);
-  border: 1px solid var(--civic-action);
-  border-radius: var(--civic-radius);
   padding: 0 12px;
-  color: var(--civic-action);
-  background: var(--civic-surface);
-  cursor: pointer;
-  font-weight: 800;
 }
 
 .filterReset:disabled {
   border-color: var(--civic-border);
-  color: var(--civic-subtle);
-  cursor: default;
 }
 
 .feedTable {
@@ -641,24 +659,11 @@ dd {
 }
 
 .scenarioButton {
-  display: inline-flex;
-  min-height: var(--civic-control-height);
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--civic-action);
-  border-radius: var(--civic-radius);
   padding: 0 12px;
-  color: var(--civic-on-action);
-  background: var(--civic-action);
-  cursor: pointer;
-  font-weight: 700;
 }
 
 .scenarioButton:disabled {
-  border-color: var(--civic-border-strong);
-  color: var(--civic-subtle);
-  background: var(--civic-raised-bg);
-  cursor: default;
+  opacity: 0.78;
 }
 
 .stepCard {
@@ -733,24 +738,12 @@ dd {
 }
 
 .panelAction {
-  display: inline-flex;
-  min-height: var(--civic-control-height);
-  align-items: center;
-  gap: 8px;
   margin-top: 14px;
-  border: 1px solid var(--civic-action);
-  border-radius: var(--civic-radius);
   padding: 0 12px;
-  color: var(--civic-on-action);
-  background: var(--civic-action);
-  cursor: pointer;
 }
 
 .panelAction:disabled {
-  border-color: var(--civic-border-strong);
-  color: var(--civic-subtle);
-  background: var(--civic-raised-bg);
-  cursor: default;
+  opacity: 0.78;
 }
 
 .verifierActions {
@@ -761,16 +754,7 @@ dd {
 }
 
 .fileButton {
-  display: inline-flex;
-  min-height: var(--civic-control-height);
-  align-items: center;
-  border: 1px solid var(--civic-action);
-  border-radius: var(--civic-radius);
   padding: 0 12px;
-  color: var(--civic-action);
-  background: var(--civic-surface);
-  cursor: pointer;
-  font-weight: 700;
 }
 
 .fileButton input {
@@ -790,6 +774,8 @@ dd {
 .proofDetails summary {
   cursor: pointer;
   font-weight: 800;
+  list-style-position: outside;
+  overflow-wrap: anywhere;
 }
 
 .proofDetails dl {
