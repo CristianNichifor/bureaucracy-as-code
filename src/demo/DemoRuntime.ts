@@ -11,6 +11,7 @@ import { EncryptedDocumentStore, createAesGcmStorageKey, toLedgerDocumentReferen
 import { IndexedDbDocumentStore } from "../storage/IndexedDbDocumentStore";
 import { InMemoryDocumentStorageBackend } from "../storage/InMemoryDocumentStorageBackend";
 import type { DocumentStorageProvider, StoredDocumentMetadata } from "../storage/types";
+import { getBrowserGuidedScenario, type GuidedScenario, type GuidedScenarioId, type GuidedScenarioStep } from "./guidedScenarios";
 import { createInitialDemoContext, type DemoContext } from "./scenarioLaw544";
 
 const textEncoder = new TextEncoder();
@@ -31,6 +32,13 @@ export type DemoRuntimeTransitionResult = {
   request: Law544Request;
   event: LedgerEvent;
   document?: StoredDocumentMetadata;
+};
+
+export type DemoRuntimeScenarioResult = {
+  scenario: GuidedScenario;
+  context: DemoContext;
+  events: LedgerEvent[];
+  transitions: DemoRuntimeTransitionResult[];
 };
 
 export type DemoRuntimeDependencies = {
@@ -134,6 +142,25 @@ export class DemoRuntime {
 
     return { ...result, document };
   }
+
+  async replayGuidedScenario(scenarioId: GuidedScenarioId): Promise<DemoRuntimeScenarioResult> {
+    const scenario = getBrowserGuidedScenario(scenarioId);
+    let context = await this.reset();
+    const transitions: DemoRuntimeTransitionResult[] = [];
+
+    for (const step of scenario.steps) {
+      const result = await this.applyTransition(createScenarioTransitionInput({ context, step }));
+      transitions.push(result);
+      context = { ...context, request: result.request };
+    }
+
+    return {
+      scenario,
+      context,
+      events: await this.listEvents(),
+      transitions,
+    };
+  }
 }
 
 export function createBrowserDemoRuntime(): DemoRuntime {
@@ -164,4 +191,37 @@ export function createDemoDocumentBytes(label: string): ArrayBuffer {
     }),
   );
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+}
+
+function createScenarioTransitionInput(input: {
+  context: DemoContext;
+  step: GuidedScenarioStep;
+}): DemoRuntimeTransitionInput {
+  return {
+    request: input.context.request,
+    actor: input.context.identities[input.step.actor],
+    action: input.step.action,
+    document: input.step.document,
+    metadata: createScenarioMetadata(input.context, input.step),
+  };
+}
+
+function createScenarioMetadata(context: DemoContext, step: GuidedScenarioStep): Record<string, string> | undefined {
+  if (step.metadata === "registry-number") {
+    return { registryNumber: "MF-544-2026-0001" };
+  }
+
+  if (step.metadata === "routing-assignment") {
+    return { assignedToDidHash: context.identities.publicServant.did.slice(0, 18) };
+  }
+
+  if (step.metadata === "extension-reason") {
+    return { reason: "large-volume-public-records", legalLimit: "30-day-extension" };
+  }
+
+  if (step.metadata === "overdue-check") {
+    return { checkedBy: "registry-bot", reason: "deadline-window-expired" };
+  }
+
+  return undefined;
 }
