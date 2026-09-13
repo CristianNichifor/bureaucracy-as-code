@@ -26,7 +26,7 @@ export function LedgerIntegrityPanel({
           <strong>{verification.valid ? "Hash chain verifies" : "Hash chain break detected"}</strong>
           <p>
             {verification.valid
-              ? "Every event links to the previous state hash."
+              ? "Every visible event links to the previous state hash. A production ledger would publish the head externally."
               : "An imported or stored event no longer matches its recorded hash."}
           </p>
         </div>

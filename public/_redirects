@@ -1,0 +1,4 @@
+# Standalone Cloudflare Pages fallback.
+# The future digital host must copy the /bureaucracy-as-code/* rule into its own root _redirects file.
+/bureaucracy-as-code/* /bureaucracy-as-code/index.html 200
+/* /index.html 200

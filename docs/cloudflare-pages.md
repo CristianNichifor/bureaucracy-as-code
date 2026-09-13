@@ -21,6 +21,13 @@ The app already sets the Vite public base to `/bureaucracy-as-code/` in
 `vite.config.ts`, so copied assets resolve correctly once the build output is
 served from that path.
 
+This repository is deployable in two modes:
+
+| Mode | URL shape | Build base | Owner |
+| --- | --- | --- | --- |
+| Standalone preview/production | `https://bureaucracy-as-code.pages.dev/` | `/` | this repo |
+| Mounted digital workspace | `https://digital.cristian-nichifor.com/bureaucracy-as-code/` | `/bureaucracy-as-code/` | future `apps/digital` host |
+
 ## Standalone Pages project
 
 The project lives on the **CN Webify** Cloudflare account, `432316a05c0d6000c6e196fe32e47dd7`.
@@ -48,6 +55,16 @@ record and no zone change is involved.
 The standalone deploy builds with `VITE_APP_BASE=/`. The default base is `/bureaucracy-as-code/`,
 which is correct for the mounted build and wrong here — served from the root of a `pages.dev`
 host it would ask for `/bureaucracy-as-code/assets/...` and get a 404 for every one of them.
+
+`public/_redirects` contains the standalone SPA fallback:
+
+```txt
+/* /index.html 200
+```
+
+It also documents the future mounted fallback, but that rule only takes effect
+when it is copied into the root `_redirects` file of the `apps/digital` Pages
+project.
 
 ## Credentials
 
@@ -84,6 +101,11 @@ Deployment is wired in the repository, not clicked together in the dashboard —
 rest of this fleet's infrastructure follows. Cloudflare's Pages Git integration is deliberately
 not used; it would put the build configuration somewhere that is not this repository.
 
+The workflow currently deploys a static Pages site only. No Pages Functions are
+required for the demo. If a future phase adds Functions, keep the public
+dashboard static and use Functions only for explicit server-side edges such as
+preview health probes, signed API ingress, or external ledger anchoring.
+
 ## Digital host integration
 
 When `apps/digital` exists, its build should copy this app's production output
@@ -102,15 +124,31 @@ The digital app should then handle SPA fallback for the route:
 /bureaucracy-as-code/* -> /bureaucracy-as-code/index.html
 ```
 
+Required parent-host checklist:
+
+- build this repo without overriding `VITE_APP_BASE`
+- copy `dist/*` into `<digital-output>/bureaucracy-as-code/`
+- add `/bureaucracy-as-code/* /bureaucracy-as-code/index.html 200` to the parent root `_redirects`
+- keep the headers in `public/_headers`, or merge equivalent rules into the parent root `_headers`
+- smoke-test `/bureaucracy-as-code/`, `/bureaucracy-as-code/assets/*`, and one deep SPA path
+
+Do not attach `digital.cristian-nichifor.com/bureaucracy-as-code` as a custom
+domain to this standalone Pages project. Cloudflare custom domains are
+hostname-level bindings; the path belongs to the digital host.
+
 ## Local verification
 
 ```bash
 pnpm install
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
+pnpm verify
 pnpm preview
 ```
 
 Open the preview URL and check the page at `/bureaucracy-as-code/`.
+
+For a standalone Pages-equivalent local run, build with the root base:
+
+```bash
+VITE_APP_BASE=/ pnpm build
+pnpm preview
+```

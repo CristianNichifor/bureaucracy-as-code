@@ -25,12 +25,12 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - It does not run a backend API.
 - It does not run a real blockchain node.
 - It does not store raw personal data on a ledger.
-- It does not notice a chain truncated at its end. Dropping trailing events leaves a shorter,
-  internally consistent chain; catching that needs an anchor the chain cannot supply itself —
-  a published head, a countersignature, or an external timestamp.
-- It does not check signatures while verifying the chain. Verification re-hashes each event and
-  follows the links; `BrowserIdentityProvider.verifySignature` exists but is not yet on that path,
-  so a forged event carrying a nonsense signature still passes `verifyChain`.
+- It does not publish ledger head anchors outside the browser. Local anchors can
+  catch trailing deletion inside an exported state, but production still needs a
+  public anchor, countersignature, or external timestamp.
+- It does not yet enforce credential presentations inside every state-machine
+  transition. The provider can prove roles and purposes; the next backend/API
+  boundary should require those proofs before appending protected events.
 - It does not export signing keys. An imported state can be read and re-verified; new
   transitions are signed by the identities of the browser doing the importing. Writing a
   private key into a shareable JSON file is the habit this demo argues against.
@@ -62,7 +62,11 @@ Browser smoke checks:
 pnpm verify:e2e
 ```
 
-Cloudflare Pages notes are in [docs/cloudflare-pages.md](docs/cloudflare-pages.md).
+Deployment:
+
+- standalone demo: `https://bureaucracy-as-code.pages.dev/`
+- intended digital mount: `https://digital.cristian-nichifor.com/bureaucracy-as-code`
+- Cloudflare Pages notes: [docs/cloudflare-pages.md](docs/cloudflare-pages.md)
 
 ## Documentation
 
