@@ -22,9 +22,21 @@ request projection.
 No raw documents or personal data are required. Document bodies remain off-ledger
 and outside this boundary; only hashes pass through the API.
 
-## Future Cloudflare Shape
+## Cloudflare Pages Functions Shape
 
-A Pages Function can deserialize an HTTP `POST /api/transitions` body into the
-same command type, call the service, and return the appended event plus updated
-request projection. Durable Objects, D1, or R2 can replace the in-memory request
-repository without changing the ingestion contract.
+The Phase 12 scaffold wraps the same service with Cloudflare Pages Functions:
+
+- `GET /api/health` returns a small deployment probe.
+- `POST /api/transitions` accepts an `IngestTransitionCommand`, verifies it
+  through `TransitionIngestionService`, appends one ledger event, and returns
+  the updated request projection plus the current head anchor.
+- `GET /api/requests` returns the public request projection, event feed, and
+  current head anchor.
+- `GET /api/requests/:requestId` returns one request, its public audit trail,
+  integrity verification, and a request-scoped head anchor.
+
+The scaffold uses module-level in-memory state inside the Pages isolate. That is
+intentional for this PR-sized phase: it proves the HTTP/runtime boundary without
+introducing Durable Objects, D1, R2, or a production ledger dependency. Durable
+storage can replace `functions/_shared/runtime.ts` without changing the public
+route contract or the framework-neutral ingestion service.
