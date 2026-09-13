@@ -200,8 +200,8 @@ export function App() {
           <p className="eyebrow">Digital Public Administration Lab</p>
           <h1>Bureaucracy as Code</h1>
           <p>
-            A browser-only Law 544/2001 demo where every administrative action is a signed,
-            tamper-evident state transition.
+            Public Law 544/2001 explorer for signed administrative actions, anonymized
+            request trails, and browser-local response hash verification.
           </p>
         </div>
         <div className="integrity">

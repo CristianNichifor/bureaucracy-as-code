@@ -20,6 +20,10 @@ export function HashVerifier({ expectedHash }: { expectedHash?: string }) {
         <h2>Response hash verifier</h2>
         {verified ? <span className="pill ok">verified</span> : <span className="pill">local</span>}
       </div>
+      <p className="panelCopy">
+        Choose a response file you received. The browser hashes it locally and compares it with
+        the hash recorded for the selected request.
+      </p>
       <input type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
       <dl>
         <div>

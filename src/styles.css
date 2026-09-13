@@ -451,6 +451,12 @@ dd {
   color: #516157;
 }
 
+.panelCopy {
+  margin-bottom: 14px;
+  color: #516157;
+  line-height: 1.45;
+}
+
 .panelAction {
   display: inline-flex;
   min-height: 40px;
