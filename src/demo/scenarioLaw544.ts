@@ -1,6 +1,9 @@
 import type { DemoIdentity } from "../identity/types";
+import { InMemoryRequestRepository } from "../api/InMemoryRequestRepository";
+import { TransitionIngestionService, transitionPurpose } from "../api/transitionIngestion";
 import { calculateLaw544Deadline } from "../law544/deadlines";
 import { assertAllowedTransition } from "../law544/stateMachine";
+import { findTransitionRule } from "../law544/transitions";
 import type { Law544Action, Law544Request } from "../law544/types";
 import type { LedgerProvider } from "../ledger/types";
 import { hashJson, sha256Hex } from "../shared/crypto";
@@ -92,6 +95,58 @@ export async function applyDemoAction(input: {
     assignedToDidHash: input.metadata?.assignedToDidHash ?? input.request.assignedToDidHash,
     responseDocumentHash: input.documentHash ?? input.request.responseDocumentHash,
   };
+}
+
+export async function applyDemoActionViaIngestion(input: {
+  provider: BrowserIdentityProvider;
+  ledger: LedgerProvider;
+  request: Law544Request;
+  actor: DemoIdentity;
+  action: Law544Action;
+  documentHash?: string;
+  metadata?: Record<string, string>;
+}): Promise<Law544Request> {
+  const rule = findTransitionRule({ action: input.action, from: input.request.status });
+  if (!rule) {
+    throw new Error(`Action ${input.action} is not allowed from ${input.request.status}.`);
+  }
+
+  const payload = {
+    requestId: input.request.id,
+    action: input.action,
+    fromStatus: input.request.status,
+    toStatus: rule.to,
+    documentHash: input.documentHash,
+    metadata: input.metadata,
+  };
+  const requests = new InMemoryRequestRepository(input.action === "Request_Created" ? [] : [input.request]);
+  const service = new TransitionIngestionService({
+    identity: input.provider,
+    ledger: input.ledger,
+    requests,
+  });
+  const presentation = await input.provider.presentCredential({
+    identity: input.actor,
+    purpose: transitionPurpose(payload),
+  });
+  const result = await service.ingest({
+    payload,
+    proof: await input.provider.signPayload(input.actor, payload),
+    presentation,
+    createRequest:
+      input.action === "Request_Created"
+        ? {
+            id: input.request.id,
+            institution: input.request.institution,
+            subject: input.request.subject,
+            citizenDidHash: input.request.citizenDidHash,
+            createdAt: input.request.createdAt,
+            deadlineAt: input.request.deadlineAt,
+          }
+        : undefined,
+  });
+
+  return result.request;
 }
 
 export async function createDemoDocumentHash(label: string): Promise<string> {
