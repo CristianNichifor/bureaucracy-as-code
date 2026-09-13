@@ -36,6 +36,19 @@ export const apiTransitionPayloadSchema = z.object({
   metadata: z.record(z.string(), z.string()).optional(),
 });
 
+export const CANONICAL_SIGNING_ENVELOPE_VERSION = "law544-signing-envelope/v1";
+
+export const canonicalSigningEnvelopeSchema = z.object({
+  schemaVersion: z.literal(CANONICAL_SIGNING_ENVELOPE_VERSION),
+  context: z.literal("law544.transition"),
+  requestId: z.string().min(1),
+  action: z.enum(LAW_544_ACTIONS),
+  purpose: z.string().min(1),
+  payloadHash: z.string().length(64),
+  nonce: z.string().min(16).max(128),
+  signedAt: z.string().datetime(),
+});
+
 export const createRequestInputSchema = z.object({
   id: z.string().min(1),
   institution: z.string().min(1),
@@ -46,10 +59,12 @@ export const createRequestInputSchema = z.object({
 });
 
 export type ApiTransitionPayload = z.infer<typeof apiTransitionPayloadSchema>;
+export type CanonicalSigningEnvelope = z.infer<typeof canonicalSigningEnvelopeSchema>;
 export type CreateRequestInput = z.infer<typeof createRequestInputSchema>;
 
 export type IngestTransitionCommand = {
   payload: ApiTransitionPayload;
+  envelope: CanonicalSigningEnvelope;
   proof: SignedPayload;
   presentation: CredentialPresentation;
   createRequest?: CreateRequestInput;
@@ -67,7 +82,8 @@ export type ApiErrorCode =
   | "STATE_MISMATCH"
   | "TRANSITION_REJECTED"
   | "PRESENTATION_REJECTED"
-  | "SIGNATURE_REJECTED";
+  | "SIGNATURE_REJECTED"
+  | "REPLAY_REJECTED";
 
 export class ApiBoundaryError extends Error {
   constructor(
@@ -83,4 +99,9 @@ export interface RequestRepository {
   get(requestId: string): Promise<Law544Request | undefined>;
   save(request: Law544Request): Promise<void>;
   list(): Promise<Law544Request[]>;
+}
+
+export interface NonceStore {
+  has(input: { signerDidHash: string; nonce: string }): Promise<boolean>;
+  remember(input: { signerDidHash: string; nonce: string; signedAt: string }): Promise<void>;
 }
