@@ -28,6 +28,9 @@ not a production accreditation document.
 | Exposing signing keys | Export excludes private key material. | Institution HSM/KMS keys, rotation, revocation, and audit logging. |
 | XSS in a static app | CSP and restrictive Cloudflare headers. | Strict CSP without unsafe inline styles, dependency review, and security testing. |
 | Role forgery | State transitions check demo role boundaries. | Verifiable credential issuer trust registry and revocation checks. |
+| Replaying a signed transition | API ingestion rejects repeated signer nonce values. | Atomic nonce persistence, signature expiry windows, and replay alerting. |
+| Cross-origin API abuse | Functions reflect only configured CORS origins. | Environment-specific origin allowlists and edge/WAF policy. |
+| Transition flooding | Lightweight rate-limit helper documented for demo/runtime adapters. | Cloudflare edge rate limits plus per-signer durable counters. |
 
 ## Non-Goals
 

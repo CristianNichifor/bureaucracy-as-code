@@ -3,13 +3,18 @@ import { assertAllowedTransition } from "../law544/stateMachine";
 import type { Law544Request, TransitionRule } from "../law544/types";
 import type { LedgerProvider } from "../ledger/types";
 import { hashJson, sha256Hex } from "../shared/crypto";
+import { InMemoryNonceStore } from "./InMemoryNonceStore";
 import {
   ApiBoundaryError,
+  CANONICAL_SIGNING_ENVELOPE_VERSION,
   apiTransitionPayloadSchema,
+  canonicalSigningEnvelopeSchema,
   createRequestInputSchema,
   type ApiTransitionPayload,
+  type CanonicalSigningEnvelope,
   type IngestTransitionCommand,
   type IngestTransitionResult,
+  type NonceStore,
   type RequestRepository,
 } from "./types";
 
@@ -17,34 +22,42 @@ export const transitionPurpose = (payload: Pick<ApiTransitionPayload, "requestId
   `law544.transition:${payload.requestId}:${payload.action}`;
 
 export class TransitionIngestionService {
+  private readonly nonces: NonceStore;
+
   constructor(
     private readonly dependencies: {
       identity: IdentityProvider;
       ledger: LedgerProvider;
       requests: RequestRepository;
+      nonces?: NonceStore;
     },
-  ) {}
+  ) {
+    this.nonces = dependencies.nonces ?? new InMemoryNonceStore();
+  }
 
   async ingest(command: IngestTransitionCommand): Promise<IngestTransitionResult> {
     const payload = parsePayload(command.payload);
+    const envelope = parseEnvelope(command.envelope);
+    await this.assertEnvelopeSignature(command, payload, envelope);
+    await this.assertFreshNonce(command, envelope);
+
     const request = await this.resolveCurrentRequest(command, payload);
     const rule = this.assertDomainTransition(command, request, payload);
 
     await this.assertPresentation(command, request, rule);
-    await this.assertPayloadSignature(command, payload);
 
     const event = await this.dependencies.ledger.appendTransition({
       requestId: payload.requestId,
       action: payload.action,
       fromStatus: payload.fromStatus,
       toStatus: rule.to,
-      payloadHash: command.proof.payloadHash,
+      payloadHash: envelope.payloadHash,
       documentHash: payload.documentHash,
       signerDidHash: command.proof.signerDidHash,
       signerRole: command.presentation.credential.role,
       credentialHash: command.presentation.credentialHash,
       signature: command.proof.signature,
-      timestamp: command.proof.signedAt,
+      timestamp: envelope.signedAt,
       metadata: payload.metadata,
     });
 
@@ -155,17 +168,23 @@ export class TransitionIngestionService {
     }
   }
 
-  private async assertPayloadSignature(
+  private async assertEnvelopeSignature(
     command: IngestTransitionCommand,
     payload: ApiTransitionPayload,
+    envelope: CanonicalSigningEnvelope,
   ): Promise<void> {
-    const expectedHash = await hashJson(payload);
+    const expectedPayloadHash = await hashJson(payload);
+    const expectedEnvelopeHash = await hashJson(envelope);
     const expectedSignerHash = await sha256Hex(command.presentation.subjectDid);
 
     if (
       command.proof.signerDid !== command.presentation.subjectDid ||
       command.proof.signerDidHash !== expectedSignerHash ||
-      command.proof.payloadHash !== expectedHash
+      command.proof.payloadHash !== expectedEnvelopeHash ||
+      envelope.payloadHash !== expectedPayloadHash ||
+      envelope.requestId !== payload.requestId ||
+      envelope.action !== payload.action ||
+      envelope.purpose !== transitionPurpose(payload)
     ) {
       throw new ApiBoundaryError("SIGNATURE_REJECTED", "Signed payload metadata does not match the command.");
     }
@@ -180,6 +199,17 @@ export class TransitionIngestionService {
       throw new ApiBoundaryError("SIGNATURE_REJECTED", "Payload signature is invalid.");
     }
   }
+
+  private async assertFreshNonce(
+    command: IngestTransitionCommand,
+    envelope: CanonicalSigningEnvelope,
+  ): Promise<void> {
+    const nonce = { signerDidHash: command.proof.signerDidHash, nonce: envelope.nonce };
+    if (await this.nonces.has(nonce)) {
+      throw new ApiBoundaryError("REPLAY_REJECTED", "Signing envelope nonce was already used by this signer.");
+    }
+    await this.nonces.remember({ ...nonce, signedAt: envelope.signedAt });
+  }
 }
 
 function parsePayload(payload: ApiTransitionPayload): ApiTransitionPayload {
@@ -188,6 +218,30 @@ function parsePayload(payload: ApiTransitionPayload): ApiTransitionPayload {
     throw new ApiBoundaryError("INVALID_COMMAND", result.error.message);
   }
   return result.data;
+}
+
+function parseEnvelope(envelope: CanonicalSigningEnvelope): CanonicalSigningEnvelope {
+  const result = canonicalSigningEnvelopeSchema.safeParse(envelope);
+  if (!result.success) {
+    throw new ApiBoundaryError("INVALID_COMMAND", result.error.message);
+  }
+  return result.data;
+}
+
+export async function createCanonicalSigningEnvelope(
+  payload: ApiTransitionPayload,
+  options: { nonce?: string; signedAt?: string } = {},
+): Promise<CanonicalSigningEnvelope> {
+  return {
+    schemaVersion: CANONICAL_SIGNING_ENVELOPE_VERSION,
+    context: "law544.transition",
+    requestId: payload.requestId,
+    action: payload.action,
+    purpose: transitionPurpose(payload),
+    payloadHash: await hashJson(payload),
+    nonce: options.nonce ?? crypto.randomUUID(),
+    signedAt: options.signedAt ?? new Date().toISOString(),
+  };
 }
 
 function applyTransitionToRequest(input: {
