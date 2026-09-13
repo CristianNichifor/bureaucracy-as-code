@@ -1,4 +1,4 @@
-import type { DemoIdentity } from "../identity/types";
+import type { DemoIdentity, IdentityProvider } from "../identity/types";
 import { InMemoryRequestRepository } from "../api/InMemoryRequestRepository";
 import { TransitionIngestionService, transitionPurpose } from "../api/transitionIngestion";
 import { calculateLaw544Deadline } from "../law544/deadlines";
@@ -19,8 +19,7 @@ export type DemoContext = {
   request: Law544Request;
 };
 
-export async function createInitialDemoContext(): Promise<DemoContext> {
-  const provider = new BrowserIdentityProvider();
+export async function createInitialDemoContext(provider: IdentityProvider = new BrowserIdentityProvider()): Promise<DemoContext> {
   const citizen = await provider.createIdentity({ displayName: "Citizen Demo", role: "Citizen" });
   const registryBot = await provider.createIdentity({
     displayName: "Registry Bot",
