@@ -8,6 +8,7 @@ import {
   getInstitutionOptions,
   getRequestEventCount,
   getRequestLatestRole,
+  getStatusSummaries,
   type RequestExplorerFilters,
   type RequestExplorerItem,
 } from "./requestExplorer";
@@ -49,19 +50,32 @@ function RequestFeedRow({
       type="button"
     >
       <div>
+        <span className="cellLabel">{labels.request}</span>
         <strong>{request.id}</strong>
         <span>{request.subject}</span>
       </div>
-      <div>{request.institution}</div>
       <div>
+        <span className="cellLabel">{labels.institution}</span>
+        <span>{request.institution}</span>
+      </div>
+      <div>
+        <span className="cellLabel">{labels.status}</span>
         <span className={`status status-${request.status.toLowerCase()}`}>{request.status}</span>
       </div>
-      <div>{latestRole ?? labels.noSigner}</div>
-      <div>{getRequestEventCount(events)} {labels.events}</div>
-      <div className={isOverdue(request.deadlineAt) ? "danger" : ""}>
-        {new Date(request.deadlineAt).toLocaleDateString()}
+      <div>
+        <span className="cellLabel">{labels.latestRole}</span>
+        <span>{latestRole ?? labels.noSigner}</span>
       </div>
       <div>
+        <span className="cellLabel">{labels.trail}</span>
+        <span>{getRequestEventCount(events)} {labels.events}</span>
+      </div>
+      <div className={isOverdue(request.deadlineAt) ? "danger" : ""}>
+        <span className="cellLabel">{labels.deadline}</span>
+        <span>{new Date(request.deadlineAt).toLocaleDateString()}</span>
+      </div>
+      <div>
+        <span className="cellLabel">{labels.source}</span>
         <span className="pill">{source === "active" ? labels.live : labels.seed}</span>
       </div>
     </button>
@@ -85,12 +99,41 @@ export function RequestFeed({
 }) {
   const filteredItems = filterRequestExplorerItems(items, filters);
   const institutions = getInstitutionOptions(items);
+  const statusSummaries = getStatusSummaries(items);
+  const filtersActive =
+    filters.status !== DEFAULT_EXPLORER_FILTERS.status ||
+    filters.institution !== DEFAULT_EXPLORER_FILTERS.institution ||
+    filters.role !== DEFAULT_EXPLORER_FILTERS.role;
 
   return (
     <section className="panel requestFeedPanel">
       <div className="panelHeader">
         <h2>{labels.title}</h2>
         <span className="pill">{filteredItems.length} {labels.visible}</span>
+      </div>
+
+      <div className="statusSummary" aria-label={labels.statusSummary}>
+        <button
+          aria-pressed={filters.status === "All"}
+          className="statusSummaryChip"
+          onClick={() => onFiltersChange({ ...filters, status: "All" })}
+          type="button"
+        >
+          <span>{labels.all}</span>
+          <strong>{items.length}</strong>
+        </button>
+        {statusSummaries.map(({ status, count }) => (
+          <button
+            aria-pressed={filters.status === status}
+            className={`statusSummaryChip statusSummary-${status.toLowerCase()}`}
+            key={status}
+            onClick={() => onFiltersChange({ ...filters, status })}
+            type="button"
+          >
+            <span>{status}</span>
+            <strong>{count}</strong>
+          </button>
+        ))}
       </div>
 
       <div className="filterBar" aria-label="Request filters">
@@ -138,6 +181,14 @@ export function RequestFeed({
             ))}
           </select>
         </label>
+        <button
+          className="filterReset"
+          disabled={!filtersActive}
+          onClick={() => onFiltersChange(DEFAULT_EXPLORER_FILTERS)}
+          type="button"
+        >
+          {labels.resetFilters}
+        </button>
       </div>
 
       <div className="feedTable" role="list">
@@ -161,7 +212,13 @@ export function RequestFeed({
             />
           ))
         ) : (
-          <p className="emptyState">{labels.empty}</p>
+          <div className="emptyState" role="status">
+            <strong>{labels.emptyTitle}</strong>
+            <p>{labels.empty}</p>
+            <button onClick={() => onFiltersChange(DEFAULT_EXPLORER_FILTERS)} type="button">
+              {labels.resetFilters}
+            </button>
+          </div>
         )}
       </div>
     </section>

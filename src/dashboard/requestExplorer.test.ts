@@ -6,6 +6,7 @@ import {
   getInstitutionOptions,
   getRequestLatestRole,
   getSelectedExplorerItem,
+  getStatusSummaries,
   type RequestExplorerItem,
 } from "./requestExplorer";
 
@@ -54,6 +55,16 @@ describe("request explorer helpers", () => {
       "Ministry of Finance",
       "Ministry of Health",
       "National Agency for Cadastre",
+    ]);
+  });
+
+  it("returns deterministic status summary counts", () => {
+    expect(getStatusSummaries(items)).toEqual([
+      { status: "ExtensionRequested", count: 1 },
+      { status: "InProgress", count: 1 },
+      { status: "Overdue", count: 1 },
+      { status: "Registered", count: 1 },
+      { status: "Resolved", count: 1 },
     ]);
   });
 
