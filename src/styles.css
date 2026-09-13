@@ -482,6 +482,38 @@ h2 {
   color: var(--civic-muted);
 }
 
+.caseGlance {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  background: var(--civic-border);
+}
+
+.caseGlance div {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+  padding: 12px;
+  background: var(--civic-surface);
+}
+
+.caseGlance span {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.caseGlance strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .metricGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -786,7 +818,8 @@ dd {
   .hero,
   .grid,
   .metricGrid,
-  .detailList {
+  .detailList,
+  .caseGlance {
     grid-template-columns: 1fr;
   }
 

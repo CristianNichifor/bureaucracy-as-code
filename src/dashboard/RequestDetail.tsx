@@ -18,6 +18,12 @@ export function RequestDetail({
 }) {
   const latestRole = getRequestLatestRole(events);
   const latestEvent = events.at(-1);
+  const responsibility = getResponsibilityLabel(request, labels);
+  const evidenceState = request.responseDocumentHash
+    ? request.responseDocumentHash.slice(0, 18)
+    : latestEvent?.documentHash
+      ? latestEvent.documentHash.slice(0, 18)
+      : labels.noProof;
 
   return (
     <section className="panel requestDetailPanel">
@@ -30,6 +36,24 @@ export function RequestDetail({
           <span className={`status status-${request.status.toLowerCase()}`}>{request.status}</span>
           <h3>{request.id}</h3>
           <p>{request.subject}</p>
+        </div>
+      </div>
+      <div className="caseGlance" aria-label={labels.title}>
+        <div>
+          <span>{labels.currentStatus}</span>
+          <strong>{request.status}</strong>
+        </div>
+        <div>
+          <span>{labels.latestAction}</span>
+          <strong>{latestEvent?.action ?? labels.noProof}</strong>
+        </div>
+        <div>
+          <span>{labels.responsibility}</span>
+          <strong>{responsibility}</strong>
+        </div>
+        <div>
+          <span>{labels.evidence}</span>
+          <strong>{evidenceState}</strong>
         </div>
       </div>
       <div className="metricGrid">
@@ -84,4 +108,20 @@ export function RequestDetail({
       </dl>
     </section>
   );
+}
+
+function getResponsibilityLabel(request: Law544Request, labels: Dictionary["detail"]): string {
+  if (request.status === "Resolved" || request.status === "Rejected") {
+    return labels.finalResponse;
+  }
+
+  if (request.assignedToDidHash) {
+    return request.assignedToDidHash.slice(0, 18);
+  }
+
+  if (request.registryNumber) {
+    return labels.directorQueue;
+  }
+
+  return labels.registryQueue;
 }
