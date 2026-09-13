@@ -24,6 +24,12 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - It does not run a backend API.
 - It does not run a real blockchain node.
 - It does not store raw personal data on a ledger.
+- It does not notice a chain truncated at its end. Dropping trailing events leaves a shorter,
+  internally consistent chain; catching that needs an anchor the chain cannot supply itself —
+  a published head, a countersignature, or an external timestamp.
+- It does not check signatures while verifying the chain. Verification re-hashes each event and
+  follows the links; `BrowserIdentityProvider.verifySignature` exists but is not yet on that path,
+  so a forged event carrying a nonsense signature still passes `verifyChain`.
 
 Future ledger providers can implement the same interface as the browser `LocalLedgerProvider`.
 
