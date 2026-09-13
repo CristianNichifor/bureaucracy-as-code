@@ -13,6 +13,7 @@
     "typecheck": "tsc -b",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
+    "privacy:scan": "node scripts/scan-pii-fixtures.mjs",
     "security:gitleaks": "gitleaks detect --source . --verbose"
   },
   "dependencies": {

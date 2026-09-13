@@ -35,18 +35,23 @@ Enable private vulnerability reporting:
 gh api -X PUT repos/CristianNichifor/bureaucracy-as-code/private-vulnerability-reporting
 ```
 
-Protect `main`:
+Protect `main` for a single-maintainer repository:
 
 ```bash
 gh api -X PUT repos/CristianNichifor/bureaucracy-as-code/branches/main/protection \
   -H "Accept: application/vnd.github+json" \
   -f enforce_admins=true \
-  -f required_pull_request_reviews.required_approving_review_count=1 \
-  -f required_pull_request_reviews.dismiss_stale_reviews=true \
+  -f required_pull_request_reviews=null \
   -f required_status_checks.strict=true \
   -f required_status_checks.contexts[]="CI / build" \
   -f required_status_checks.contexts[]="CodeQL / analyze" \
   -f restrictions=
+```
+
+Require signed commits on `main`:
+
+```bash
+gh api -X POST repos/CristianNichifor/bureaucracy-as-code/branches/main/protection/required_signatures
 ```
 
 Manual check in GitHub UI:
@@ -55,4 +60,9 @@ Manual check in GitHub UI:
 - Settings -> Code security and analysis -> Push protection: enabled.
 - Settings -> Code security and analysis -> Dependabot alerts: enabled.
 - Settings -> Code security and analysis -> Dependabot security updates: enabled.
-- Settings -> Branches -> `main` requires PR review and required checks.
+- Settings -> Branches -> `main` requires signed commits, required checks, and admin enforcement.
+- Settings -> Branches -> `main` does not require approving reviews while this remains a single-maintainer repo.
+
+Do not enable required approving reviews until at least one additional reviewer
+can approve pull requests. Otherwise the repository deadlocks because GitHub
+does not allow the author to approve their own pull request.

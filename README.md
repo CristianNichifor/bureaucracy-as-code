@@ -52,46 +52,24 @@ pnpm build
 
 Cloudflare Pages notes are in [docs/cloudflare-pages.md](docs/cloudflare-pages.md).
 
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [Privacy model](docs/privacy-model.md)
+- [Demo script](docs/demo-script.md)
+- [Future ledger adapters](docs/future-ledger-adapters.md)
+- [Cloudflare Pages](docs/cloudflare-pages.md)
+- [GitHub security setup](docs/github-security-setup.md)
+
 ## GitHub setup
 
-After authenticating `gh`, publish the repo:
+The repository is public and maintained as a single-maintainer project. `main`
+is protected by required signed commits, required CI/CodeQL checks, admin
+enforcement, and blocked force-push/delete. Reviewer approval is intentionally
+not required because the maintainer is currently the only GitHub account on the
+project.
 
-```bash
-gh auth login -h github.com
-gh repo create CristianNichifor/bureaucracy-as-code --public --source=. --remote=origin --push
-```
-
-Enable security features:
-
-```bash
-gh api -X PATCH repos/CristianNichifor/bureaucracy-as-code \
-  -f has_issues=true \
-  -f has_projects=false \
-  -f has_wiki=false \
-  -f allow_squash_merge=true \
-  -f allow_merge_commit=false \
-  -f allow_rebase_merge=true \
-  -f delete_branch_on_merge=true
-
-gh api -X PATCH repos/CristianNichifor/bureaucracy-as-code \
-  -H "Accept: application/vnd.github+json" \
-  -f security_and_analysis.secret_scanning.status=enabled \
-  -f security_and_analysis.secret_scanning_push_protection.status=enabled \
-  -f security_and_analysis.dependabot_security_updates.status=enabled
-```
-
-Add branch protection after the first push creates `main`:
-
-```bash
-gh api -X PUT repos/CristianNichifor/bureaucracy-as-code/branches/main/protection \
-  -H "Accept: application/vnd.github+json" \
-  -f required_pull_request_reviews.required_approving_review_count=1 \
-  -f required_pull_request_reviews.dismiss_stale_reviews=true \
-  -f enforce_admins=true \
-  -f required_status_checks.strict=true \
-  -f required_status_checks.contexts[]="CI / build" \
-  -f required_status_checks.contexts[]="CodeQL / analyze" \
-  -f restrictions=
-```
+Operational setup details are kept in
+[docs/github-security-setup.md](docs/github-security-setup.md).
 
 Do not auto-merge PRs.
