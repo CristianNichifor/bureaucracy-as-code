@@ -110,8 +110,9 @@ reserved for server-side edges:
 - `/api/requests` and `/api/requests/:requestId` for public read projections
 
 The current Functions runtime is intentionally in-memory demo state. It is not a
-durable source of truth; later phases should replace it with Durable Objects,
-D1, R2-backed document metadata, or a real ledger adapter.
+durable source of truth. The Phase 18 persistence scaffold in
+`docs/cloudflare-persistence.md` defines D1, KV, and R2-ready adapters that can
+replace the in-memory runtime in a later composition phase.
 
 ## Digital host integration
 
