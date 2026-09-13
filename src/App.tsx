@@ -20,11 +20,9 @@ import {
   type RequestExplorerItem,
 } from "./dashboard/requestExplorer";
 import { MachineryGraph } from "./graph/MachineryGraph";
-import { BrowserIdentityProvider } from "./identity/BrowserIdentityProvider";
 import type { DemoContext } from "./demo/scenarioLaw544";
-import { applyDemoActionViaIngestion, createDemoDocumentHash, createInitialDemoContext } from "./demo/scenarioLaw544";
+import { createBrowserDemoRuntime } from "./demo/DemoRuntime";
 import { seededRequestScenarios } from "./demo/seededRequests";
-import { LocalLedgerProvider } from "./ledger/LocalLedgerProvider";
 import type { ChainVerificationResult, LedgerEvent } from "./ledger/types";
 
 const initialVerification: ChainVerificationResult = {
@@ -33,8 +31,7 @@ const initialVerification: ChainVerificationResult = {
 };
 
 export function App() {
-  const ledger = useMemo(() => new LocalLedgerProvider(), []);
-  const provider = useMemo(() => new BrowserIdentityProvider(), []);
+  const runtime = useMemo(() => createBrowserDemoRuntime(), []);
   const [context, setContext] = useState<DemoContext | null>(null);
   const [events, setEvents] = useState<LedgerEvent[]>([]);
   const [chainVerification, setChainVerification] = useState<ChainVerificationResult>(initialVerification);
@@ -46,20 +43,19 @@ export function App() {
   const t = dictionaries[language];
 
   const refresh = useCallback(async () => {
-    const nextEvents = await ledger.listEvents();
+    const nextEvents = await runtime.listEvents();
     setEvents(nextEvents);
-    setChainVerification(await ledger.verifyChain());
-  }, [ledger]);
+    setChainVerification(await runtime.verifyChain());
+  }, [runtime]);
 
   const resetDemo = useCallback(async () => {
-    await ledger.reset();
-    const nextContext = await createInitialDemoContext();
+    const nextContext = await runtime.reset();
     setContext(nextContext);
     setSelectedRequestId(nextContext.request.id);
     setEvents([]);
     setChainVerification(initialVerification);
     setMessage("Demo reset. Submit the request to begin the chain.");
-  }, [ledger]);
+  }, [runtime]);
 
   useEffect(() => {
     void resetDemo();
@@ -71,7 +67,7 @@ export function App() {
     // Loaded on demand: the schema this uses is the heaviest thing in the app, and a reader
     // who never exports should not pay for it.
     const { exportDemoState, serializeDemoState } = await import("./demo/stateTransfer");
-    const state = await exportDemoState({ ledger, request: context.request });
+    const state = await exportDemoState({ ledger: runtime.ledger, request: context.request });
     const url = URL.createObjectURL(new Blob([serializeDemoState(state)], { type: "application/json" }));
     const link = document.createElement("a");
     link.href = url;
@@ -145,7 +141,8 @@ export function App() {
   async function importState(file: File) {
     try {
       const { importDemoState } = await import("./demo/stateTransfer");
-      const state = await importDemoState({ ledger, json: await file.text() });
+      const state = await importDemoState({ ledger: runtime.ledger, json: await file.text() });
+      await runtime.saveRequest(state.request);
       setContext(context ? { ...context, request: state.request } : context);
       setSelectedRequestId(state.request.id);
       await refresh();
@@ -163,7 +160,7 @@ export function App() {
 
     try {
       const { exportDemoState, importDemoState, serializeDemoState } = await import("./demo/stateTransfer");
-      const state = await exportDemoState({ ledger, request: context.request });
+      const state = await exportDemoState({ ledger: runtime.ledger, request: context.request });
       const lastIndex = state.events.length - 1;
 
       if (lastIndex < 0) {
@@ -178,7 +175,7 @@ export function App() {
         ),
       };
 
-      await importDemoState({ ledger, json: serializeDemoState(forgedState) });
+      await importDemoState({ ledger: runtime.ledger, json: serializeDemoState(forgedState) });
       setMessage("Unexpected result: the edited export imported successfully.");
     } catch (error) {
       await refresh();
@@ -196,12 +193,8 @@ export function App() {
     try {
       const { identities, request } = context;
       const assignedToDidHash = identities.publicServant.did.slice(0, 18);
-      const responseHash = kind === "resolve" ? await createDemoDocumentHash("final-response.pdf") : undefined;
-      const attachmentHash = kind === "attach" ? await createDemoDocumentHash("internal-note.pdf") : undefined;
 
-      const nextRequest = await applyDemoActionViaIngestion({
-        provider,
-        ledger,
+      const result = await runtime.applyTransition({
         request,
         actor:
           kind === "create"
@@ -216,14 +209,19 @@ export function App() {
             ? "Request_Created"
             : kind === "register"
               ? "Registry_Assigned"
-              : kind === "route"
-                ? "Task_Routed"
-                : kind === "start"
-                  ? "Processing_Started"
-                  : kind === "attach"
-                    ? "Document_Attached"
-                    : "Request_Resolved",
-        documentHash: responseHash ?? attachmentHash,
+            : kind === "route"
+              ? "Task_Routed"
+              : kind === "start"
+                ? "Processing_Started"
+                : kind === "attach"
+                  ? "Document_Attached"
+                  : "Request_Resolved",
+        document:
+          kind === "resolve"
+            ? { name: "final-response.pdf", type: "application/pdf" }
+            : kind === "attach"
+              ? { name: "internal-note.pdf", type: "application/pdf" }
+              : undefined,
         metadata:
           kind === "register"
             ? { registryNumber: "MF-544-2026-0001" }
@@ -231,6 +229,7 @@ export function App() {
               ? { assignedToDidHash }
               : undefined,
       });
+      const nextRequest = result.request;
 
       setContext({ ...context, request: nextRequest });
       setSelectedRequestId(nextRequest.id);
