@@ -33,7 +33,7 @@ export type LedgerEvent = UnsignedTransition & {
 export type LedgerHeadAnchor = {
   schemaVersion: LedgerHeadAnchorSchemaVersion;
   anchorType: "ledger.head";
-  ledgerProvider: "local-browser";
+  ledgerProvider: "local-browser" | "local-ethereum";
   eventCount: number;
   headHash: string;
   anchoredAt: string;
