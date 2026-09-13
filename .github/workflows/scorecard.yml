@@ -1,11 +1,9 @@
 name: Scorecard
 
 on:
-  branch_protection_rule:
+  workflow_dispatch:
   schedule:
     - cron: "16 6 * * 1"
-  push:
-    branches: [main]
 
 permissions:
   contents: read
