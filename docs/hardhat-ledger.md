@@ -13,6 +13,8 @@ deployed, tested, and appended to an append-only ledger.
 - `hardhat.config.ts`: Hardhat 3 config using the viem toolbox.
 - `test/hardhat/Law544Ledger.ts`: contract tests against the in-process Hardhat
   network.
+- `test/hardhat/Law544LedgerIndexer.ts`: indexes real emitted contract events
+  into public request projections and a local chain head anchor.
 - `scripts/deploy-law544-ledger.ts`: deploy script for either the in-process
   network or a running local node.
 
@@ -98,6 +100,50 @@ interface EthereumLedgerContractClient {
   listEvents(): Promise<LedgerEvent[]>;
 }
 ```
+
+## Event Indexing
+
+`src/ledger/ethereum/Law544EventIndexer.ts` is the local-chain indexer scaffold.
+It reads `TransitionRecorded` logs through a viem-compatible event source and
+builds:
+
+- ordered indexed transitions
+- public request projections keyed by `requestIdHash`
+- a `local-ethereum` head anchor over the indexed chain head
+
+The indexer intentionally does not reconstruct private request ids, raw DID
+values, signatures, or documents. The contract event stores only hashes and
+public workflow labels, so the public projection keeps the same privacy
+boundary:
+
+```ts
+import {
+  Law544EventIndexer,
+  ViemLaw544TransitionLogSource,
+} from "./src/ledger/ethereum/Law544EventIndexer";
+
+const indexer = new Law544EventIndexer(new ViemLaw544TransitionLogSource(contract));
+const snapshot = await indexer.index({ fromBlock: 0n });
+
+console.log(snapshot.projections);
+console.log(snapshot.headAnchor);
+```
+
+Use `{ fromBlock: 0n }` for a full local backfill. Later incremental indexers can
+store the last processed block/log cursor and resume from there.
+
+The projection is deliberately small:
+
+- current status
+- event count
+- first and last timestamps
+- latest action and signer role
+- response document hash, when resolved
+- current chain state hash
+
+If a private operator needs to join a projection back to an internal registry
+number or raw request id, that lookup belongs in the off-chain registry/storage
+layer, not in the public chain event.
 
 ## Production Notes
 
