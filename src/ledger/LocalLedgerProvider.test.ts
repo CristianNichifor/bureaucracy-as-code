@@ -1,25 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { memoryStorage } from "../shared/memoryStorage";
 import { LocalLedgerProvider, STORAGE_KEY } from "./LocalLedgerProvider";
 import type { LedgerEvent, UnsignedTransition } from "./types";
-
-function memoryStorage(): Storage {
-  const entries = new Map<string, string>();
-
-  return {
-    get length() {
-      return entries.size;
-    },
-    clear: () => entries.clear(),
-    getItem: (key: string) => entries.get(key) ?? null,
-    key: (index: number) => [...entries.keys()][index] ?? null,
-    removeItem: (key: string) => {
-      entries.delete(key);
-    },
-    setItem: (key: string, value: string) => {
-      entries.set(key, value);
-    },
-  };
-}
 
 function transition(overrides: Partial<UnsignedTransition> = {}): UnsignedTransition {
   return {

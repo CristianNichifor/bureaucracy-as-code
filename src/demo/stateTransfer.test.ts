@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { memoryStorage } from "../shared/memoryStorage";
 import type { Law544Request } from "../law544/types";
 import { LocalLedgerProvider } from "../ledger/LocalLedgerProvider";
 import type { LedgerEvent, UnsignedTransition } from "../ledger/types";
@@ -9,25 +10,6 @@ import {
   parseDemoState,
   serializeDemoState,
 } from "./stateTransfer";
-
-function memoryStorage(): Storage {
-  const entries = new Map<string, string>();
-
-  return {
-    get length() {
-      return entries.size;
-    },
-    clear: () => entries.clear(),
-    getItem: (key: string) => entries.get(key) ?? null,
-    key: (index: number) => [...entries.keys()][index] ?? null,
-    removeItem: (key: string) => {
-      entries.delete(key);
-    },
-    setItem: (key: string, value: string) => {
-      entries.set(key, value);
-    },
-  };
-}
 
 const request: Law544Request = {
   id: "REQ-2026-0001",
