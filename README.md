@@ -17,6 +17,8 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - Tamper-evident local ledger with previous-state hashes.
 - IndexedDB document storage and document hash verification.
 - Public dashboard with anonymized request feed, audit trail, and machinery graph.
+- Romanian/English presentation toggle for live demos.
+- Public audit receipt export for the selected request.
 - Export and import of the whole demo state as JSON, refused unless the chain still verifies.
 
 ## What it does not do yet
@@ -34,6 +36,9 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - It does not export signing keys. An imported state can be read and re-verified; new
   transitions are signed by the identities of the browser doing the importing. Writing a
   private key into a shareable JSON file is the habit this demo argues against.
+- Audit receipts are presentation artifacts. They package the selected request's public
+  hashes and signed event evidence; they are not a substitute for a production ledger
+  proof or external timestamp.
 
 Future ledger providers can implement the same interface as the browser `LocalLedgerProvider`.
 

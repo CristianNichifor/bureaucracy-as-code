@@ -5,6 +5,7 @@ import {
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
+import { dictionaries, type Language } from "./i18n";
 import { RequestFeed } from "./dashboard/RequestFeed";
 import { RequestTrail } from "./dashboard/RequestTrail";
 import { HashVerifier } from "./dashboard/HashVerifier";
@@ -39,8 +40,10 @@ export function App() {
   const [chainVerification, setChainVerification] = useState<ChainVerificationResult>(initialVerification);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filters, setFilters] = useState<RequestExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
+  const [language, setLanguage] = useState<Language>("en");
   const [message, setMessage] = useState("Start the scenario to create a signed Law 544 request.");
   const fileInput = useRef<HTMLInputElement>(null);
+  const t = dictionaries[language];
 
   const refresh = useCallback(async () => {
     const nextEvents = await ledger.listEvents();
@@ -76,6 +79,67 @@ export function App() {
     link.click();
     URL.revokeObjectURL(url);
     setMessage(`Exported ${state.events.length} events. Signing keys stay in this browser.`);
+  }
+
+  function exportAuditReceipt() {
+    if (!context) return;
+
+    const activeItem: RequestExplorerItem = {
+      request: context.request,
+      events: events.filter((event) => event.requestId === context.request.id),
+      source: "active",
+    };
+    const selectableItems: RequestExplorerItem[] = [
+      activeItem,
+      ...seededRequestScenarios.map((scenario) => ({ ...scenario, source: "seed" as const })),
+    ];
+    const selectedItem = getSelectedExplorerItem(selectableItems, selectedRequestId) ?? activeItem;
+
+    if (!selectedItem) return;
+
+    const receipt = {
+      schema: "law544-audit-receipt/v1",
+      exportedAt: new Date().toISOString(),
+      language,
+      request: {
+        id: selectedItem.request.id,
+        institution: selectedItem.request.institution,
+        subject: selectedItem.request.subject,
+        status: selectedItem.request.status,
+        createdAt: selectedItem.request.createdAt,
+        deadlineAt: selectedItem.request.deadlineAt,
+        registryNumber: selectedItem.request.registryNumber,
+        citizenDidHash: selectedItem.request.citizenDidHash,
+        assignedToDidHash: selectedItem.request.assignedToDidHash,
+        responseDocumentHash: selectedItem.request.responseDocumentHash,
+      },
+      evidence: {
+        source: selectedItem.source,
+        events: selectedItem.events.map((event) => ({
+          index: event.index,
+          action: event.action,
+          fromStatus: event.fromStatus,
+          toStatus: event.toStatus,
+          timestamp: event.timestamp,
+          signerRole: event.signerRole,
+          signerDidHash: event.signerDidHash,
+          credentialHash: event.credentialHash,
+          payloadHash: event.payloadHash,
+          documentHash: event.documentHash,
+          previousStateHash: event.previousStateHash,
+          stateHash: event.stateHash,
+          metadata: event.metadata,
+        })),
+        chainHead: selectedItem.events.at(-1)?.stateHash,
+      },
+    };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${selectedItem.request.id}-audit-receipt.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setMessage(`Exported audit receipt for ${selectedItem.request.id}.`);
   }
 
   async function importState(file: File) {
@@ -197,23 +261,31 @@ export function App() {
     <main className="appShell">
       <header className="hero">
         <div>
-          <p className="eyebrow">Digital Public Administration Lab</p>
-          <h1>Bureaucracy as Code</h1>
-          <p>
-            Public Law 544/2001 explorer for signed administrative actions, anonymized
-            request trails, and browser-local response hash verification.
-          </p>
+          <p className="eyebrow">{t.app.eyebrow}</p>
+          <h1>{t.app.title}</h1>
+          <p>{t.app.intro}</p>
         </div>
-        <div className="integrity">
-          <ShieldCheck size={20} />
-          <span>{chainVerification.valid ? "Ledger verifies" : "Ledger verification failed"}</span>
+        <div className="heroActions">
+          <div className="languageToggle" aria-label={t.app.languageLabel}>
+            <button aria-pressed={language === "en"} onClick={() => setLanguage("en")} type="button">
+              {t.app.english}
+            </button>
+            <button aria-pressed={language === "ro"} onClick={() => setLanguage("ro")} type="button">
+              {t.app.romanian}
+            </button>
+          </div>
+          <div className="integrity">
+            <ShieldCheck size={20} />
+            <span>{chainVerification.valid ? t.app.ledgerOk : t.app.ledgerFailed}</span>
+          </div>
         </div>
       </header>
 
-      <section className="toolbar" aria-label="Demo actions">
-        <button className="secondary" onClick={() => void exportState()}><Download size={18} />Export</button>
-        <button className="secondary" onClick={() => fileInput.current?.click()}><FileUp size={18} />Import</button>
-        <button className="secondary" onClick={() => void resetDemo()}><RefreshCw size={18} />Reset</button>
+      <section className="toolbar" aria-label={t.app.actionsLabel}>
+        <button className="secondary" onClick={() => void exportState()}><Download size={18} />{t.app.exportState}</button>
+        <button className="secondary" onClick={() => exportAuditReceipt()}><Download size={18} />{t.app.exportReceipt}</button>
+        <button className="secondary" onClick={() => fileInput.current?.click()}><FileUp size={18} />{t.app.importState}</button>
+        <button className="secondary" onClick={() => void resetDemo()}><RefreshCw size={18} />{t.app.reset}</button>
         <input
           ref={fileInput}
           type="file"
@@ -230,19 +302,20 @@ export function App() {
       <p className="message">{message}</p>
 
       <div className="grid">
-        <GuidedProgress status={request.status} eventsCount={events.length} onRunStep={(stepId) => void runAction(stepId)} />
-        <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} />
+        <GuidedProgress status={request.status} eventsCount={events.length} onRunStep={(stepId) => void runAction(stepId)} labels={t.guided} />
+        <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
         <RequestFeed
           filters={filters}
           items={explorerItems}
+          labels={t.feed}
           onFiltersChange={setFilters}
           onSelectRequest={setSelectedRequestId}
           selectedRequestId={selectedRequest.id}
         />
-        <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} />
-        <MachineryGraph request={selectedRequest} />
-        <RequestTrail events={selectedEvents} requestId={selectedRequest.id} />
-        <HashVerifier expectedHash={selectedRequest.responseDocumentHash} />
+        <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
+        <MachineryGraph request={selectedRequest} labels={t.graph} />
+        <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
+        <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
       </div>
     </main>
   );
