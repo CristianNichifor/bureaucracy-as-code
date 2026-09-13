@@ -27,6 +27,10 @@ export class LocalLedgerProvider implements LedgerProvider {
     return raw ? (JSON.parse(raw) as LedgerEvent[]) : [];
   }
 
+  async replaceEvents(events: LedgerEvent[]): Promise<void> {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  }
+
   async getRequestTrail(requestId: string): Promise<LedgerEvent[]> {
     return (await this.listEvents()).filter((event) => event.requestId === requestId);
   }

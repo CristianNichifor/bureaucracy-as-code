@@ -17,6 +17,7 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - Tamper-evident local ledger with previous-state hashes.
 - IndexedDB document storage and document hash verification.
 - Public dashboard with anonymized request feed, audit trail, and machinery graph.
+- Export and import of the whole demo state as JSON, refused unless the chain still verifies.
 
 ## What it does not do yet
 
@@ -30,6 +31,9 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - It does not check signatures while verifying the chain. Verification re-hashes each event and
   follows the links; `BrowserIdentityProvider.verifySignature` exists but is not yet on that path,
   so a forged event carrying a nonsense signature still passes `verifyChain`.
+- It does not export signing keys. An imported state can be read and re-verified; new
+  transitions are signed by the identities of the browser doing the importing. Writing a
+  private key into a shareable JSON file is the habit this demo argues against.
 
 Future ledger providers can implement the same interface as the browser `LocalLedgerProvider`.
 
