@@ -51,4 +51,46 @@ describe("assertAllowedTransition", () => {
       }),
     ).toThrow("Citizen cannot perform Registry_Assigned.");
   });
+
+  it("blocks skipping directly from Created to resolution", () => {
+    expect(() =>
+      assertAllowedTransition({
+        request,
+        action: "Request_Resolved",
+        actor: actor("PublicServant"),
+        documentHash: "response-hash",
+      }),
+    ).toThrow("Action Request_Resolved is not allowed from Created.");
+  });
+
+  it("blocks follow-up actions after a request is resolved", () => {
+    expect(() =>
+      assertAllowedTransition({
+        request: { ...request, status: "Resolved" },
+        action: "Document_Attached",
+        actor: actor("PublicServant"),
+        documentHash: "document-hash",
+      }),
+    ).toThrow("Action Document_Attached is not allowed from Resolved.");
+  });
+
+  it("requires a document hash for final resolution", () => {
+    expect(() =>
+      assertAllowedTransition({
+        request: { ...request, status: "InProgress" },
+        action: "Request_Resolved",
+        actor: actor("PublicServant"),
+      }),
+    ).toThrow("Request_Resolved requires a document hash.");
+  });
+
+  it("blocks directors from starting processing work assigned to a public servant", () => {
+    expect(() =>
+      assertAllowedTransition({
+        request: { ...request, status: "Routed" },
+        action: "Processing_Started",
+        actor: actor("Director"),
+      }),
+    ).toThrow("Director cannot perform Processing_Started.");
+  });
 });

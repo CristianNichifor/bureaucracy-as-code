@@ -2,7 +2,7 @@ import type { LedgerEvent } from "../ledger/types";
 
 export function RequestTrail({ events }: { events: LedgerEvent[] }) {
   return (
-    <section className="panel">
+    <section className="panel timelinePanel">
       <div className="panelHeader">
         <h2>Signed audit trail</h2>
         <span className="pill">{events.length} events</span>

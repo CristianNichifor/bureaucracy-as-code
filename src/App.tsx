@@ -1,45 +1,47 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  CheckCircle2,
   Download,
-  FileCheck2,
-  FilePlus2,
   FileUp,
-  GitBranch,
   RefreshCw,
   ShieldCheck,
-  Upload,
 } from "lucide-react";
 import { RequestFeed } from "./dashboard/RequestFeed";
 import { RequestTrail } from "./dashboard/RequestTrail";
 import { HashVerifier } from "./dashboard/HashVerifier";
+import { GuidedProgress } from "./dashboard/GuidedProgress";
+import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { MachineryGraph } from "./graph/MachineryGraph";
 import { BrowserIdentityProvider } from "./identity/BrowserIdentityProvider";
 import type { DemoContext } from "./demo/scenarioLaw544";
 import { applyDemoAction, createDemoDocumentHash, createInitialDemoContext } from "./demo/scenarioLaw544";
 import { LocalLedgerProvider } from "./ledger/LocalLedgerProvider";
-import type { LedgerEvent } from "./ledger/types";
+import type { ChainVerificationResult, LedgerEvent } from "./ledger/types";
+
+const initialVerification: ChainVerificationResult = {
+  valid: true,
+  checkedEvents: 0,
+};
 
 export function App() {
   const ledger = useMemo(() => new LocalLedgerProvider(), []);
   const provider = useMemo(() => new BrowserIdentityProvider(), []);
   const [context, setContext] = useState<DemoContext | null>(null);
   const [events, setEvents] = useState<LedgerEvent[]>([]);
-  const [chainValid, setChainValid] = useState<boolean>(true);
+  const [chainVerification, setChainVerification] = useState<ChainVerificationResult>(initialVerification);
   const [message, setMessage] = useState("Start the scenario to create a signed Law 544 request.");
   const fileInput = useRef<HTMLInputElement>(null);
 
   const refresh = useCallback(async () => {
     const nextEvents = await ledger.listEvents();
     setEvents(nextEvents);
-    setChainValid((await ledger.verifyChain()).valid);
+    setChainVerification(await ledger.verifyChain());
   }, [ledger]);
 
   const resetDemo = useCallback(async () => {
     await ledger.reset();
     setContext(await createInitialDemoContext());
     setEvents([]);
-    setChainValid(true);
+    setChainVerification(initialVerification);
     setMessage("Demo reset. Submit the request to begin the chain.");
   }, [ledger]);
 
@@ -75,6 +77,38 @@ export function App() {
       );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Could not read that file.");
+    }
+  }
+
+  async function runTamperDemo() {
+    if (!context) return;
+
+    try {
+      const { exportDemoState, importDemoState, serializeDemoState } = await import("./demo/stateTransfer");
+      const state = await exportDemoState({ ledger, request: context.request });
+      const lastIndex = state.events.length - 1;
+
+      if (lastIndex < 0) {
+        setMessage("Create at least one event before testing a tampered export.");
+        return;
+      }
+
+      const forgedState = {
+        ...state,
+        events: state.events.map((event, index) =>
+          index === lastIndex ? { ...event, signerRole: "Director" as const } : event,
+        ),
+      };
+
+      await importDemoState({ ledger, json: serializeDemoState(forgedState) });
+      setMessage("Unexpected result: the edited export imported successfully.");
+    } catch (error) {
+      await refresh();
+      setMessage(
+        error instanceof Error
+          ? `Tamper demo worked: ${error.message}`
+          : "Tamper demo worked: the edited export was rejected.",
+      );
     }
   }
 
@@ -147,17 +181,11 @@ export function App() {
         </div>
         <div className="integrity">
           <ShieldCheck size={20} />
-          <span>{chainValid ? "Ledger verifies" : "Ledger verification failed"}</span>
+          <span>{chainVerification.valid ? "Ledger verifies" : "Ledger verification failed"}</span>
         </div>
       </header>
 
       <section className="toolbar" aria-label="Demo actions">
-        <button onClick={() => void runAction("create")}><FilePlus2 size={18} />Submit</button>
-        <button onClick={() => void runAction("register")}><Upload size={18} />Register</button>
-        <button onClick={() => void runAction("route")}><GitBranch size={18} />Route</button>
-        <button onClick={() => void runAction("start")}><CheckCircle2 size={18} />Start</button>
-        <button onClick={() => void runAction("attach")}><FileCheck2 size={18} />Attach</button>
-        <button onClick={() => void runAction("resolve")}><ShieldCheck size={18} />Resolve</button>
         <button className="secondary" onClick={() => void exportState()}><Download size={18} />Export</button>
         <button className="secondary" onClick={() => fileInput.current?.click()}><FileUp size={18} />Import</button>
         <button className="secondary" onClick={() => void resetDemo()}><RefreshCw size={18} />Reset</button>
@@ -177,6 +205,8 @@ export function App() {
       <p className="message">{message}</p>
 
       <div className="grid">
+        <GuidedProgress status={request.status} eventsCount={events.length} onRunStep={(stepId) => void runAction(stepId)} />
+        <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} />
         <RequestFeed request={request} />
         <MachineryGraph request={request} />
         <RequestTrail events={events} />

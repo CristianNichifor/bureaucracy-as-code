@@ -75,6 +75,30 @@ describe("demo state transfer", () => {
     expect((await source.verifyChain()).valid).toBe(true);
   });
 
+  it("exports only public ledger fields, not signing keys or raw document bodies", async () => {
+    const source = await ledgerWithTwoEvents();
+    const exported = await exportDemoState({
+      ledger: source,
+      request: {
+        ...request,
+        responseDocumentHash: "a".repeat(64),
+      },
+      exportedAt: "2026-09-13T12:00:00.000Z",
+    });
+    const json = serializeDemoState(exported);
+
+    expect(json).not.toMatch(/privateKey|CryptoKey|rawDocument|documentBody|cnp|email/i);
+    expect(json).toContain("\"responseDocumentHash\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"");
+  });
+
+  it("does not export browser identity material alongside the ledger", async () => {
+    const source = await ledgerWithTwoEvents();
+    const exported = await exportDemoState({ ledger: source, request });
+
+    expect(Object.keys(exported)).toEqual(["format", "version", "exportedAt", "request", "events"]);
+    expect(JSON.stringify(exported)).not.toMatch(/publicKeyJwk|privateKey|credential":/);
+  });
+
   it("replaces whatever was in the ledger instead of appending to it", async () => {
     const ledger = await ledgerWithTwoEvents();
     const json = serializeDemoState(await exportDemoState({ ledger, request }));
