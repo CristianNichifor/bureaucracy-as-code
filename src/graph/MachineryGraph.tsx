@@ -6,6 +6,8 @@ export function MachineryGraph({ request, labels }: { request: Law544Request; la
   const routed = Boolean(request.assignedToDidHash);
   const resolved = request.status === "Resolved";
   const overdue = request.status === "Overdue";
+  const currentOwner =
+    resolved ? labels.finalResponse : overdue ? labels.publicServant : routed ? labels.publicServant : registryDone ? labels.directorQueue : labels.registryQueue;
   const nodes = [
     {
       label: labels.citizenDid,
@@ -44,6 +46,10 @@ export function MachineryGraph({ request, labels }: { request: Law544Request; la
       <div className="panelHeader">
         <h2>{labels.title}</h2>
         <span className="pill">{labels.currentPath}</span>
+      </div>
+      <div className="graphOwner">
+        <span>{labels.currentOwner}</span>
+        <strong>{currentOwner}</strong>
       </div>
       <div className="graph">
         {nodes.map((node, index) => (
