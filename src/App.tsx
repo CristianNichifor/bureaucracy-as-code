@@ -10,10 +10,19 @@ import { RequestTrail } from "./dashboard/RequestTrail";
 import { HashVerifier } from "./dashboard/HashVerifier";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
+import { RequestDetail } from "./dashboard/RequestDetail";
+import {
+  DEFAULT_EXPLORER_FILTERS,
+  filterRequestExplorerItems,
+  getSelectedExplorerItem,
+  type RequestExplorerFilters,
+  type RequestExplorerItem,
+} from "./dashboard/requestExplorer";
 import { MachineryGraph } from "./graph/MachineryGraph";
 import { BrowserIdentityProvider } from "./identity/BrowserIdentityProvider";
 import type { DemoContext } from "./demo/scenarioLaw544";
 import { applyDemoAction, createDemoDocumentHash, createInitialDemoContext } from "./demo/scenarioLaw544";
+import { seededRequestScenarios } from "./demo/seededRequests";
 import { LocalLedgerProvider } from "./ledger/LocalLedgerProvider";
 import type { ChainVerificationResult, LedgerEvent } from "./ledger/types";
 
@@ -28,6 +37,8 @@ export function App() {
   const [context, setContext] = useState<DemoContext | null>(null);
   const [events, setEvents] = useState<LedgerEvent[]>([]);
   const [chainVerification, setChainVerification] = useState<ChainVerificationResult>(initialVerification);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [filters, setFilters] = useState<RequestExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
   const [message, setMessage] = useState("Start the scenario to create a signed Law 544 request.");
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -39,7 +50,9 @@ export function App() {
 
   const resetDemo = useCallback(async () => {
     await ledger.reset();
-    setContext(await createInitialDemoContext());
+    const nextContext = await createInitialDemoContext();
+    setContext(nextContext);
+    setSelectedRequestId(nextContext.request.id);
     setEvents([]);
     setChainVerification(initialVerification);
     setMessage("Demo reset. Submit the request to begin the chain.");
@@ -70,6 +83,7 @@ export function App() {
       const { importDemoState } = await import("./demo/stateTransfer");
       const state = await importDemoState({ ledger, json: await file.text() });
       setContext(context ? { ...context, request: state.request } : context);
+      setSelectedRequestId(state.request.id);
       await refresh();
       setMessage(
         `Imported ${state.events.length} events and the chain verifies. Keys are not part of an ` +
@@ -155,6 +169,7 @@ export function App() {
       });
 
       setContext({ ...context, request: nextRequest });
+      setSelectedRequestId(nextRequest.id);
       setMessage(`Recorded ${nextRequest.status} transition.`);
       await refresh();
     } catch (error) {
@@ -167,6 +182,16 @@ export function App() {
   }
 
   const request = context.request;
+  const activeEvents = events.filter((event) => event.requestId === request.id);
+  const explorerItems: RequestExplorerItem[] = [
+    { request, events: activeEvents, source: "active" },
+    ...seededRequestScenarios.map((scenario) => ({ ...scenario, source: "seed" as const })),
+  ];
+  const filteredItems = filterRequestExplorerItems(explorerItems, filters);
+  const selectedItem = getSelectedExplorerItem(filteredItems, selectedRequestId) ?? getSelectedExplorerItem(explorerItems, selectedRequestId);
+  const selectedRequest = selectedItem?.request ?? request;
+  const selectedEvents = selectedItem?.events ?? activeEvents;
+  const selectedSource = selectedItem?.source ?? "active";
 
   return (
     <main className="appShell">
@@ -207,10 +232,17 @@ export function App() {
       <div className="grid">
         <GuidedProgress status={request.status} eventsCount={events.length} onRunStep={(stepId) => void runAction(stepId)} />
         <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} />
-        <RequestFeed request={request} />
-        <MachineryGraph request={request} />
-        <RequestTrail events={events} />
-        <HashVerifier expectedHash={request.responseDocumentHash} />
+        <RequestFeed
+          filters={filters}
+          items={explorerItems}
+          onFiltersChange={setFilters}
+          onSelectRequest={setSelectedRequestId}
+          selectedRequestId={selectedRequest.id}
+        />
+        <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} />
+        <MachineryGraph request={selectedRequest} />
+        <RequestTrail events={selectedEvents} requestId={selectedRequest.id} />
+        <HashVerifier expectedHash={selectedRequest.responseDocumentHash} />
       </div>
     </main>
   );

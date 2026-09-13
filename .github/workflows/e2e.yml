@@ -1,4 +1,4 @@
-name: CI
+name: E2E
 
 on:
   pull_request:
@@ -9,12 +9,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: e2e-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: CI / build
+  playwright:
+    name: E2E / Playwright
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -32,17 +32,8 @@ jobs:
       - name: Install
         run: pnpm install --no-frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm typecheck
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Privacy scan
-        run: pnpm privacy:scan
-
-      - name: Test
-        run: pnpm test
-
-      - name: Build
-        run: pnpm build
+      - name: Run Playwright
+        run: pnpm e2e

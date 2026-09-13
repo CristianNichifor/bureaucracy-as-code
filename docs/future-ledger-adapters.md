@@ -8,11 +8,32 @@ for a self-contained demo, but the API should remain replaceable.
 ```ts
 export interface LedgerProvider {
   appendTransition(event: UnsignedTransition): Promise<LedgerEvent>;
-  listRequests(): Promise<PublicRequestSummary[]>;
+  listEvents(): Promise<LedgerEvent[]>;
+  replaceEvents(events: LedgerEvent[]): Promise<void>;
   getRequestTrail(requestId: string): Promise<LedgerEvent[]>;
-  verifyChain(requestId?: string): Promise<ChainVerificationResult>;
+  getHeadAnchor(requestId?: string): Promise<LedgerHeadAnchor>;
+  verifyChain(requestId?: string, anchor?: LedgerHeadAnchor): Promise<ChainVerificationResult>;
+  reset(): Promise<void>;
 }
 ```
+
+Ledger events are versioned with `schemaVersion: "law544-ledger-event/v1"`
+and `eventType: "law544.transition"`. Adapters should reject unsupported
+schemas instead of silently accepting data from a future or incompatible event
+format.
+
+Head anchors use `schemaVersion: "law544-ledger-head-anchor/v1"` and capture:
+
+- provider type
+- event count
+- current head hash
+- anchor timestamp
+- optional request id
+- anchor hash over the anchor payload
+
+Anchors do not make the browser ledger a blockchain. They give the demo a clear
+boundary for proving that a previously observed head has not been shortened or
+replaced.
 
 ## Adapter Options
 
@@ -26,6 +47,11 @@ Tradeoffs:
 - no consensus
 - no external timestamp
 - trailing event deletion cannot be detected without an external anchor
+
+The current helper can create a local head anchor. A local anchor catches
+trailing deletion only while the anchor itself is trusted. A production adapter
+would publish the anchor to a timestamping service, a public chain, or a
+permissioned consortium ledger.
 
 ### Hardhat or Local Ethereum
 
@@ -69,7 +95,7 @@ Tradeoffs:
 ## Recommended Path
 
 1. Keep the browser demo stable.
-2. Add an export format for ledger heads and request trails.
-3. Add signature verification to full-chain verification.
-4. Add optional head anchoring.
+2. Add signature verification to full-chain verification.
+3. Export and import anchored request audit packages.
+4. Publish optional head anchors outside the browser.
 5. Build a Hardhat adapter only after the UI and domain model stop moving.

@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { createLedgerEvent, GENESIS_HASH, verifyLedgerEvents } from "./hashChain";
+import {
+  createLedgerEvent,
+  createLedgerHeadAnchor,
+  GENESIS_HASH,
+  verifyLedgerEvents,
+  verifyLedgerHeadAnchor,
+} from "./hashChain";
+import { LEDGER_EVENT_SCHEMA_VERSION } from "./types";
 import type { LedgerEvent, UnsignedTransition } from "./types";
 
 function transition(overrides: Partial<UnsignedTransition> = {}): UnsignedTransition {
@@ -33,6 +40,8 @@ describe("createLedgerEvent", () => {
     const [first] = await chainOf(transition());
 
     expect(first.index).toBe(0);
+    expect(first.schemaVersion).toBe(LEDGER_EVENT_SCHEMA_VERSION);
+    expect(first.eventType).toBe("law544.transition");
     expect(first.previousStateHash).toBe(GENESIS_HASH);
     expect(first.stateHash).toHaveLength(64);
   });
@@ -60,6 +69,13 @@ describe("verifyLedgerEvents", () => {
 
   it("accepts the empty chain", async () => {
     expect(await verifyLedgerEvents([])).toBeNull();
+  });
+
+  it("rejects an event with an unsupported schema", async () => {
+    const [event] = await chainOf(transition());
+    const forged = { ...event, schemaVersion: "law544-ledger-event/v999" };
+
+    expect(await verifyLedgerEvents([forged as LedgerEvent])).toBe(event.stateHash);
   });
 
   it("names the event whose content was edited after the fact", async () => {
@@ -101,5 +117,34 @@ describe("verifyLedgerEvents", () => {
     // needs an anchor the chain cannot supply itself — a published head, a countersignature,
     // or an external timestamp. The demo says so rather than implying it is tamper-proof.
     expect(await verifyLedgerEvents([chain[0]])).toBeNull();
+  });
+});
+
+describe("ledger head anchors", () => {
+  it("anchors the current head hash and event count", async () => {
+    const chain = await chainOf(
+      transition(),
+      transition({ action: "Registry_Assigned", fromStatus: "Created", toStatus: "Registered" }),
+    );
+    const anchor = await createLedgerHeadAnchor({
+      events: chain,
+      anchoredAt: "2026-09-13T00:00:00.000Z",
+    });
+
+    expect(anchor.headHash).toBe(chain[1].stateHash);
+    expect(anchor.eventCount).toBe(2);
+    expect(anchor.anchorHash).toHaveLength(64);
+    expect(await verifyLedgerHeadAnchor({ events: chain, anchor })).toBe(true);
+  });
+
+  it("detects a trailing event removed after anchoring", async () => {
+    const chain = await chainOf(
+      transition(),
+      transition({ action: "Registry_Assigned", fromStatus: "Created", toStatus: "Registered" }),
+    );
+    const anchor = await createLedgerHeadAnchor({ events: chain });
+
+    expect(await verifyLedgerEvents([chain[0]])).toBeNull();
+    expect(await verifyLedgerHeadAnchor({ events: [chain[0]], anchor })).toBe(false);
   });
 });
