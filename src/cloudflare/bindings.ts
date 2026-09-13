@@ -29,6 +29,6 @@ export type KVNamespaceLike = {
 export type PersistenceBindings = {
   REQUESTS_DB?: D1DatabaseLike;
   LEDGER_EVENTS_KV?: KVNamespaceLike;
+  NONCES_KV?: KVNamespaceLike;
   DOCUMENTS_R2?: import("../storage/R2DocumentStorageBackend").R2BucketLike;
 };
-

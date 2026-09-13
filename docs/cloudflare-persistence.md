@@ -1,7 +1,8 @@
 # Cloudflare Persistence Scaffold
 
-Phase 18 adds Cloudflare-ready persistence boundaries without requiring live
-Cloudflare credentials for local development.
+Phase 18 added Cloudflare-ready persistence boundaries without requiring live
+Cloudflare credentials for local development. The runtime now uses those
+bindings automatically when they are present.
 
 ## Bindings
 
@@ -11,10 +12,15 @@ The scaffold expects these future Pages/Workers bindings:
 | --- | --- | --- |
 | `REQUESTS_DB` | D1 | Public Law 544 request projection |
 | `LEDGER_EVENTS_KV` | KV | Append-only demo event records and head pointer |
+| `NONCES_KV` | KV | Replay-protection nonce records |
 | `DOCUMENTS_R2` | R2 | Encrypted document envelopes |
 
 The local test suite uses in-memory fakes for all three. No account ID, API
 token, bucket, namespace, or database is required to run the repo.
+
+If `REQUESTS_DB` and `LEDGER_EVENTS_KV` are present, Pages Functions run in
+`cloudflare-durable` mode. If either is missing, they run in `demo-memory` mode.
+If `NONCES_KV` is missing, nonces are stored in `LEDGER_EVENTS_KV`.
 
 ## Request Projections In D1
 
@@ -35,20 +41,8 @@ It does not store raw documents or direct personal data.
 
 Schema:
 
-```sql
-CREATE TABLE IF NOT EXISTS law544_requests (
-  id TEXT PRIMARY KEY,
-  institution TEXT NOT NULL,
-  subject TEXT NOT NULL,
-  citizen_did_hash TEXT NOT NULL,
-  status TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  deadline_at TEXT NOT NULL,
-  registry_number TEXT,
-  assigned_to_did_hash TEXT,
-  response_document_hash TEXT,
-  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+```bash
+wrangler d1 migrations apply bureaucracy_as_code_requests
 ```
 
 ## Ledger Events In KV
@@ -93,21 +87,32 @@ Run full verification:
 pnpm verify
 ```
 
-## Future Wiring
+## Cloudflare Setup
 
-`functions/_shared/runtime.ts` can later choose durable bindings when available:
+Create the resources once:
 
-```ts
-const requests = env.REQUESTS_DB
-  ? new D1RequestRepository(env.REQUESTS_DB)
-  : new InMemoryRequestRepository();
-
-const ledger = env.LEDGER_EVENTS_KV
-  ? new KVLedgerProvider(env.LEDGER_EVENTS_KV)
-  : new InMemoryLedgerProvider();
+```bash
+wrangler d1 create bureaucracy_as_code_requests
+wrangler kv namespace create LEDGER_EVENTS_KV
+wrangler kv namespace create NONCES_KV
 ```
 
-That switch should happen in a runtime-composition phase, together with replay
-protection and deployment migration commands. Phase 18 intentionally leaves the
-current in-memory Functions runtime unchanged.
+Then bind the returned IDs in the Pages project:
 
+```toml
+[[d1_databases]]
+binding = "REQUESTS_DB"
+database_name = "bureaucracy_as_code_requests"
+database_id = "<cloudflare-d1-id>"
+
+[[kv_namespaces]]
+binding = "LEDGER_EVENTS_KV"
+id = "<cloudflare-kv-id>"
+
+[[kv_namespaces]]
+binding = "NONCES_KV"
+id = "<cloudflare-kv-id>"
+```
+
+Do not commit real Cloudflare resource IDs unless this repo is intended to be
+the canonical infrastructure record for the production account.
