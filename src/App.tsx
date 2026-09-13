@@ -22,7 +22,7 @@ import {
 import { MachineryGraph } from "./graph/MachineryGraph";
 import { BrowserIdentityProvider } from "./identity/BrowserIdentityProvider";
 import type { DemoContext } from "./demo/scenarioLaw544";
-import { applyDemoAction, createDemoDocumentHash, createInitialDemoContext } from "./demo/scenarioLaw544";
+import { applyDemoActionViaIngestion, createDemoDocumentHash, createInitialDemoContext } from "./demo/scenarioLaw544";
 import { seededRequestScenarios } from "./demo/seededRequests";
 import { LocalLedgerProvider } from "./ledger/LocalLedgerProvider";
 import type { ChainVerificationResult, LedgerEvent } from "./ledger/types";
@@ -199,7 +199,7 @@ export function App() {
       const responseHash = kind === "resolve" ? await createDemoDocumentHash("final-response.pdf") : undefined;
       const attachmentHash = kind === "attach" ? await createDemoDocumentHash("internal-note.pdf") : undefined;
 
-      const nextRequest = await applyDemoAction({
+      const nextRequest = await applyDemoActionViaIngestion({
         provider,
         ledger,
         request,
