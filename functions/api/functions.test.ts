@@ -9,8 +9,11 @@ import * as health from "./health";
 import * as transitions from "./transitions";
 import * as requestList from "./requests/index";
 import * as requestDetail from "./requests/[requestId]/index";
+import * as anchor from "./ledger/anchor";
+import * as metrics from "./metrics";
 import { apiRuntime } from "../_shared/runtime";
 import { InMemoryRateLimiter } from "../_shared/http";
+import { InMemoryD1Database, InMemoryKVNamespace } from "../../src/cloudflare/testing";
 
 describe("Cloudflare Pages Functions API", () => {
   let identity: BrowserIdentityProvider;
@@ -19,7 +22,9 @@ describe("Cloudflare Pages Functions API", () => {
 
   beforeEach(async () => {
     await apiRuntime.ledger.reset();
-    await apiRuntime.nonces.reset();
+    if ("reset" in apiRuntime.nonces && typeof apiRuntime.nonces.reset === "function") {
+      await apiRuntime.nonces.reset();
+    }
 
     identity = new BrowserIdentityProvider();
     citizen = await identity.createIdentity({ displayName: "Citizen Demo", role: "Citizen" });
@@ -85,6 +90,67 @@ describe("Cloudflare Pages Functions API", () => {
     const detailBody = await detailResponse.json();
     expect(detailBody.trail).toHaveLength(1);
     expect(detailBody.integrity).toMatchObject({ valid: true, checkedEvents: 1 });
+  });
+
+  it("uses Cloudflare D1 and KV bindings when they are available", async () => {
+    const payload: ApiTransitionPayload = {
+      requestId: createRequest.id,
+      action: "Request_Created",
+      fromStatus: "Draft",
+      toStatus: "Created",
+    };
+    const envelope = await createCanonicalSigningEnvelope(payload);
+    const command = {
+      payload,
+      envelope,
+      proof: await identity.signPayload(citizen, envelope),
+      presentation: await identity.presentCredential({
+        identity: citizen,
+        purpose: transitionPurpose(payload),
+      }),
+      createRequest,
+    };
+    const env = {
+      REQUESTS_DB: new InMemoryD1Database(),
+      LEDGER_EVENTS_KV: new InMemoryKVNamespace(),
+      NONCES_KV: new InMemoryKVNamespace(),
+    };
+
+    const healthResponse = await health.onRequestGet({
+      request: new Request("https://example.test/api/health"),
+      params: {},
+      env,
+    });
+    const ingestResponse = await transitions.onRequestPost({
+      request: jsonRequest("https://example.test/api/transitions", command),
+      params: {},
+      env,
+    });
+    const metricsResponse = await metrics.onRequestGet({
+      request: new Request("https://example.test/api/metrics"),
+      params: {},
+      env,
+    });
+    const anchorResponse = await anchor.onRequestGet({
+      request: new Request(`https://example.test/api/ledger/anchor?requestId=${createRequest.id}`),
+      params: {},
+      env,
+    });
+
+    await expect(healthResponse.json()).resolves.toMatchObject({ mode: "cloudflare-durable" });
+    await expect(ingestResponse.json()).resolves.toMatchObject({
+      request: { id: createRequest.id, status: "Created" },
+      event: { action: "Request_Created" },
+    });
+    await expect(metricsResponse.json()).resolves.toMatchObject({
+      mode: "cloudflare-durable",
+      requestCount: 1,
+      eventCount: 1,
+      byStatus: { Created: 1 },
+    });
+    await expect(anchorResponse.json()).resolves.toMatchObject({
+      integrity: { valid: true, checkedEvents: 1 },
+    });
   });
 
   it("maps malformed JSON to a stable HTTP error", async () => {

@@ -1,11 +1,12 @@
 import { HttpError, errorResponse, jsonResponse, optionsResponse } from "../../../_shared/http";
 import type { PagesHandler } from "../../../_shared/pages";
-import { apiRuntime } from "../../../_shared/runtime";
+import { resolveApiRuntime } from "../../../_shared/runtime";
 
 export const onRequestOptions: PagesHandler<{ requestId: string }> = ({ request }) => optionsResponse(request);
 
-export const onRequestGet: PagesHandler<{ requestId: string }> = async ({ request: httpRequest, params }) => {
+export const onRequestGet: PagesHandler<{ requestId: string }> = async ({ request: httpRequest, params, env }) => {
   try {
+    const apiRuntime = resolveApiRuntime(env);
     const savedRequest = await apiRuntime.requests.get(params.requestId);
 
     if (!savedRequest) {

@@ -109,10 +109,19 @@ reserved for server-side edges:
 - `/api/transitions` for signed Law 544 transition ingress
 - `/api/requests` and `/api/requests/:requestId` for public read projections
 
-The current Functions runtime is intentionally in-memory demo state. It is not a
-durable source of truth. The Phase 18 persistence scaffold in
-`docs/cloudflare-persistence.md` defines D1, KV, and R2-ready adapters that can
-replace the in-memory runtime in a later composition phase.
+The Functions runtime is binding-aware. Without Cloudflare bindings it uses
+in-memory demo state; with `REQUESTS_DB`, `LEDGER_EVENTS_KV`, and optionally
+`NONCES_KV`, it switches to durable D1/KV persistence. See
+`docs/cloudflare-persistence.md`.
+
+Public read endpoints:
+
+- `GET /api/health`
+- `GET /api/requests`
+- `GET /api/requests/:requestId`
+- `GET /api/ledger/anchor`
+- `GET /api/ledger/anchor?requestId=<id>`
+- `GET /api/metrics`
 
 ## Digital host integration
 

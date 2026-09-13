@@ -1,12 +1,13 @@
 import type { IngestTransitionCommand } from "../../src/api/types";
-import { apiRuntime } from "../_shared/runtime";
+import { resolveApiRuntime } from "../_shared/runtime";
 import { errorResponse, jsonResponse, optionsResponse, readJson } from "../_shared/http";
 import type { PagesHandler } from "../_shared/pages";
 
 export const onRequestOptions: PagesHandler = ({ request }) => optionsResponse(request);
 
-export const onRequestPost: PagesHandler = async ({ request }) => {
+export const onRequestPost: PagesHandler = async ({ request, env }) => {
   try {
+    const apiRuntime = resolveApiRuntime(env);
     const command = (await readJson(request)) as IngestTransitionCommand;
     const result = await apiRuntime.ingestion.ingest(command);
     const anchor = await apiRuntime.ledger.getHeadAnchor();
