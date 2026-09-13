@@ -23,33 +23,66 @@ served from that path.
 
 ## Standalone Pages project
 
-Create a Cloudflare Pages project named:
+The project lives on the **CN Webify** Cloudflare account, `432316a05c0d6000c6e196fe32e47dd7`.
+That is not an arbitrary choice: the `cristian-nichifor.com` zone is managed there, and a Pages
+project can only attach a custom domain from a zone in its own account. Deploying anywhere else
+would mean the eventual `digital.cristian-nichifor.com` mount could never point here.
 
-```txt
-bureaucracy-as-code
+Create it once, from a shell that has the token (see below):
+
+```bash
+wrangler pages project create bureaucracy-as-code --production-branch main
 ```
 
-Build settings:
+Name and build output directory come from `wrangler.toml`, so the deploy command needs neither:
 
-```txt
-Framework preset: Vite
-Build command: pnpm build
-Build output directory: dist
-Root directory: /
-Node version: 22
-```
-
-Wrangler config is intentionally minimal:
-
-```txt
-wrangler.toml
+```toml
 name = "bureaucracy-as-code"
 pages_build_output_dir = "dist"
 ```
 
-No GitHub Actions deploy workflow is included. Use Cloudflare Pages Git
-integration or run a manual deploy later when credentials and routing are
-ready.
+Until `apps/digital` exists, the site answers on `bureaucracy-as-code.pages.dev`, and the
+repository `homepage` should point there. No custom domain is attached at this stage, so no DNS
+record and no zone change is involved.
+
+The standalone deploy builds with `VITE_APP_BASE=/`. The default base is `/bureaucracy-as-code/`,
+which is correct for the mounted build and wrong here — served from the root of a `pages.dev`
+host it would ask for `/bureaucracy-as-code/assets/...` and get a 404 for every one of them.
+
+## Credentials
+
+The API token lives in 1Password under the CN Webify account. It needs one scope:
+
+```txt
+Account · Cloudflare Pages · Edit
+```
+
+`wrangler login`'s OAuth scope is not enough for project creation, and the Cloudflare MCP
+connection is read-only.
+
+The token is never pasted into a shell for routine work. It is stored as repository secrets and
+used only by CI:
+
+```txt
+CLOUDFLARE_API_TOKEN     the scoped token
+CLOUDFLARE_ACCOUNT_ID    432316a05c0d6000c6e196fe32e47dd7
+```
+
+```bash
+gh secret set CLOUDFLARE_API_TOKEN --repo CristianNichifor/bureaucracy-as-code
+gh secret set CLOUDFLARE_ACCOUNT_ID --repo CristianNichifor/bureaucracy-as-code
+```
+
+## Deploy workflow
+
+`.github/workflows/deploy.yml` builds and deploys on every push to `main`, and deploys a preview
+for each pull request raised from this repository. Pull requests from forks are skipped rather
+than failed: secrets are not available to them, so the deploy step could not succeed. They still
+get the full CI workflow.
+
+Deployment is wired in the repository, not clicked together in the dashboard — the same rule the
+rest of this fleet's infrastructure follows. Cloudflare's Pages Git integration is deliberately
+not used; it would put the build configuration somewhere that is not this repository.
 
 ## Digital host integration
 
