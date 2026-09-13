@@ -450,6 +450,34 @@ dd {
   gap: 8px;
 }
 
+.scenarioRunBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.scenarioButton {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #1d2528;
+  border-radius: 6px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: #1d2528;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.scenarioButton:disabled {
+  border-color: #cbd5ca;
+  color: #69746d;
+  background: #eef3ec;
+  cursor: default;
+}
+
 .stepCard {
   display: grid;
   min-height: 112px;
