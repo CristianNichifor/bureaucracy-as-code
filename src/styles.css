@@ -387,16 +387,50 @@ dd {
 
 .graphNode {
   display: grid;
-  min-width: 132px;
-  min-height: 54px;
-  place-items: center;
+  width: 156px;
+  min-height: 104px;
+  align-content: start;
+  gap: 6px;
   border: 1px solid #b8c3bb;
   border-radius: 8px;
-  padding: 8px;
-  text-align: center;
+  padding: 10px;
+  text-align: left;
   background: #f8faf7;
   font-size: 0.88rem;
-  font-weight: 700;
+}
+
+.graphNode span {
+  color: #69746d;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.graphNode strong {
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
+.graphNode small {
+  align-self: end;
+  color: #516157;
+  font-weight: 800;
+}
+
+.graphNode-complete {
+  border-color: #86b899;
+  background: #f0f8f2;
+}
+
+.graphNode-current {
+  border-color: #1d2528;
+  background: #eef3ec;
+  box-shadow: inset 0 0 0 1px #1d2528;
+}
+
+.graphNode-danger {
+  border-color: #e2a69e;
+  background: #fbebe8;
 }
 
 .graphEdge {

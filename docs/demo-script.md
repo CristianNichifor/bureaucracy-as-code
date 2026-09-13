@@ -119,9 +119,26 @@ signed event trail, and current chain head.
 Expected result:
 
 - filename follows `<request-id>-audit-receipt.json`
-- receipt includes no raw document or personal data
+- receipt schema is `law544-public-audit-receipt/v2`
+- receipt includes summary, privacy notes, verification steps, and event evidence
+- receipt includes no raw document, private key, or personal data
 - seeded requests and the live browser-created request can both be exported
 - receipt is explainable as public evidence, not as the production source of truth
+
+Open the receipt during the demo only after the audience has seen the dashboard.
+The most useful fields to point at are `summary.chainHead`,
+`summary.finalResponseDocumentHash`, `privacy`, and the `evidence` sequence.
+
+## 10. Capture the Demo
+
+For README screenshots or a short product walkthrough, use the seeded public
+view first, then capture the completed guided flow:
+
+- desktop: public explorer with the Ministry of Environment extension selected
+- desktop: bureaucratic machinery graph for the overdue cadastral-data request
+- desktop: exported receipt JSON showing schema, summary, privacy, verification
+- mobile: Romanian mode with the guided Law 544 run visible
+- final frame: resolved live request with hash verifier ready for file comparison
 
 ## Talking Points
 

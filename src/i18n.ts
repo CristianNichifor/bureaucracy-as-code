@@ -75,12 +75,17 @@ export type Dictionary = {
     title: string;
     currentPath: string;
     citizenDid: string;
+    institution: string;
     registryAssigned: string;
     registryQueue: string;
     directorRouted: string;
     directorQueue: string;
     publicServant: string;
     unassigned: string;
+    complete: string;
+    current: string;
+    waiting: string;
+    hashEvidence: string;
   };
   trail: {
     title: string;
@@ -193,12 +198,17 @@ export const dictionaries: Record<Language, Dictionary> = {
       title: "Bureaucratic machinery",
       currentPath: "current path",
       citizenDid: "Citizen DID",
+      institution: "Institution",
       registryAssigned: "Registry assigned",
       registryQueue: "Registry queue",
       directorRouted: "Director routed",
       directorQueue: "Director queue",
       publicServant: "Public servant",
       unassigned: "Unassigned",
+      complete: "complete",
+      current: "current",
+      waiting: "waiting",
+      hashEvidence: "hash evidence",
     },
     trail: {
       title: "Signed audit trail",
@@ -310,12 +320,17 @@ export const dictionaries: Record<Language, Dictionary> = {
       title: "Mecanism birocratic",
       currentPath: "traseu curent",
       citizenDid: "DID cetatean",
+      institution: "Institutie",
       registryAssigned: "Registru alocat",
       registryQueue: "Coada registratura",
       directorRouted: "Rutat de director",
       directorQueue: "Coada director",
       publicServant: "Functionar public",
       unassigned: "Nealocat",
+      complete: "complet",
+      current: "curent",
+      waiting: "in asteptare",
+      hashEvidence: "dovada hash",
     },
     trail: {
       title: "Traseu de audit semnat",

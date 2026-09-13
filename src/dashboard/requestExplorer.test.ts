@@ -39,14 +39,21 @@ describe("request explorer helpers", () => {
       role: "Director",
     });
 
-    expect(directorSigned.map((item) => item.request.id)).toEqual(["REQ-2026-0002", "REQ-2026-0003"]);
+    expect(directorSigned.map((item) => item.request.id)).toEqual([
+      "REQ-2026-0002",
+      "REQ-2026-0003",
+      "REQ-2026-0005",
+      "REQ-2026-0006",
+    ]);
   });
 
   it("returns sorted institution options", () => {
     expect(getInstitutionOptions(items)).toEqual([
       "City Hall Bucharest Sector 1",
+      "Ministry of Environment",
       "Ministry of Finance",
       "Ministry of Health",
+      "National Agency for Cadastre",
     ]);
   });
 

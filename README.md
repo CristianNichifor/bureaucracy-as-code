@@ -21,6 +21,20 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - Public audit receipt export for the selected request.
 - Export and import of the whole demo state as JSON, refused unless the chain still verifies.
 
+## Demo Scenarios
+
+The public explorer opens with representative seeded requests so the dashboard
+looks like a national transparency view before the guided browser run begins:
+
+- resolved Ministry of Finance request with a final response hash
+- in-progress Ministry of Health procurement request with attached evidence
+- registered City Hall request waiting for director routing
+- Ministry of Environment request with a legally visible extension
+- overdue cadastral-data request that shows deadline accountability
+
+Use the guided run to create a fresh local request, then export a public audit
+receipt for either the live request or any seeded scenario.
+
 ## What it does not do yet
 
 - It does not integrate ROeID.
@@ -83,6 +97,7 @@ Deployment:
 - [Production readiness](docs/production-readiness.md)
 - [QA](docs/qa.md)
 - [Demo script](docs/demo-script.md)
+- [Demo capture guide](docs/demo-capture.md)
 - [Future ledger adapters](docs/future-ledger-adapters.md)
 - [Cloudflare Pages](docs/cloudflare-pages.md)
 - [GitHub security setup](docs/github-security-setup.md)
