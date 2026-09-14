@@ -196,6 +196,21 @@ test("runs the guided Law 544 flow and proves edited exports are refused", async
   await expect(page.getByText("Ledger verifies")).toBeVisible();
 });
 
+test("supports step and auto-run timeline controls", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chromium", "Presenter timeline controls are covered once on desktop.");
+
+  await page.goto("./");
+
+  await page.getByRole("button", { name: /step next/i }).click();
+  await expect(page.getByText(/Recorded Request_Created/i)).toBeVisible();
+  await expect(page.getByText(/Request_Created · Citizen/i)).toBeVisible();
+
+  await page.getByRole("button", { name: /auto-run/i }).click();
+  await expect(page.getByText("complete").first()).toBeVisible({ timeout: 6_000 });
+  await expect(page.getByText(/Request_Resolved · PublicServant/i)).toBeVisible();
+  await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
+});
+
 test("verifies the final response hash locally in the browser", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "Hash verification is flow-gated and covered once on desktop.");
 
