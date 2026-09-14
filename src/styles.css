@@ -385,6 +385,115 @@ h2 {
   grid-column: 1 / -1;
 }
 
+.operationsPanel {
+  grid-column: 1 / -1;
+}
+
+.operationsMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.operationsMetrics div {
+  display: grid;
+  min-height: 94px;
+  align-content: start;
+  gap: 7px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 10px;
+  background: var(--civic-raised);
+}
+
+.operationsMetrics span {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.operationsMetrics strong {
+  font-size: 1.35rem;
+}
+
+.operationsQueue {
+  display: grid;
+  gap: 8px;
+}
+
+.operationsRow {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.15fr) minmax(0, 1.8fr) minmax(118px, 0.55fr);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  color: var(--civic-text);
+  background: var(--civic-surface);
+  text-align: left;
+  cursor: pointer;
+}
+
+.operationsRow:hover {
+  border-color: var(--civic-action);
+  background: var(--civic-raised);
+}
+
+.operationsRow > div:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.operationsRow strong,
+.operationsRow span,
+.operationsRow dd {
+  overflow-wrap: anywhere;
+}
+
+.operationsRow span,
+.operationsRow small {
+  color: var(--civic-muted);
+}
+
+.operationsRow dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.operationsRow dl div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.operationsRow dt {
+  color: var(--civic-subtle);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.operationsRow dd {
+  margin: 0;
+  font-weight: 800;
+}
+
+.operationsRow small {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-weight: 800;
+}
+
 .statusSummary {
   display: flex;
   flex-wrap: wrap;
@@ -1437,6 +1546,7 @@ dd {
   .grid,
   .sectionHeader,
   .metricGrid,
+  .operationsMetrics,
   .detailList,
   .caseGlance,
   .deadlineStrip,
@@ -1451,8 +1561,14 @@ dd {
   }
 
   .filterBar,
+  .operationsRow,
+  .operationsRow dl,
   .graph {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .operationsRow small {
+    justify-content: flex-start;
   }
 
   .selectedCaseWorkspace {
@@ -1546,6 +1662,14 @@ dd {
   .segmentedToggle,
   .themeToggle {
     width: 100%;
+  }
+
+  .operationsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .operationsRow dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .statusSummaryChip {
