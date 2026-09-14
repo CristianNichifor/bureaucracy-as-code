@@ -53,19 +53,10 @@ trailing deletion only while the anchor itself is trusted. A production adapter
 would publish the anchor to a timestamping service, a public chain, or a
 permissioned consortium ledger.
 
-### Hardhat or Local Ethereum
+### External EVM Ledger
 
-Best for proving smart contract shape and event indexing.
-
-Tradeoffs:
-
-- needs a backend or local node
-- adds deployment complexity
-- still not production governance
-
-### Permissioned Ethereum
-
-Best for a consortium of institutions that want Ethereum-compatible tooling.
+Best for a consortium of institutions that want EVM-compatible tooling after the
+browser demo has stabilized.
 
 Tradeoffs:
 
@@ -98,4 +89,4 @@ Tradeoffs:
 2. Add signature verification to full-chain verification.
 3. Export and import anchored request audit packages.
 4. Publish optional head anchors outside the browser.
-5. Build a Hardhat adapter only after the UI and domain model stop moving.
+5. Add an external ledger adapter only after the UI and domain model stop moving.

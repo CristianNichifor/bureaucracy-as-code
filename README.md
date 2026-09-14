@@ -19,7 +19,7 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - Public dashboard with anonymized request feed, audit trail, and machinery graph.
 - Romanian/English presentation toggle for live demos.
 - Public audit receipt export for the selected request.
-- Export and import of the whole demo state as JSON, refused unless the chain still verifies.
+- Export and import of the whole demo state as JSON, refused unless the hash chain still verifies.
 
 ## Demo Scenarios
 
@@ -46,7 +46,7 @@ For this milestone:
 
 - ROeID integration is out of scope.
 - A real custom identity service is out of scope.
-- Real Cloudflare resources are out of scope.
+- Durable Cloudflare data resources are out of scope for the browser demo.
 - Legal, DPIA, procurement, and institutional sign-off are out of scope.
 - Raw personal data is never written to the ledger.
 - Signing keys are never exported. Imported state can be read and re-verified;

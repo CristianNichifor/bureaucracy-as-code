@@ -1,12 +1,12 @@
 # Cloudflare Persistence Scaffold
 
-Phase 18 added Cloudflare-ready persistence boundaries without requiring live
-Cloudflare credentials for local development. The runtime now uses those
-bindings automatically when they are present.
+This repository includes Cloudflare-ready persistence boundaries without making
+them part of the browser-only demo. Local development and the public walkthrough
+do not require Cloudflare data resources.
 
 ## Bindings
 
-The scaffold expects these future Pages/Workers bindings:
+The optional Pages/Workers persistence path expects these bindings:
 
 | Binding | Cloudflare service | Purpose |
 | --- | --- | --- |
@@ -59,10 +59,10 @@ ledger:request:<requestId>:000000000001
 ledger:head
 ```
 
-KV is not the production legal ledger. It is a Cloudflare persistence scaffold
-for demo projections, local replay, and future indexer output. The immutable
-source of truth remains the blockchain/event-log adapter selected by the
-runtime.
+KV is not a production legal ledger. It is an optional Cloudflare persistence
+scaffold for demo projections, local replay, and future indexer output. The
+browser-only demo keeps its canonical event history in the local hash-chain
+ledger.
 
 ## Documents In R2
 
@@ -87,7 +87,7 @@ Run full verification:
 pnpm verify
 ```
 
-## Cloudflare Setup
+## Optional Cloudflare Setup
 
 Create the resources once:
 

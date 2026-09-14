@@ -109,9 +109,10 @@ reserved for server-side edges:
 - `/api/transitions` for signed Law 544 transition ingress
 - `/api/requests` and `/api/requests/:requestId` for public read projections
 
-The Functions runtime is binding-aware. Without Cloudflare bindings it uses
+The Functions runtime is binding-aware. Without Cloudflare data bindings it uses
 in-memory demo state; with `REQUESTS_DB`, `LEDGER_EVENTS_KV`, and optionally
-`NONCES_KV`, it switches to durable D1/KV persistence. See
+`NONCES_KV`, it can switch to durable D1/KV persistence. This is optional for
+the browser-only demo. See
 `docs/cloudflare-persistence.md`.
 
 Public read endpoints:

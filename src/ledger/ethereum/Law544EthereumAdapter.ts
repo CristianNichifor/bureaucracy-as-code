@@ -89,7 +89,7 @@ export class Law544EthereumAdapter implements LedgerProvider {
   }
 
   async reset(): Promise<void> {
-    throw new Error("Ethereum ledgers are append-only; reset the local Hardhat node instead.");
+    throw new Error("Ethereum ledgers are append-only; reset the external test ledger instead.");
   }
 }
 

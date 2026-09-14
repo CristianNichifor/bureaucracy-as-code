@@ -1,8 +1,8 @@
 # Production Readiness Checklist
 
-The current repository is a public demonstrator with a browser runtime and a
-Cloudflare Pages Functions runtime. The codebase includes durable D1/KV
-adapters, replay-protected transition ingestion, signed canonical envelopes,
+The current repository is a public browser demonstrator with optional
+Cloudflare Pages Functions scaffolding. The codebase includes D1/KV adapter
+boundaries, replay-protected transition ingestion, signed canonical envelopes,
 public anchor reads, and basic operational metrics.
 
 Before handling real requests or personal data, the following items still need
@@ -53,7 +53,7 @@ These cannot honestly be completed inside the repo alone:
   and institution credentials.
 - Real custom DID/VC identity repository integration, once that repo exists or
   is identified.
-- Cloudflare resource creation and binding IDs in the owner account.
+- Durable Cloudflare data resources and binding IDs in the owner account.
 - DPIA sign-off, retention policy, appeal/correction procedures, and incident
   response ownership.
 
