@@ -144,6 +144,8 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
+    await expect(page.getByText("Accountability handoff")).toBeVisible();
+    await expect(page.getByText("Officer desk")).toBeVisible();
     await expect(page.getByText("Deadline status")).toBeVisible();
     await expect(page.getByText(/days remaining|days overdue/i).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();

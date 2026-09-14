@@ -128,6 +128,13 @@ export type Dictionary = {
     deadlineOnTrack: string;
     daysRemaining: string;
     daysOverdue: string;
+    handoffTitle: string;
+    registryStep: string;
+    directorStep: string;
+    officerStep: string;
+    responseStep: string;
+    signedBy: string;
+    waitingForSignature: string;
     registryQueue: string;
     directorQueue: string;
     finalResponse: string;
@@ -437,6 +444,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       deadlineOnTrack: "On track",
       daysRemaining: "{days} days remaining",
       daysOverdue: "{days} days overdue",
+      handoffTitle: "Accountability handoff",
+      registryStep: "Registry",
+      directorStep: "Director routing",
+      officerStep: "Officer desk",
+      responseStep: "Final response",
+      signedBy: "Signed by {role}",
+      waitingForSignature: "Waiting for signature",
       registryQueue: "Registry queue",
       directorQueue: "Director queue",
       finalResponse: "Final response",
@@ -756,6 +770,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       deadlineOnTrack: "In grafic",
       daysRemaining: "{days} zile ramase",
       daysOverdue: "{days} zile intarziere",
+      handoffTitle: "Predare responsabilitate",
+      registryStep: "Registratura",
+      directorStep: "Rutare director",
+      officerStep: "Birou functionar",
+      responseStep: "Raspuns final",
+      signedBy: "Semnat de {role}",
+      waitingForSignature: "Asteapta semnatura",
       registryQueue: "Coada registratura",
       directorQueue: "Coada director",
       finalResponse: "Raspuns final",
