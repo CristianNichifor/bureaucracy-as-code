@@ -121,6 +121,15 @@ export type Dictionary = {
     finalized: string;
     nextFile: string;
     nextDeadline: string;
+    ownerQueue: string;
+    citizenQueue: string;
+    registryQueue: string;
+    directorQueue: string;
+    officerQueue: string;
+    escalationQueue: string;
+    urgentOverdue: string;
+    urgentDueSoon: string;
+    urgentEarliest: string;
     noOpenFiles: string;
     closedQueue: string;
     none: string;
@@ -453,6 +462,15 @@ export const dictionaries: Record<Language, Dictionary> = {
       finalized: "Finalized",
       nextFile: "Next file",
       nextDeadline: "Next deadline",
+      ownerQueue: "Owner queue",
+      citizenQueue: "Citizen draft",
+      registryQueue: "Registry queue",
+      directorQueue: "Director queue",
+      officerQueue: "Officer desk",
+      escalationQueue: "Escalation queue",
+      urgentOverdue: "Urgent because it is {days} days overdue.",
+      urgentDueSoon: "Urgent because the deadline is in {days} days.",
+      urgentEarliest: "First in this institution by deadline: {days} days remaining.",
       noOpenFiles: "No open files",
       closedQueue: "Queue closed",
       none: "None",
@@ -795,6 +813,15 @@ export const dictionaries: Record<Language, Dictionary> = {
       finalized: "Finalizate",
       nextFile: "Urmatorul dosar",
       nextDeadline: "Urmatorul termen",
+      ownerQueue: "Coada responsabila",
+      citizenQueue: "Draft cetatean",
+      registryQueue: "Coada registratura",
+      directorQueue: "Coada director",
+      officerQueue: "Birou functionar",
+      escalationQueue: "Coada escaladare",
+      urgentOverdue: "Urgent pentru ca are {days} zile intarziere.",
+      urgentDueSoon: "Urgent pentru ca termenul este in {days} zile.",
+      urgentEarliest: "Primul in institutie dupa termen: {days} zile ramase.",
       noOpenFiles: "Fara dosare deschise",
       closedQueue: "Coada inchisa",
       none: "Niciunul",

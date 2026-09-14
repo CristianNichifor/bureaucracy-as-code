@@ -438,7 +438,12 @@ export function App() {
 
         <DashboardSection id="request-explorer-section" title={t.sections.explorer.title} copy={t.sections.explorer.copy}>
           <div className="grid sectionGrid sectionGridExplorer">
-            <OperationsPanel items={explorerItems} labels={t.operations} onSelectRequest={setSelectedRequestId} />
+            <OperationsPanel
+              items={explorerItems}
+              labels={t.operations}
+              onApplyFilters={(nextFilters) => setFilters((currentFilters) => ({ ...currentFilters, ...nextFilters }))}
+              onSelectRequest={setSelectedRequestId}
+            />
             <RequestFeed
               id="request-explorer"
               filters={filters}
