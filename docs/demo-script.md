@@ -25,6 +25,15 @@ Presenter note:
 Point out the public feed first. It already contains seeded anonymized requests
 so the dashboard looks useful before the guided scenario begins.
 
+Before running the scenario, briefly anchor the audience on the release panels:
+
+- **Demo completeness** maps the browser-only milestone to the agreed finish
+  criteria.
+- **Transfer safety** explains export/import behavior and why private signing
+  keys never leave the browser.
+- **Release readiness** and **Presenter checklist** show the commands and live
+  walkthrough order for operators.
+
 Use the language toggle in the top-right corner to switch between English and
 Romanian presenter modes. The Romanian copy is intentionally concise and public
 demo-oriented, so it works well for walking through the civic concept without
@@ -106,12 +115,14 @@ Expected result:
 
 - valid chain imports successfully
 - tampered chain is refused
+- imported requests remain verifiable public evidence
+- imported state cannot impersonate original actors for new transitions
 
 Then use **Test edited export** in the ledger integrity panel. Explain that the
 demo edits an exported event and proves the import path refuses it because the
 event no longer matches the hash chain.
 
-## 9. Export an Audit Receipt
+## 9. Export Public Evidence
 
 Select any request from the public feed and use **Export receipt**. The browser
 downloads a JSON receipt containing the selected request metadata, public hashes,
@@ -130,26 +141,39 @@ Open the receipt during the demo only after the audience has seen the dashboard.
 The most useful fields to point at are `summary.chainHead`,
 `summary.finalResponseDocumentHash`, `privacy`, and the `evidence` sequence.
 
+Then use **Export proof report** to show the wider public snapshot. The proof
+report packages visible requests, chain status, privacy notes, and the
+verification checklist without exporting raw documents or signing keys.
+
 ## 10. Capture the Demo
 
 For README screenshots or a short product walkthrough, use the seeded public
-view first, then capture the completed guided flow:
+view first, then run:
 
-- desktop: public explorer with the Ministry of Environment extension selected
-- desktop: bureaucratic machinery graph for the overdue cadastral-data request
-- desktop: exported receipt JSON showing schema, summary, privacy, verification
-- mobile: Romanian mode with the guided Law 544 run visible
-- final frame: resolved live request with hash verifier ready for file comparison
+```bash
+pnpm demo:capture
+```
+
+The automated capture pack records:
+
+- desktop public explorer with seeded anonymized requests
+- desktop completed guided Law 544 request
+- desktop proof report export path
+- Romanian mobile presentation mode
+- ultrawide layout centered above 1920px
 
 ## Talking Points
 
 - Bureaucratic action is modeled as signed state transition.
 - The ledger records minimal public evidence, not personal data.
 - Citizens can inspect status, responsibility, and audit history.
+- Demo completeness is visible in-app, so the scope is auditable during the
+  presentation.
 - Romanian/English mode makes the same demo usable for local stakeholders and
   international technical reviewers.
-- Audit receipt export gives a portable artifact for conversations, procurement
-  notes, or issue reports while keeping the canonical state in the ledger path.
+- Audit receipt and proof report exports give portable artifacts for
+  conversations, procurement notes, or issue reports while keeping the canonical
+  state in the ledger path.
 - The browser ledger is the canonical source for this demo milestone.
 - Cloudflare Pages Functions and D1/KV adapters are available as engineering
   references, but the live walkthrough does not depend on them.
