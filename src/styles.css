@@ -804,11 +804,74 @@ dd {
   gap: 8px;
 }
 
-.scenarioRunBar {
+.scenarioDeck {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.scenarioCard {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  background: var(--civic-surface);
+  min-width: 0;
+}
+
+.scenarioCardHeader {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scenarioCardHeader strong {
+  min-width: 0;
+}
+
+.scenarioCard p,
+.scenarioCard small {
+  margin: 0;
+  color: var(--civic-subtle);
+}
+
+.scenarioCard small {
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.scenarioFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.scenarioFacts div {
+  display: grid;
+  gap: 2px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-radius);
+  padding: 8px;
+  background: var(--civic-raised);
+  min-width: 0;
+}
+
+.scenarioFacts dt {
+  color: var(--civic-subtle);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.scenarioFacts dd {
+  margin: 0;
+  font-weight: 900;
 }
 
 .timelineControls {
