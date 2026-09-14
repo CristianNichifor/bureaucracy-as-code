@@ -191,6 +191,43 @@ export type Dictionary = {
     noResponse: string;
     noProof: string;
   };
+  evidenceBrief: {
+    title: string;
+    label: string;
+    responsibleDesk: string;
+    latestSignedAction: string;
+    stateEvidence: string;
+    citizenCanVerify: string;
+    signedBy: string;
+    waiting: string;
+    hashChain: string;
+    documentHashAvailable: string;
+    noDocumentHash: string;
+    awaitingResponse: string;
+    noProof: string;
+    registryQueue: string;
+    directorQueue: string;
+    escalationDesk: string;
+    responsePublished: string;
+    refusalPublished: string;
+    nextSubmit: string;
+    nextRegistry: string;
+    nextDirector: string;
+    nextProcessing: string;
+    nextResolve: string;
+    nextExtension: string;
+    nextEscalate: string;
+    nextVerify: string;
+    copyDraft: string;
+    copyCreated: string;
+    copyRegistered: string;
+    copyRouted: string;
+    copyInProgress: string;
+    copyExtension: string;
+    copyOverdue: string;
+    copyResolved: string;
+    copyRejected: string;
+  };
   graph: {
     title: string;
     explainLabel: string;
@@ -585,6 +622,43 @@ export const dictionaries: Record<Language, Dictionary> = {
       notAssigned: "Not assigned",
       noResponse: "No response yet",
       noProof: "No proof yet",
+    },
+    evidenceBrief: {
+      title: "Public evidence brief",
+      label: "Citizen view",
+      responsibleDesk: "Responsible desk",
+      latestSignedAction: "Latest signed action",
+      stateEvidence: "State evidence",
+      citizenCanVerify: "Citizen can verify",
+      signedBy: "Signed by {role}",
+      waiting: "Waiting for the first signed event",
+      hashChain: "Linked into the public hash chain",
+      documentHashAvailable: "Response hash available",
+      noDocumentHash: "No response hash yet",
+      awaitingResponse: "Awaiting final response",
+      noProof: "No proof yet",
+      registryQueue: "Registry queue",
+      directorQueue: "Director queue",
+      escalationDesk: "Escalation desk",
+      responsePublished: "Response published",
+      refusalPublished: "Refusal published",
+      nextSubmit: "Citizen must submit the request.",
+      nextRegistry: "Registry must assign the official number.",
+      nextDirector: "Director must route the file.",
+      nextProcessing: "Assigned public servant must begin processing.",
+      nextResolve: "Officer must attach evidence or final response.",
+      nextExtension: "Officer must answer before the extended deadline.",
+      nextEscalate: "Institution must resolve the overdue file and explain the breach.",
+      nextVerify: "Citizen can verify the receipt and response hash.",
+      copyDraft: "This request is still a draft, so no public administrative act has been signed yet.",
+      copyCreated: "The citizen submission is recorded and waiting for registry assignment.",
+      copyRegistered: "The institution has assigned a registry number and must route responsibility.",
+      copyRouted: "The director has routed the file to a responsible desk.",
+      copyInProgress: "The assigned desk is processing the request and adding evidence.",
+      copyExtension: "The institution requested an extension; the signed reason remains visible.",
+      copyOverdue: "The legal deadline was missed, so the file is visible as an escalation case.",
+      copyResolved: "The request has a final response hash that can be checked locally.",
+      copyRejected: "The refusal path is signed and its response hash can be checked locally.",
     },
     graph: {
       title: "Bureaucratic machinery",
@@ -1019,6 +1093,43 @@ export const dictionaries: Record<Language, Dictionary> = {
       notAssigned: "Nealocat",
       noResponse: "Fara raspuns final",
       noProof: "Fara dovada inca",
+    },
+    evidenceBrief: {
+      title: "Rezumat public al dovezilor",
+      label: "Vedere cetatean",
+      responsibleDesk: "Birou responsabil",
+      latestSignedAction: "Ultima actiune semnata",
+      stateEvidence: "Dovada de stare",
+      citizenCanVerify: "Cetateanul poate verifica",
+      signedBy: "Semnat de {role}",
+      waiting: "Asteapta primul eveniment semnat",
+      hashChain: "Legat in lantul public de hash-uri",
+      documentHashAvailable: "Hash raspuns disponibil",
+      noDocumentHash: "Fara hash de raspuns inca",
+      awaitingResponse: "Asteapta raspuns final",
+      noProof: "Fara dovada inca",
+      registryQueue: "Coada registratura",
+      directorQueue: "Coada director",
+      escalationDesk: "Birou escaladare",
+      responsePublished: "Raspuns publicat",
+      refusalPublished: "Refuz publicat",
+      nextSubmit: "Cetateanul trebuie sa depuna cererea.",
+      nextRegistry: "Registratura trebuie sa aloce numarul oficial.",
+      nextDirector: "Directorul trebuie sa ruteze dosarul.",
+      nextProcessing: "Functionarul alocat trebuie sa inceapa procesarea.",
+      nextResolve: "Functionarul trebuie sa ataseze dovezi sau raspunsul final.",
+      nextExtension: "Functionarul trebuie sa raspunda pana la termenul extins.",
+      nextEscalate: "Institutia trebuie sa rezolve intarzierea si sa explice depasirea.",
+      nextVerify: "Cetateanul poate verifica dovada si hash-ul raspunsului.",
+      copyDraft: "Cererea este inca draft, deci nu exista act administrativ public semnat.",
+      copyCreated: "Depunerea cetateanului este inregistrata si asteapta registratura.",
+      copyRegistered: "Institutia a alocat numarul de registru si trebuie sa ruteze responsabilitatea.",
+      copyRouted: "Directorul a rutat dosarul catre un birou responsabil.",
+      copyInProgress: "Biroul alocat proceseaza cererea si adauga dovezi.",
+      copyExtension: "Institutia a cerut prelungire; motivul semnat ramane vizibil.",
+      copyOverdue: "Termenul legal a fost depasit, deci dosarul apare ca escaladare.",
+      copyResolved: "Cererea are hash final de raspuns care poate fi verificat local.",
+      copyRejected: "Ruta de refuz este semnata, iar hash-ul raspunsului poate fi verificat local.",
     },
     graph: {
       title: "Mecanism birocratic",

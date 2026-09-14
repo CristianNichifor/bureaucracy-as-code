@@ -120,6 +120,7 @@ test("keeps the browser demo usable on the configured viewport", async ({ page }
   await expect(page.getByRole("region", { name: "Demo actions" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
 
@@ -151,6 +152,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await expect(page.getByRole("heading", { name: "Scenario comparison" })).toBeVisible();
     await expect(page.getByText("Next file").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
     await expect(page.getByText("Accountability handoff")).toBeVisible();
     await expect(page.getByLabel("Accountability handoff").getByText("Officer desk")).toBeVisible();
@@ -170,7 +172,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
     expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
 
-    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
+    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
       nodes.map((node) => {
         const rect = node.getBoundingClientRect();
         return {
@@ -231,6 +233,21 @@ test("compares seeded Law 544 scenario outcomes", async ({ page }) => {
   await expect(panel.getByRole("button", { name: /Deadline breach/ })).toHaveAttribute("aria-pressed", "true");
 });
 
+test("summarizes the selected request as a public evidence brief", async ({ page }) => {
+  await page.goto("./");
+
+  const panel = page.getByRole("region", { name: "Public evidence brief" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByText("Responsible desk")).toBeVisible();
+  await expect(panel.getByText("Latest signed action")).toBeVisible();
+  await expect(panel.getByText("State evidence")).toBeVisible();
+  await expect(panel.getByText("Citizen can verify")).toBeVisible();
+
+  await page.getByRole("button", { name: /run full scenario/i }).click();
+  await expect(panel.getByText("Response hash available")).toBeVisible();
+  await expect(panel.getByText("Citizen can verify the receipt and response hash.")).toBeVisible();
+});
+
 test("switches the public dashboard between English and Romanian", async ({ page }) => {
   await page.goto("./");
 
@@ -241,6 +258,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Incarcare institutii" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Comparatie scenarii" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Rezumat public al dovezilor" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Responsabilitate pe cerere" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
