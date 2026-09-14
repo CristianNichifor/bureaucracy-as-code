@@ -439,6 +439,11 @@ test("shows the presenter checklist and operator commands", async ({ page }) => 
 
   const panel = page.getByRole("region", { name: "Presenter checklist" });
   await expect(panel).toBeVisible();
+  await expect(panel.getByText("Presenter mode")).toBeVisible();
+  await expect(panel.getByRole("link", { name: /Show the public explorer/ })).toHaveAttribute(
+    "href",
+    /#request-explorer-section$/,
+  );
   await expect(panel.getByText("Open the explorer and point to anonymized seeded Law 544 requests.")).toBeVisible();
   await expect(panel.getByText("pnpm demo:release")).toBeVisible();
   await expect(panel.getByText("pnpm demo:capture")).toBeVisible();

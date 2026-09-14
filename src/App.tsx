@@ -480,7 +480,12 @@ export function App() {
 
         <DashboardSection id="release-operations" title={t.sections.release.title} copy={t.sections.release.copy}>
           <div className="grid sectionGrid sectionGridRelease">
-            <PresenterChecklist labels={t.presenter} />
+            <PresenterChecklist
+              labels={t.presenter}
+              status={request.status}
+              eventsCount={events.length}
+              selectedRequestId={selectedRequest.id}
+            />
             <ReleaseReadiness buildInfo={buildInfo} labels={t.readiness} />
           </div>
         </DashboardSection>
