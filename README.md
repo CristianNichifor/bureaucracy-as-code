@@ -20,6 +20,7 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - Romanian/English presentation toggle for live demos.
 - Public audit receipt export for the selected request.
 - Export and import of the whole demo state as JSON, refused unless the hash chain still verifies.
+- Offline presentation cache for the built browser app shell.
 
 ## Demo Scenarios
 
@@ -81,6 +82,13 @@ Browser smoke checks:
 pnpm verify:e2e
 ```
 
+Offline demo mode:
+
+- production builds register a service worker
+- the app shell and already visited same-origin assets are cached
+- browser-local demo data stays local and is not synced
+- refresh/deep links keep working after the first successful online load
+
 Deployment:
 
 - standalone demo: `https://bureaucracy-as-code.pages.dev/`
@@ -98,6 +106,7 @@ Deployment:
 - [QA](docs/qa.md)
 - [Demo script](docs/demo-script.md)
 - [Demo capture guide](docs/demo-capture.md)
+- [Offline demo mode](docs/offline-demo.md)
 - [Future ledger adapters](docs/future-ledger-adapters.md)
 - [Cloudflare Pages](docs/cloudflare-pages.md)
 - [GitHub security setup](docs/github-security-setup.md)
