@@ -37,6 +37,13 @@ export type Dictionary = {
     transitionProofMessage: string;
     transitionFailureMessage: string;
   };
+  sections: {
+    run: { title: string; copy: string };
+    explorer: { title: string; copy: string };
+    accountability: { title: string; copy: string };
+    proof: { title: string; copy: string };
+    release: { title: string; copy: string };
+  };
   guided: {
     title: string;
     complete: string;
@@ -267,6 +274,28 @@ export const dictionaries: Record<Language, Dictionary> = {
         "{actor} signed {action}. Status moved from {fromStatus} to {toStatus}.",
       transitionProofMessage: "Proof hash {hash}; verified ledger events: {count}.",
       transitionFailureMessage: "Could not apply transition.",
+    },
+    sections: {
+      run: {
+        title: "Run the request",
+        copy: "Drive the live Law 544 flow and watch each signed transition change the dashboard.",
+      },
+      explorer: {
+        title: "Public explorer",
+        copy: "Browse anonymized seeded and live requests as a citizen-facing national feed.",
+      },
+      accountability: {
+        title: "Request accountability",
+        copy: "Inspect responsibility, current location, and the signed trail for the selected file.",
+      },
+      proof: {
+        title: "Proof and verification",
+        copy: "Export receipts and compare local files against recorded hashes without uploading documents.",
+      },
+      release: {
+        title: "Release operations",
+        copy: "Presenter notes, deploy targets, verification gates, and build metadata for the demo.",
+      },
     },
     guided: {
       title: "Guided Law 544 run",
@@ -521,6 +550,28 @@ export const dictionaries: Record<Language, Dictionary> = {
         "{actor} a semnat {action}. Statusul a trecut de la {fromStatus} la {toStatus}.",
       transitionProofMessage: "Hash dovada {hash}; evenimente verificate in registru: {count}.",
       transitionFailureMessage: "Tranzitia nu a putut fi aplicata.",
+    },
+    sections: {
+      run: {
+        title: "Ruleaza cererea",
+        copy: "Parcurge fluxul Legea 544 si urmareste fiecare tranzitie semnata in dashboard.",
+      },
+      explorer: {
+        title: "Explorer public",
+        copy: "Consulta cereri anonimizate, preincarcate sau create local, ca intr-un flux national public.",
+      },
+      accountability: {
+        title: "Responsabilitate pe cerere",
+        copy: "Inspecteaza responsabilul curent, traseul dosarului si auditul semnat.",
+      },
+      proof: {
+        title: "Dovezi si verificare",
+        copy: "Exporta dovezi si compara local fisierele primite cu hash-urile inregistrate.",
+      },
+      release: {
+        title: "Operare release",
+        copy: "Note de prezentare, tinte deploy, verificari si metadate build pentru demo.",
+      },
     },
     guided: {
       title: "Flux ghidat Legea 544",
