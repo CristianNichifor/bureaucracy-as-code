@@ -6,6 +6,7 @@ cache/
 .vite/
 playwright-report/
 test-results/
+public/build-info.json
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts

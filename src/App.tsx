@@ -13,8 +13,10 @@ import { AuditReceiptVerifier } from "./dashboard/AuditReceiptVerifier";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
+import { BuildMetadata } from "./dashboard/BuildMetadata";
 import { buildPublicAuditReceipt, buildPublicProofReport } from "./dashboard/auditReceipt";
 import { demoSteps, getCurrentStepIndex, type DemoStep } from "./dashboard/demoProgress";
+import { fallbackBuildInfo, loadBuildInfo, type BuildInfo } from "./buildInfo";
 import {
   DEFAULT_EXPLORER_FILTERS,
   filterRequestExplorerItems,
@@ -46,6 +48,7 @@ export function App() {
   const [isRunningScenario, setIsRunningScenario] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
   const [lastRecordedEvent, setLastRecordedEvent] = useState<LedgerEvent | undefined>();
+  const [buildInfo, setBuildInfo] = useState<BuildInfo>(fallbackBuildInfo);
   const fileInput = useRef<HTMLInputElement>(null);
   const t = dictionaries[language];
 
@@ -69,6 +72,10 @@ export function App() {
   useEffect(() => {
     void resetDemo();
   }, [resetDemo]);
+
+  useEffect(() => {
+    void loadBuildInfo().then(setBuildInfo);
+  }, []);
 
   async function exportState() {
     if (!context) return;
@@ -374,6 +381,7 @@ export function App() {
         <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
         <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
       </div>
+      <BuildMetadata buildInfo={buildInfo} labels={t.build} />
     </main>
   );
 }
