@@ -365,18 +365,24 @@ test("replays exceptional Law 544 simulations with signed metadata", async ({ pa
 
   await page.getByRole("button", { name: /deadline warning/i }).click();
   await expect(page.getByText("Extension Requested").first()).toBeVisible();
+  const exceptionLane = page.getByLabel("Internal exception lane");
+  await expect(exceptionLane).toBeVisible();
+  await expect(exceptionLane.getByText("Extension", { exact: true })).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText("Extension_Requested", { exact: true })).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/extensionDeadlineAt: 2026-10-14/i)).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");
 
   await page.getByRole("button", { name: /partial disclosure/i }).click();
   await expect(page.getByText("Resolved").first()).toBeVisible();
+  await expect(exceptionLane.getByText("Partial disclosure")).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/disclosure: partial/i).first()).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/redactionBasis: third-party-personal-data/i).first()).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
 
   await page.getByRole("button", { name: "Redirected", exact: true }).click();
   await expect(page.getByText("Resolved").first()).toBeVisible();
+  await expect(exceptionLane.getByText("Redirect")).toBeVisible();
+  await expect(exceptionLane.getByText("Ministry of Development")).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/outcome: redirected/i)).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/targetInstitution: Ministry of Development/i)).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");

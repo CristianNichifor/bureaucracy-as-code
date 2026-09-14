@@ -1,13 +1,30 @@
 import type { Dictionary } from "../i18n";
 import type { Law544Request } from "../law544/types";
+import type { LedgerEvent } from "../ledger/types";
 
-export function MachineryGraph({ request, labels }: { request: Law544Request; labels: Dictionary["graph"] }) {
+type ExceptionSignal = {
+  label: string;
+  detail: string;
+  tone: "current" | "complete" | "danger" | "waiting";
+};
+
+export function MachineryGraph({
+  request,
+  events,
+  labels,
+}: {
+  request: Law544Request;
+  events: LedgerEvent[];
+  labels: Dictionary["graph"];
+}) {
   const registryDone = Boolean(request.registryNumber);
   const routed = Boolean(request.assignedToDidHash);
   const resolved = request.status === "Resolved";
   const overdue = request.status === "Overdue";
+  const rejected = request.status === "Rejected";
+  const exceptionSignals = getExceptionSignals(request, events, labels);
   const currentOwner =
-    resolved ? labels.finalResponse : overdue ? labels.publicServant : routed ? labels.publicServant : registryDone ? labels.directorQueue : labels.registryQueue;
+    resolved ? labels.finalResponse : rejected ? labels.refusalResponse : overdue ? labels.escalationQueue : routed ? labels.publicServant : registryDone ? labels.directorQueue : labels.registryQueue;
   const nodes = [
     {
       label: labels.citizenDid,
@@ -36,8 +53,8 @@ export function MachineryGraph({ request, labels }: { request: Law544Request; la
     {
       label: routed ? labels.publicServant : labels.unassigned,
       detail: request.responseDocumentHash ? labels.hashEvidence : request.status,
-      state: resolved || overdue ? request.status : routed ? labels.current : labels.waiting,
-      tone: resolved ? "complete" : overdue ? "danger" : routed ? "current" : "waiting",
+      state: resolved || overdue || rejected ? request.status : routed ? labels.current : labels.waiting,
+      tone: resolved ? "complete" : overdue || rejected ? "danger" : routed ? "current" : "waiting",
     },
   ];
 
@@ -55,6 +72,22 @@ export function MachineryGraph({ request, labels }: { request: Law544Request; la
         <span>{labels.currentOwner}</span>
         <strong>{currentOwner}</strong>
       </div>
+      <div className="exceptionLane" aria-label={labels.exceptionLane}>
+        <span>{labels.exceptionLane}</span>
+        {exceptionSignals.length > 0 ? (
+          exceptionSignals.map((signal) => (
+            <div className={`exceptionSignal exceptionSignal-${signal.tone}`} key={`${signal.label}-${signal.detail}`}>
+              <strong>{signal.label}</strong>
+              <small>{signal.detail}</small>
+            </div>
+          ))
+        ) : (
+          <div className="exceptionSignal exceptionSignal-waiting">
+            <strong>{labels.standardFlow}</strong>
+            <small>{labels.noExceptions}</small>
+          </div>
+        )}
+      </div>
       <div className="graph">
         {nodes.map((node, index) => (
           <div className="graphStep" key={`${node.label}-${index}`}>
@@ -69,4 +102,61 @@ export function MachineryGraph({ request, labels }: { request: Law544Request; la
       </div>
     </section>
   );
+}
+
+function getExceptionSignals(
+  request: Law544Request,
+  events: LedgerEvent[],
+  labels: Dictionary["graph"],
+): ExceptionSignal[] {
+  const signals: ExceptionSignal[] = [];
+  const metadataEntries = events.flatMap((event) => Object.entries(event.metadata ?? {}));
+  const metadataKeys = new Set(metadataEntries.map(([key]) => key));
+  const metadataValues = new Set(metadataEntries.map(([, value]) => value));
+
+  if (request.status === "ExtensionRequested" || events.some((event) => event.action === "Extension_Requested")) {
+    signals.push({
+      label: labels.extensionSignal,
+      detail: getMetadataValue(events, "extensionDeadlineAt") ?? getMetadataValue(events, "reason") ?? labels.signedMetadata,
+      tone: request.status === "ExtensionRequested" ? "current" : "complete",
+    });
+  }
+
+  if (metadataValues.has("partial") || metadataKeys.has("redactionBasis") || metadataKeys.has("responseScope")) {
+    signals.push({
+      label: labels.partialDisclosureSignal,
+      detail: getMetadataValue(events, "redactionBasis") ?? labels.signedMetadata,
+      tone: "complete",
+    });
+  }
+
+  if (metadataValues.has("redirected") || metadataKeys.has("targetInstitution")) {
+    signals.push({
+      label: labels.redirectSignal,
+      detail: getMetadataValue(events, "targetInstitution") ?? labels.signedMetadata,
+      tone: "complete",
+    });
+  }
+
+  if (request.status === "Overdue" || events.some((event) => event.action === "Request_Marked_Overdue")) {
+    signals.push({
+      label: labels.overdueSignal,
+      detail: getMetadataValue(events, "missedDeadlineAt") ?? labels.escalationQueue,
+      tone: "danger",
+    });
+  }
+
+  if (request.status === "Rejected" || events.some((event) => event.action === "Request_Rejected")) {
+    signals.push({
+      label: labels.rejectionSignal,
+      detail: getMetadataValue(events, "reason") ?? labels.refusalResponse,
+      tone: "danger",
+    });
+  }
+
+  return signals;
+}
+
+function getMetadataValue(events: LedgerEvent[], key: string): string | undefined {
+  return events.find((event) => event.metadata?.[key])?.metadata?.[key];
 }

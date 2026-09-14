@@ -1003,6 +1003,62 @@ dd {
   overflow-wrap: anywhere;
 }
 
+.exceptionLane {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.32fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.exceptionLane > span {
+  display: grid;
+  align-items: center;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 10px;
+  color: var(--civic-subtle);
+  background: var(--civic-raised);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.exceptionSignal {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 10px;
+  background: var(--civic-surface);
+}
+
+.exceptionSignal strong,
+.exceptionSignal small {
+  overflow-wrap: anywhere;
+}
+
+.exceptionSignal small {
+  color: var(--civic-muted);
+  font-weight: 800;
+}
+
+.exceptionSignal-complete {
+  border-color: var(--civic-success);
+  background: var(--civic-success-bg);
+}
+
+.exceptionSignal-current {
+  border-color: var(--civic-action);
+  background: var(--civic-raised-bg);
+}
+
+.exceptionSignal-danger {
+  border-color: var(--civic-danger);
+  background: var(--civic-danger-bg);
+}
+
 .graphStep {
   position: relative;
   display: grid;
@@ -1571,6 +1627,7 @@ dd {
   .filterBar,
   .operationsRow,
   .operationsRow dl,
+  .exceptionLane,
   .graph {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1685,6 +1742,7 @@ dd {
   }
 
   .filterBar,
+  .exceptionLane,
   .graph {
     grid-template-columns: 1fr;
   }
