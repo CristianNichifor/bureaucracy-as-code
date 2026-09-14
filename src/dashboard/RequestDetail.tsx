@@ -19,6 +19,7 @@ export function RequestDetail({
   const latestRole = getRequestLatestRole(events);
   const latestEvent = events.at(-1);
   const responsibility = getResponsibilityLabel(request, labels);
+  const deadlineSummary = getDeadlineSummary(request, labels);
   const evidenceState = request.responseDocumentHash
     ? request.responseDocumentHash.slice(0, 18)
     : latestEvent?.documentHash
@@ -55,6 +56,17 @@ export function RequestDetail({
           <span>{labels.evidence}</span>
           <strong>{evidenceState}</strong>
         </div>
+      </div>
+      <div className={`deadlineStrip deadlineStrip-${deadlineSummary.tone}`}>
+        <div>
+          <span>{labels.deadlineStatus}</span>
+          <strong>{deadlineSummary.label}</strong>
+        </div>
+        <div>
+          <span>{labels.deadline}</span>
+          <strong>{new Date(request.deadlineAt).toLocaleDateString()}</strong>
+        </div>
+        <p>{deadlineSummary.copy}</p>
       </div>
       <div className="metricGrid">
         <div className="metric">
@@ -108,6 +120,45 @@ export function RequestDetail({
       </dl>
     </section>
   );
+}
+
+function getDeadlineSummary(
+  request: Law544Request,
+  labels: Dictionary["detail"],
+): { label: string; copy: string; tone: "closed" | "danger" | "warning" | "ok" } {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const deadlineTime = new Date(request.deadlineAt).getTime();
+  const daysUntil = Math.ceil((deadlineTime - Date.now()) / dayMs);
+
+  if (request.status === "Resolved" || request.status === "Rejected") {
+    return {
+      label: labels.deadlineClosed,
+      copy: labels.daysRemaining.replace("{days}", Math.max(daysUntil, 0).toString()),
+      tone: "closed",
+    };
+  }
+
+  if (daysUntil < 0) {
+    return {
+      label: labels.deadlineOverdue,
+      copy: labels.daysOverdue.replace("{days}", Math.abs(daysUntil).toString()),
+      tone: "danger",
+    };
+  }
+
+  if (daysUntil <= 7) {
+    return {
+      label: labels.deadlineDueSoon,
+      copy: labels.daysRemaining.replace("{days}", daysUntil.toString()),
+      tone: "warning",
+    };
+  }
+
+  return {
+    label: labels.deadlineOnTrack,
+    copy: labels.daysRemaining.replace("{days}", daysUntil.toString()),
+    tone: "ok",
+  };
 }
 
 function getResponsibilityLabel(request: Law544Request, labels: Dictionary["detail"]): string {

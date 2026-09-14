@@ -118,6 +118,13 @@ export type Dictionary = {
     latestAction: string;
     responsibility: string;
     evidence: string;
+    deadlineStatus: string;
+    deadlineClosed: string;
+    deadlineOverdue: string;
+    deadlineDueSoon: string;
+    deadlineOnTrack: string;
+    daysRemaining: string;
+    daysOverdue: string;
     registryQueue: string;
     directorQueue: string;
     finalResponse: string;
@@ -414,6 +421,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       latestAction: "Latest action",
       responsibility: "Responsibility",
       evidence: "Evidence",
+      deadlineStatus: "Deadline status",
+      deadlineClosed: "Closed",
+      deadlineOverdue: "Overdue",
+      deadlineDueSoon: "Due soon",
+      deadlineOnTrack: "On track",
+      daysRemaining: "{days} days remaining",
+      daysOverdue: "{days} days overdue",
       registryQueue: "Registry queue",
       directorQueue: "Director queue",
       finalResponse: "Final response",
@@ -720,6 +734,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       latestAction: "Ultima actiune",
       responsibility: "Responsabilitate",
       evidence: "Dovada",
+      deadlineStatus: "Status termen",
+      deadlineClosed: "Inchisa",
+      deadlineOverdue: "Intarziata",
+      deadlineDueSoon: "Termen apropiat",
+      deadlineOnTrack: "In grafic",
+      daysRemaining: "{days} zile ramase",
+      daysOverdue: "{days} zile intarziere",
       registryQueue: "Coada registratura",
       directorQueue: "Coada director",
       finalResponse: "Raspuns final",

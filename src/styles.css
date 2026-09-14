@@ -639,6 +639,58 @@ h2 {
   white-space: nowrap;
 }
 
+.deadlineStrip {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 1.4fr);
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  background: var(--civic-raised);
+}
+
+.deadlineStrip div {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.deadlineStrip span {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.deadlineStrip strong {
+  overflow-wrap: anywhere;
+}
+
+.deadlineStrip p {
+  justify-self: end;
+  margin: 0;
+  font-weight: 900;
+}
+
+.deadlineStrip-ok {
+  border-color: var(--civic-success);
+}
+
+.deadlineStrip-warning {
+  border-color: var(--civic-warning);
+}
+
+.deadlineStrip-danger {
+  border-color: var(--civic-danger);
+  background: var(--civic-danger-bg);
+}
+
+.deadlineStrip-closed {
+  border-color: var(--civic-border-strong);
+}
+
 .metricGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1246,8 +1298,13 @@ dd {
   .metricGrid,
   .detailList,
   .caseGlance,
+  .deadlineStrip,
   .readinessGrid {
     grid-template-columns: 1fr;
+  }
+
+  .deadlineStrip p {
+    justify-self: start;
   }
 
   .filterBar,
