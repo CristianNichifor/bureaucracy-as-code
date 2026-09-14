@@ -12,6 +12,9 @@ export type Dictionary = {
     importState: string;
     exportReceipt: string;
     exportProofReport: string;
+    proofReportScope: string;
+    proofReportEvents: string;
+    proofReportResponses: string;
     reset: string;
     languageLabel: string;
     themeLabel: string;
@@ -266,6 +269,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       importState: "Import",
       exportReceipt: "Export receipt",
       exportProofReport: "Export proof report",
+      proofReportScope: "{count} visible requests",
+      proofReportEvents: "{count} signed events",
+      proofReportResponses: "{count} response hashes",
       reset: "Reset",
       languageLabel: "Language",
       themeLabel: "Theme",
@@ -579,6 +585,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       importState: "Importa",
       exportReceipt: "Exporta dovada",
       exportProofReport: "Exporta raport",
+      proofReportScope: "{count} cereri vizibile",
+      proofReportEvents: "{count} evenimente semnate",
+      proofReportResponses: "{count} hash-uri raspuns",
       reset: "Reseteaza",
       languageLabel: "Limba",
       themeLabel: "Tema",

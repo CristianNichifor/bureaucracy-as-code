@@ -263,6 +263,12 @@ test("exports a public audit receipt for the selected request", async ({ page })
 test("exports a public proof report for visible requests", async ({ page }) => {
   await page.goto("./");
 
+  await expect(page.getByText(/\d+ visible requests/).first()).toBeVisible();
+  await page.getByPlaceholder("Search request, subject, institution, registry").fill("rail");
+  await expect(page.getByText("1 visible requests")).toBeVisible();
+  await expect(page.getByText(/\d+ signed events/).first()).toBeVisible();
+  await expect(page.getByText("1 response hashes")).toBeVisible();
+
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export proof report" }).click();
   const download = await downloadPromise;
@@ -280,7 +286,7 @@ test("exports a public proof report for visible requests", async ({ page }) => {
 
   expect(download.suggestedFilename()).toMatch(/law544-public-proof-report-\d+-requests\.json/);
   expect(report.schema).toBe("law544-public-proof-report/v1");
-  expect(report.summary.requestCount).toBeGreaterThan(0);
+  expect(report.summary.requestCount).toBe(1);
   expect(report.summary.eventCount).toBeGreaterThan(0);
   expect(report.summary.invalidChainCount).toBe(0);
 });

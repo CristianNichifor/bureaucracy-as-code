@@ -183,10 +183,32 @@ h2 {
 }
 
 .toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  margin: var(--civic-space-5) 0 var(--civic-space-3);
+}
+
+.toolbarActions,
+.proofReportContext {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: var(--civic-space-5) 0 var(--civic-space-3);
+}
+
+.proofReportContext {
+  justify-content: end;
+}
+
+.proofReportContext span {
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-radius);
+  padding: 8px 10px;
+  color: var(--civic-muted);
+  background: var(--civic-raised);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .civicButton,
@@ -1354,6 +1376,10 @@ dd {
     gap: 4px;
   }
 
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
   .cellLabel {
     display: inline;
     color: var(--civic-subtle);
@@ -1386,6 +1412,8 @@ dd {
   }
 
   .toolbar button,
+  .toolbarActions,
+  .proofReportContext,
   .filterReset,
   .scenarioButton,
   .panelAction,

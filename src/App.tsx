@@ -342,6 +342,7 @@ export function App() {
     ...seededRequestScenarios.map((scenario) => ({ ...scenario, source: "seed" as const })),
   ];
   const filteredItems = filterRequestExplorerItems(explorerItems, filters);
+  const proofReportContext = getProofReportContext(filteredItems);
   const selectedItem = getSelectedExplorerItem(filteredItems, selectedRequestId) ?? getSelectedExplorerItem(explorerItems, selectedRequestId);
   const selectedRequest = selectedItem?.request ?? request;
   const selectedEvents = selectedItem?.events ?? activeEvents;
@@ -387,11 +388,18 @@ export function App() {
       </header>
 
       <section className="toolbar" aria-label={t.app.actionsLabel}>
-        <button className="civicButton civicButtonSecondary" onClick={() => void exportState()} type="button"><Download size={18} />{t.app.exportState}</button>
-        <button className="civicButton civicButtonSecondary" onClick={() => exportAuditReceipt()} type="button"><Download size={18} />{t.app.exportReceipt}</button>
-        <button className="civicButton civicButtonSecondary" onClick={() => exportProofReport(filteredItems)} type="button"><Download size={18} />{t.app.exportProofReport}</button>
-        <button className="civicButton civicButtonSecondary" onClick={() => fileInput.current?.click()} type="button"><FileUp size={18} />{t.app.importState}</button>
-        <button className="civicButton civicButtonSecondary" onClick={() => void resetDemo(t.app.resetMessage)} type="button"><RefreshCw size={18} />{t.app.reset}</button>
+        <div className="toolbarActions">
+          <button className="civicButton civicButtonSecondary" onClick={() => void exportState()} type="button"><Download size={18} />{t.app.exportState}</button>
+          <button className="civicButton civicButtonSecondary" onClick={() => exportAuditReceipt()} type="button"><Download size={18} />{t.app.exportReceipt}</button>
+          <button className="civicButton civicButtonSecondary" onClick={() => exportProofReport(filteredItems)} type="button"><Download size={18} />{t.app.exportProofReport}</button>
+          <button className="civicButton civicButtonSecondary" onClick={() => fileInput.current?.click()} type="button"><FileUp size={18} />{t.app.importState}</button>
+          <button className="civicButton civicButtonSecondary" onClick={() => void resetDemo(t.app.resetMessage)} type="button"><RefreshCw size={18} />{t.app.reset}</button>
+        </div>
+        <div className="proofReportContext" aria-label={t.app.exportProofReport}>
+          <span>{formatMessage(t.app.proofReportScope, { count: proofReportContext.requestCount })}</span>
+          <span>{formatMessage(t.app.proofReportEvents, { count: proofReportContext.eventCount })}</span>
+          <span>{formatMessage(t.app.proofReportResponses, { count: proofReportContext.responseHashCount })}</span>
+        </div>
         <input
           ref={fileInput}
           type="file"
@@ -493,6 +501,14 @@ function DashboardSection({
       {children}
     </section>
   );
+}
+
+function getProofReportContext(items: RequestExplorerItem[]) {
+  return {
+    requestCount: items.length,
+    eventCount: items.reduce((count, item) => count + item.events.length, 0),
+    responseHashCount: items.filter((item) => Boolean(item.request.responseDocumentHash)).length,
+  };
 }
 
 function formatMessage(template: string, values: Record<string, string | number>): string {
