@@ -27,6 +27,16 @@ Expected artifacts:
 
 All artifact paths above are ignored by git and can be regenerated.
 
+## Screenshot review
+
+Review the generated capture pack before sharing the demo:
+
+- `01-public-explorer-desktop.png`
+- `02-resolved-request-desktop.png`
+- `03-proof-report-ready-desktop.png`
+- `04-romanian-mobile.png`
+- `05-ultrawide-centered-layout.png`
+
 ## Browser walkthrough
 
 1. Start on the public explorer.
@@ -71,3 +81,8 @@ Confirm:
 - the full guided scenario completes
 - export receipt and proof report download JSON
 - refresh works after one online load
+
+## Release tag
+
+After the final release PR is merged and `pnpm demo:release` passes on `main`,
+create a signed `v0.1.0` tag. Do not tag an unmerged branch.

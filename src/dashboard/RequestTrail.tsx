@@ -19,6 +19,10 @@ export function RequestTrail({
         <h2>{labels.title}</h2>
         <span className="pill">{requestId}</span>
       </div>
+      <div className="explainBox">
+        <strong>{labels.explainLabel}</strong>
+        <p>{labels.explainerCopy}</p>
+      </div>
       {events.length > 0 ? (
         <ol className="timeline">
           {events.map((event) => {

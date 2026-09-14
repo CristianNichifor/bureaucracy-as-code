@@ -29,7 +29,7 @@ describe("request explorer helpers", () => {
       status: "Resolved",
     });
 
-    expect(resolved.map((item) => item.request.id)).toEqual(["REQ-2026-0002"]);
+    expect(resolved.map((item) => item.request.id)).toEqual(["REQ-2026-0002", "REQ-2026-0008"]);
   });
 
   it("filters requests by institution", () => {
@@ -52,26 +52,35 @@ describe("request explorer helpers", () => {
       "REQ-2026-0003",
       "REQ-2026-0005",
       "REQ-2026-0006",
+      "REQ-2026-0007",
+      "REQ-2026-0008",
+      "REQ-2026-0009",
+      "REQ-2026-0010",
     ]);
   });
 
   it("returns sorted institution options", () => {
     expect(getInstitutionOptions(items)).toEqual([
       "City Hall Bucharest Sector 1",
+      "Ministry of Education",
+      "Ministry of Energy",
       "Ministry of Environment",
       "Ministry of Finance",
       "Ministry of Health",
+      "Ministry of Transport",
       "National Agency for Cadastre",
+      "National Authority for Consumer Protection",
     ]);
   });
 
   it("returns deterministic status summary counts", () => {
     expect(getStatusSummaries(items)).toEqual([
-      { status: "ExtensionRequested", count: 1 },
-      { status: "InProgress", count: 1 },
+      { status: "ExtensionRequested", count: 2 },
+      { status: "InProgress", count: 2 },
       { status: "Overdue", count: 1 },
       { status: "Registered", count: 1 },
-      { status: "Resolved", count: 1 },
+      { status: "Rejected", count: 1 },
+      { status: "Resolved", count: 2 },
     ]);
   });
 
