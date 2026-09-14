@@ -1622,6 +1622,86 @@ dd {
   color: var(--civic-success);
 }
 
+.presenterMode {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 10px;
+  background: var(--civic-raised);
+}
+
+.presenterModeHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.presenterModeHeader span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--civic-subtle);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.presenterModeHeader strong {
+  overflow-wrap: anywhere;
+  color: var(--civic-text);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+}
+
+.presenterCueGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.presenterCue {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-radius);
+  padding: 9px;
+  color: var(--civic-muted);
+  background: var(--civic-surface);
+  text-decoration: none;
+}
+
+.presenterCue:hover {
+  border-color: var(--civic-border-strong);
+}
+
+.presenterCue span {
+  color: var(--civic-subtle);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.presenterCue strong {
+  color: var(--civic-text);
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.presenterCue small {
+  color: var(--civic-muted);
+  line-height: 1.35;
+}
+
+.presenterCue-current {
+  border-color: var(--civic-action);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--civic-action) 18%, transparent);
+}
+
 .presenterCommands {
   display: flex;
   flex-wrap: wrap;
@@ -1709,6 +1789,10 @@ dd {
   }
 
   .presenterSteps {
+    grid-template-columns: 1fr;
+  }
+
+  .presenterCueGrid {
     grid-template-columns: 1fr;
   }
 

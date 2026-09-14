@@ -310,6 +310,11 @@ export type Dictionary = {
     title: string;
     label: string;
     copy: string;
+    modeTitle: string;
+    cues: Record<
+      "explorer" | "scenario" | "machinery" | "proofs" | "localization",
+      { label: string; title: string; copy: string; href: string }
+    >;
     steps: string[];
     commandsTitle: string;
     releaseCommand: string;
@@ -685,6 +690,39 @@ export const dictionaries: Record<Language, Dictionary> = {
       label: "Live demo flow",
       copy:
         "Use this sequence for a five-minute public walkthrough after running the release check.",
+      modeTitle: "Presenter mode",
+      cues: {
+        explorer: {
+          label: "Start",
+          title: "Show the public explorer",
+          copy: "Point to anonymized Law 544 requests and current statuses.",
+          href: "#request-explorer-section",
+        },
+        scenario: {
+          label: "Next",
+          title: "Run the signed workflow",
+          copy: "Advance the request and show each recorded state change.",
+          href: "#run-request",
+        },
+        machinery: {
+          label: "Now",
+          title: "Open the machinery view",
+          copy: "Show the owner, handoff path, signer role, and graph lane.",
+          href: "#request-accountability",
+        },
+        proofs: {
+          label: "Verify",
+          title: "Preview and verify proofs",
+          copy: "Compare receipt exports and response hashes without exposing documents.",
+          href: "#proof-verification",
+        },
+        localization: {
+          label: "Close",
+          title: "Switch language and release view",
+          copy: "Finish with Romanian mode and the release-readiness gates.",
+          href: "#release-operations",
+        },
+      },
       steps: [
         "Open the explorer and point to anonymized seeded Law 544 requests.",
         "Run the full guided scenario from citizen submission to final response.",
@@ -1065,6 +1103,39 @@ export const dictionaries: Record<Language, Dictionary> = {
       label: "Flux demo live",
       copy:
         "Foloseste aceasta ordine pentru o prezentare publica de cinci minute dupa verificarea release-ului.",
+      modeTitle: "Mod prezentare",
+      cues: {
+        explorer: {
+          label: "Start",
+          title: "Arata explorerul public",
+          copy: "Indica cererile Legea 544 anonimizate si statusurile curente.",
+          href: "#request-explorer-section",
+        },
+        scenario: {
+          label: "Urmator",
+          title: "Ruleaza fluxul semnat",
+          copy: "Avanseaza cererea si arata fiecare schimbare de stare inregistrata.",
+          href: "#run-request",
+        },
+        machinery: {
+          label: "Acum",
+          title: "Deschide vederea masinariei",
+          copy: "Arata responsabilul, transferul, rolul semnatar si graful.",
+          href: "#request-accountability",
+        },
+        proofs: {
+          label: "Verifica",
+          title: "Previzualizeaza si verifica dovezi",
+          copy: "Compara exporturile si hash-urile raspunsurilor fara documente brute.",
+          href: "#proof-verification",
+        },
+        localization: {
+          label: "Final",
+          title: "Schimba limba si vederea release",
+          copy: "Incheie cu limba romana si verificarile de release-readiness.",
+          href: "#release-operations",
+        },
+      },
       steps: [
         "Deschide explorerul si arata cererile Legea 544 anonimizate.",
         "Ruleaza scenariul complet de la depunere pana la raspuns final.",
