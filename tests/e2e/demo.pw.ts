@@ -76,6 +76,9 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("button", { name: /deadline warning/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /partial disclosure/i })).toBeVisible();
   await expect(page.getByRole("button", { name: "Redirected", exact: true })).toBeVisible();
+  await expect(page.getByText("Normal request lifecycle with evidence and a final response hash.")).toBeVisible();
+  await expect(page.getByText("Proves missed deadlines remain visible instead of being overwritten.")).toBeVisible();
+  await expect(page.getByText("signed events").first()).toBeVisible();
   await expect(page.getByText("Browser demo ready")).toBeVisible();
   await expect(page.getByText(/No ROeID integration/)).toBeVisible();
   await expect(page.getByText("pnpm demo:verify")).toBeVisible();
@@ -211,6 +214,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Pregatire release" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Checklist prezentare" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Depune cererea/i })).toBeVisible();
+  await expect(page.getByText("Ciclul normal al cererii, cu dovada si hash pentru raspunsul final.")).toBeVisible();
   await expect(page.getByRole("region", { name: "Actiuni demo" }).getByRole("button", { name: "Exporta dovada" })).toBeVisible();
 });
 

@@ -5,6 +5,7 @@ import { browserGuidedScenarios, type GuidedScenarioId } from "../demo/guidedSce
 import type { Law544Status } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
 import { demoSteps, getCurrentStepIndex } from "./demoProgress";
+import { formatLaw544Status } from "./requestExplorer";
 
 export function GuidedProgress({
   status,
@@ -81,20 +82,39 @@ export function GuidedProgress({
           <strong>{labels.noRecordedEvent}</strong>
         )}
       </div>
-      <div className="scenarioRunBar" aria-label={labels.scenariosLabel}>
+      <div className="scenarioDeck" aria-label={labels.scenariosLabel}>
         {browserGuidedScenarios.map((scenario) => (
-          <button
-            aria-busy={isRunningScenario}
-            className="civicButton scenarioButton"
-            disabled={isRunningScenario || isAutoRunning}
-            key={scenario.id}
-            onClick={() => onRunScenario(scenario.id)}
-            title={scenario.description}
-            type="button"
-          >
-            <PlayCircle size={16} />
-            {labels.scenarios[scenario.id]}
-          </button>
+          <article className="scenarioCard" key={scenario.id}>
+            <div className="scenarioCardHeader">
+              <strong>{labels.scenarios[scenario.id]}</strong>
+              <span className={`status status-${scenario.finalStatus.toLowerCase()}`}>
+                {formatLaw544Status(scenario.finalStatus)}
+              </span>
+            </div>
+            <p>{labels.scenarioSummaries[scenario.id]}</p>
+            <dl className="scenarioFacts">
+              <div>
+                <dt>{labels.scenarioOutcome}</dt>
+                <dd>{formatLaw544Status(scenario.finalStatus)}</dd>
+              </div>
+              <div>
+                <dt>{labels.scenarioEvents}</dt>
+                <dd>{scenario.steps.length}</dd>
+              </div>
+            </dl>
+            <small>{labels.scenarioProofs[scenario.id]}</small>
+            <button
+              aria-busy={isRunningScenario}
+              className="civicButton scenarioButton"
+              disabled={isRunningScenario || isAutoRunning}
+              onClick={() => onRunScenario(scenario.id)}
+              title={scenario.description}
+              type="button"
+            >
+              <PlayCircle size={16} />
+              {labels.scenarios[scenario.id]}
+            </button>
+          </article>
         ))}
       </div>
       <div className="stepList">

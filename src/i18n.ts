@@ -57,6 +57,10 @@ export type Dictionary = {
     recordedLabel: string;
     noRecordedEvent: string;
     scenarios: Record<string, string>;
+    scenarioOutcome: string;
+    scenarioEvents: string;
+    scenarioSummaries: Record<string, string>;
+    scenarioProofs: Record<string, string>;
     steps: Record<string, { label: string; actor: string }>;
   };
   integrity: {
@@ -317,6 +321,26 @@ export const dictionaries: Record<Language, Dictionary> = {
         redirected: "Redirected",
         overdue: "Overdue",
         rejected: "Rejected",
+      },
+      scenarioOutcome: "Outcome",
+      scenarioEvents: "signed events",
+      scenarioSummaries: {
+        "happy-path": "Normal request lifecycle with evidence and a final response hash.",
+        extension: "Allowed extension followed by resolution from the extended state.",
+        "deadline-warning": "Open extension state with a visible deadline and escalation marker.",
+        "partial-disclosure": "Redaction note plus partial-response hash for constrained disclosure.",
+        redirected: "Competent-authority redirect recorded as a signed resolution.",
+        overdue: "Registry marks the file overdue after the legal response window.",
+        rejected: "Signed refusal document closes a request outside the demo scope.",
+      },
+      scenarioProofs: {
+        "happy-path": "Proves the public happy path from submission to response verification.",
+        extension: "Proves the state machine allows only the coded extension route.",
+        "deadline-warning": "Proves deadline pressure is visible before final closure.",
+        "partial-disclosure": "Proves redaction rationale remains auditable without publishing documents.",
+        redirected: "Proves redirect outcomes can be verified from public metadata.",
+        overdue: "Proves missed deadlines remain visible instead of being overwritten.",
+        rejected: "Proves refusal decisions still require a signed response hash.",
       },
       steps: {
         create: { label: "Submit request", actor: "Citizen" },
@@ -596,6 +620,26 @@ export const dictionaries: Record<Language, Dictionary> = {
         redirected: "Redirectionata",
         overdue: "Intarziata",
         rejected: "Respinsa",
+      },
+      scenarioOutcome: "Rezultat",
+      scenarioEvents: "evenimente semnate",
+      scenarioSummaries: {
+        "happy-path": "Ciclul normal al cererii, cu dovada si hash pentru raspunsul final.",
+        extension: "Prelungire permisa, apoi rezolvare din starea extinsa.",
+        "deadline-warning": "Stare de prelungire deschisa, cu termen si escaladare vizibile.",
+        "partial-disclosure": "Nota de redactare si hash pentru raspuns partial.",
+        redirected: "Redirectionare catre autoritatea competenta, semnata ca rezolvare.",
+        overdue: "Registratura marcheaza cererea ca intarziata dupa termenul legal.",
+        rejected: "Refuz semnat pentru o cerere in afara scopului demo.",
+      },
+      scenarioProofs: {
+        "happy-path": "Demonstreaza fluxul complet pana la verificarea raspunsului.",
+        extension: "Demonstreaza ca prelungirea trece doar prin ruta codificata.",
+        "deadline-warning": "Demonstreaza presiunea termenului inainte de inchidere.",
+        "partial-disclosure": "Demonstreaza auditarea redactarii fara publicarea documentelor.",
+        redirected: "Demonstreaza verificarea redirectionarii din metadate publice.",
+        overdue: "Demonstreaza ca termenul depasit ramane vizibil.",
+        rejected: "Demonstreaza ca refuzul are nevoie de raspuns semnat.",
       },
       steps: {
         create: { label: "Depune cererea", actor: "Cetatean" },
