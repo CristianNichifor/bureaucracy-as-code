@@ -31,7 +31,8 @@
   --civic-radius: 6px;
   --civic-panel-radius: 8px;
   --civic-control-height: 44px;
-  --civic-page-max: 1180px;
+  --civic-page-max: 1920px;
+  --civic-page-gutter: clamp(12px, 2vw, 32px);
   --civic-readable: 72ch;
   --civic-shadow-focus: 0 0 0 3px rgb(34 73 111 / 22%);
 }

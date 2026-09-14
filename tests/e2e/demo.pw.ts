@@ -15,7 +15,9 @@ const uiViewports = [
   { name: "tablet", width: 768, height: 900 },
   { name: "laptop", width: 1024, height: 900 },
   { name: "desktop", width: 1440, height: 960 },
-  { name: "wide desktop", width: 1728, height: 960 },
+  { name: "full desktop", width: 1920, height: 1000 },
+  { name: "wide centered desktop", width: 2048, height: 1000 },
+  { name: "ultrawide centered desktop", width: 2560, height: 1080 },
 ];
 
 async function freezeBrowserClock(page: import("@playwright/test").Page, iso: string) {
@@ -126,6 +128,25 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
       expect(box.width, `${viewport.name} element collapsed`).toBeGreaterThan(0);
       expect(box.left, `${viewport.name} element leaks left`).toBeGreaterThanOrEqual(-1);
       expect(box.right, `${viewport.name} element leaks right`).toBeLessThanOrEqual(box.viewport + 1);
+    }
+
+    const shell = await page.locator(".appShell").evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      return {
+        left: rect.left,
+        right: rect.right,
+        width: rect.width,
+        viewport: window.innerWidth,
+      };
+    });
+
+    if (viewport.width <= 1920) {
+      expect(shell.width, `${viewport.name} shell stretches full viewport`).toBeCloseTo(viewport.width, 0);
+      expect(shell.left, `${viewport.name} shell starts at viewport edge`).toBeCloseTo(0, 0);
+    } else {
+      expect(shell.width, `${viewport.name} shell caps at 1920px`).toBeCloseTo(1920, 0);
+      expect(shell.left, `${viewport.name} shell is centered`).toBeCloseTo((viewport.width - 1920) / 2, 0);
+      expect(shell.right, `${viewport.name} shell is centered`).toBeCloseTo((viewport.width + 1920) / 2, 0);
     }
 
     await testInfo.attach(`civic-ui-${viewport.width}.png`, {
