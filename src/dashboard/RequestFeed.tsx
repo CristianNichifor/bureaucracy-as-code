@@ -5,6 +5,7 @@ import type { Law544Status } from "../law544/types";
 import {
   DEFAULT_EXPLORER_FILTERS,
   filterRequestExplorerItems,
+  formatLaw544Status,
   getInstitutionOptions,
   getRequestEventCount,
   getRequestLatestRole,
@@ -60,7 +61,7 @@ function RequestFeedRow({
       </div>
       <div>
         <span className="cellLabel">{labels.status}</span>
-        <span className={`status status-${request.status.toLowerCase()}`}>{request.status}</span>
+        <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.latestRole}</span>
@@ -83,6 +84,7 @@ function RequestFeedRow({
 }
 
 export function RequestFeed({
+  id,
   items,
   selectedRequestId,
   filters,
@@ -90,6 +92,7 @@ export function RequestFeed({
   onSelectRequest,
   labels,
 }: {
+  id?: string;
   items: RequestExplorerItem[];
   selectedRequestId: string | null;
   filters: RequestExplorerFilters;
@@ -106,7 +109,7 @@ export function RequestFeed({
     filters.role !== DEFAULT_EXPLORER_FILTERS.role;
 
   return (
-    <section className="panel requestFeedPanel">
+    <section className="panel requestFeedPanel" id={id}>
       <div className="panelHeader">
         <h2>{labels.title}</h2>
         <span className="pill">{filteredItems.length} {labels.visible}</span>
@@ -130,7 +133,7 @@ export function RequestFeed({
             onClick={() => onFiltersChange({ ...filters, status })}
             type="button"
           >
-            <span>{status}</span>
+            <span>{formatLaw544Status(status)}</span>
             <strong>{count}</strong>
           </button>
         ))}
@@ -147,7 +150,7 @@ export function RequestFeed({
           >
             {statusOptions.map((status) => (
               <option key={status} value={status}>
-                {status}
+                {formatLaw544Status(status)}
               </option>
             ))}
           </select>
