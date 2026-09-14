@@ -33,6 +33,23 @@ export function getRequestEventCount(events: LedgerEvent[]): number {
   return events.length;
 }
 
+export function formatLaw544Status(status: Law544Status | "All"): string {
+  const labels: Record<Law544Status | "All", string> = {
+    All: "All",
+    Draft: "Draft",
+    Created: "Created",
+    Registered: "Registered",
+    Routed: "Routed",
+    InProgress: "In progress",
+    ExtensionRequested: "Extension requested",
+    Resolved: "Resolved",
+    Rejected: "Rejected",
+    Overdue: "Overdue",
+  };
+
+  return labels[status];
+}
+
 export function filterRequestExplorerItems(
   items: RequestExplorerItem[],
   filters: RequestExplorerFilters,
