@@ -265,7 +265,8 @@ h2 {
 
 .guidedPanel,
 .integrityPanel,
-.timelinePanel {
+.timelinePanel,
+.readinessPanel {
   grid-column: 1 / -1;
 }
 
@@ -777,6 +778,90 @@ dd {
   overflow-wrap: anywhere;
 }
 
+.readinessGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.readinessGroup {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  background: var(--civic-raised);
+}
+
+.readinessGroup h3 {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.readinessGroup > div {
+  display: grid;
+  gap: 8px;
+}
+
+.readinessFact,
+.readinessCheck,
+.readinessLink {
+  display: grid;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+.readinessFact {
+  grid-template-columns: minmax(78px, 0.42fr) minmax(0, 1fr);
+}
+
+.readinessFact span,
+.readinessLink span {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.readinessFact strong,
+.readinessLink strong,
+.readinessCheck span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.readinessCheck {
+  grid-template-columns: auto minmax(0, 1fr);
+  color: var(--civic-action-hover);
+  font-weight: 700;
+}
+
+.readinessCheck svg {
+  color: var(--civic-success);
+}
+
+.readinessLink {
+  grid-template-columns: minmax(0, 1fr) auto;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-radius);
+  padding: 8px;
+  color: var(--civic-action);
+  background: var(--civic-surface);
+  text-decoration: none;
+}
+
+.readinessLink span,
+.readinessLink strong {
+  grid-column: 1;
+}
+
+.readinessLink svg {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
 .scenarioButton {
   padding: 0 12px;
 }
@@ -948,7 +1033,8 @@ dd {
   .grid,
   .metricGrid,
   .detailList,
-  .caseGlance {
+  .caseGlance,
+  .readinessGrid {
     grid-template-columns: 1fr;
   }
 

@@ -182,6 +182,31 @@ export type Dictionary = {
     builtAt: string;
     local: string;
   };
+  readiness: {
+    title: string;
+    status: string;
+    statusReady: string;
+    buildProof: string;
+    commit: string;
+    branch: string;
+    environment: string;
+    builtAt: string;
+    deployTargets: string;
+    standalone: string;
+    digital: string;
+    privacyBoundary: string;
+    noRoeid: string;
+    noDurableCloudflare: string;
+    noPiiLedger: string;
+    localSigningKeys: string;
+    verification: string;
+    verify: string;
+    demoVerify: string;
+    e2e: string;
+    codeql: string;
+    gitleaks: string;
+    dependencyReview: string;
+  };
 };
 
 export const dictionaries: Record<Language, Dictionary> = {
@@ -385,6 +410,31 @@ export const dictionaries: Record<Language, Dictionary> = {
       builtAt: "Built",
       local: "Local build",
     },
+    readiness: {
+      title: "Release readiness",
+      status: "Status",
+      statusReady: "Browser demo ready",
+      buildProof: "Build proof",
+      commit: "Commit",
+      branch: "Branch",
+      environment: "Environment",
+      builtAt: "Built",
+      deployTargets: "Deploy targets",
+      standalone: "Standalone Pages",
+      digital: "Digital mount",
+      privacyBoundary: "Privacy boundary",
+      noRoeid: "No ROeID integration",
+      noDurableCloudflare: "No durable Cloudflare data resources required",
+      noPiiLedger: "No PII or raw documents on the ledger",
+      localSigningKeys: "Signing keys stay in this browser",
+      verification: "Verification gates",
+      verify: "pnpm verify",
+      demoVerify: "pnpm demo:verify",
+      e2e: "E2E / Playwright",
+      codeql: "CodeQL",
+      gitleaks: "Secret Scan / gitleaks",
+      dependencyReview: "dependency-review",
+    },
   },
   ro: {
     app: {
@@ -585,6 +635,31 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Mediu",
       builtAt: "Construita",
       local: "Build local",
+    },
+    readiness: {
+      title: "Pregatire release",
+      status: "Status",
+      statusReady: "Demo-ul din browser este pregatit",
+      buildProof: "Dovada build",
+      commit: "Commit",
+      branch: "Ramura",
+      environment: "Mediu",
+      builtAt: "Construita",
+      deployTargets: "Tintele de publicare",
+      standalone: "Pages standalone",
+      digital: "Montare digital",
+      privacyBoundary: "Limita de confidentialitate",
+      noRoeid: "Fara integrare ROeID",
+      noDurableCloudflare: "Nu necesita resurse Cloudflare durabile",
+      noPiiLedger: "Fara date personale sau documente brute in registru",
+      localSigningKeys: "Cheile de semnare raman in acest browser",
+      verification: "Verificari",
+      verify: "pnpm verify",
+      demoVerify: "pnpm demo:verify",
+      e2e: "E2E / Playwright",
+      codeql: "CodeQL",
+      gitleaks: "Secret Scan / gitleaks",
+      dependencyReview: "dependency-review",
     },
   },
 };
