@@ -379,6 +379,7 @@ h2 {
 }
 
 .guidedPanel,
+.dataFlowPanel,
 .integrityPanel,
 .timelinePanel,
 .demoCompletenessPanel {
@@ -926,6 +927,83 @@ h2 {
 }
 
 .evidenceBriefGrid small {
+  color: var(--civic-muted);
+  line-height: 1.35;
+}
+
+.dataFlowSteps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dataFlowStep {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 9px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  background: var(--civic-raised);
+}
+
+.dataFlowStep::after {
+  position: absolute;
+  top: 24px;
+  right: -11px;
+  z-index: 1;
+  width: 11px;
+  height: 1px;
+  background: var(--civic-border-strong);
+  content: "";
+}
+
+.dataFlowStep:last-child::after {
+  display: none;
+}
+
+.dataFlowStep svg {
+  color: var(--civic-action);
+}
+
+.dataFlowNumber,
+.dataFlowStep span,
+.dataFlowStep dt {
+  color: var(--civic-subtle);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.dataFlowStep strong,
+.dataFlowStep dd {
+  overflow-wrap: anywhere;
+}
+
+.dataFlowStep strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--civic-text);
+  font-size: 1rem;
+}
+
+.dataFlowStep dl {
+  display: grid;
+  gap: 8px;
+}
+
+.dataFlowStep dl div {
+  display: grid;
+  gap: 3px;
+}
+
+.dataFlowStep dd {
+  margin: 0;
   color: var(--civic-muted);
   line-height: 1.35;
 }
@@ -1920,6 +1998,7 @@ dd {
   .operationsMetrics,
   .scenarioComparisonGrid,
   .evidenceBriefGrid,
+  .dataFlowSteps,
   .transferSafetyGrid,
   .demoCompletenessGrid,
   .detailList,
@@ -1972,6 +2051,10 @@ dd {
 
   .stepList {
     grid-template-columns: 1fr;
+  }
+
+  .dataFlowStep::after {
+    display: none;
   }
 
   .presenterSteps {

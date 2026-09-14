@@ -24,6 +24,7 @@ import { BuildMetadata } from "./dashboard/BuildMetadata";
 import { ReleaseReadiness } from "./dashboard/ReleaseReadiness";
 import { PresenterChecklist } from "./dashboard/PresenterChecklist";
 import { DemoCompletenessPanel } from "./dashboard/DemoCompletenessPanel";
+import { DataFlowPanel } from "./dashboard/DataFlowPanel";
 import { buildPublicAuditReceipt, buildPublicProofReport } from "./dashboard/auditReceipt";
 import { demoSteps, getCurrentStepIndex, type DemoStep } from "./dashboard/demoProgress";
 import { fallbackBuildInfo, loadBuildInfo, type BuildInfo } from "./buildInfo";
@@ -463,6 +464,7 @@ export function App() {
               onPause={() => setIsAutoRunning(false)}
               labels={t.guided}
             />
+            <DataFlowPanel labels={t.dataFlow} />
             <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
           </div>
         </DashboardSection>
