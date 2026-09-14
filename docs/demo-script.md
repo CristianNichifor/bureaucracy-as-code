@@ -150,5 +150,5 @@ view first, then capture the completed guided flow:
 - Audit receipt export gives a portable artifact for conversations, procurement
   notes, or issue reports while keeping the canonical state in the ledger path.
 - The browser ledger is the canonical source for this demo milestone.
-- Cloudflare Pages Functions, D1/KV, and Hardhat contracts are available as
-  engineering references, but the live walkthrough does not depend on them.
+- Cloudflare Pages Functions and D1/KV adapters are available as engineering
+  references, but the live walkthrough does not depend on them.
