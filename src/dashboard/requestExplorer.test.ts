@@ -3,6 +3,7 @@ import { seededRequestScenarios } from "../demo/seededRequests";
 import {
   DEFAULT_EXPLORER_FILTERS,
   filterRequestExplorerItems,
+  formatLaw544Status,
   getInstitutionOptions,
   getRequestLatestRole,
   getSelectedExplorerItem,
@@ -16,6 +17,12 @@ const items: RequestExplorerItem[] = seededRequestScenarios.map((scenario) => ({
 }));
 
 describe("request explorer helpers", () => {
+  it("formats status values for public UI labels", () => {
+    expect(formatLaw544Status("All")).toBe("All");
+    expect(formatLaw544Status("InProgress")).toBe("In progress");
+    expect(formatLaw544Status("ExtensionRequested")).toBe("Extension requested");
+  });
+
   it("filters requests by status", () => {
     const resolved = filterRequestExplorerItems(items, {
       ...DEFAULT_EXPLORER_FILTERS,
