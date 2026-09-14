@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Moon,
   Download,
@@ -407,40 +407,91 @@ export function App() {
 
       <p className="message">{message}</p>
 
-      <div className="grid">
-        <GuidedProgress
-          status={request.status}
-          eventsCount={events.length}
-          lastEvent={lastRecordedEvent}
-          isAutoRunning={isAutoRunning}
-          isRunningScenario={isRunningScenario}
-          onRunScenario={(scenarioId) => void runGuidedScenario(scenarioId)}
-          onRunStep={(stepId) => void runAction(stepId)}
-          onRunNext={runNextStep}
-          onAutoRun={() => setIsAutoRunning(true)}
-          onPause={() => setIsAutoRunning(false)}
-          labels={t.guided}
-        />
-        <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
-        <RequestFeed
-          id="request-explorer"
-          filters={filters}
-          items={explorerItems}
-          labels={t.feed}
-          onFiltersChange={setFilters}
-          onSelectRequest={setSelectedRequestId}
-          selectedRequestId={selectedRequest.id}
-        />
-        <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
-        <MachineryGraph request={selectedRequest} labels={t.graph} />
-        <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
-        <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
-        <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
-        <PresenterChecklist labels={t.presenter} />
-        <ReleaseReadiness buildInfo={buildInfo} labels={t.readiness} />
+      <div className="dashboardSections">
+        <DashboardSection id="run-request" title={t.sections.run.title} copy={t.sections.run.copy}>
+          <div className="grid sectionGrid sectionGridRun">
+            <GuidedProgress
+              status={request.status}
+              eventsCount={events.length}
+              lastEvent={lastRecordedEvent}
+              isAutoRunning={isAutoRunning}
+              isRunningScenario={isRunningScenario}
+              onRunScenario={(scenarioId) => void runGuidedScenario(scenarioId)}
+              onRunStep={(stepId) => void runAction(stepId)}
+              onRunNext={runNextStep}
+              onAutoRun={() => setIsAutoRunning(true)}
+              onPause={() => setIsAutoRunning(false)}
+              labels={t.guided}
+            />
+            <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
+          </div>
+        </DashboardSection>
+
+        <DashboardSection id="request-explorer-section" title={t.sections.explorer.title} copy={t.sections.explorer.copy}>
+          <div className="grid sectionGrid sectionGridExplorer">
+            <RequestFeed
+              id="request-explorer"
+              filters={filters}
+              items={explorerItems}
+              labels={t.feed}
+              onFiltersChange={setFilters}
+              onSelectRequest={setSelectedRequestId}
+              selectedRequestId={selectedRequest.id}
+            />
+          </div>
+        </DashboardSection>
+
+        <DashboardSection id="request-accountability" title={t.sections.accountability.title} copy={t.sections.accountability.copy}>
+          <div className="grid sectionGrid selectedCaseWorkspace">
+            <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
+            <MachineryGraph request={selectedRequest} labels={t.graph} />
+            <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
+          </div>
+        </DashboardSection>
+
+        <DashboardSection id="proof-verification" title={t.sections.proof.title} copy={t.sections.proof.copy}>
+          <div className="grid sectionGrid sectionGridProof">
+            <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
+            <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
+          </div>
+        </DashboardSection>
+
+        <DashboardSection id="release-operations" title={t.sections.release.title} copy={t.sections.release.copy}>
+          <div className="grid sectionGrid sectionGridRelease">
+            <PresenterChecklist labels={t.presenter} />
+            <ReleaseReadiness buildInfo={buildInfo} labels={t.readiness} />
+          </div>
+        </DashboardSection>
       </div>
       <BuildMetadata buildInfo={buildInfo} labels={t.build} />
     </main>
+  );
+}
+
+function DashboardSection({
+  id,
+  title,
+  copy,
+  children,
+}: {
+  id: string;
+  title: string;
+  copy: string;
+  children: ReactNode;
+}) {
+  const titleId = `${id}-title`;
+
+  return (
+    <section className="dashboardSection" aria-labelledby={titleId} id={id}>
+      <div className="sectionHeader">
+        <div>
+          <p className="eyebrow">Dashboard section</p>
+          <h2 id={titleId}>{title}</h2>
+        </div>
+        <p>{copy}</p>
+      </div>
+      {children}
+    </section>
   );
 }
 

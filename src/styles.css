@@ -248,11 +248,62 @@ h2 {
   align-items: center;
 }
 
+.dashboardSections {
+  display: grid;
+  gap: clamp(18px, 2.8vw, 30px);
+  margin-top: var(--civic-space-5);
+}
+
+.dashboardSection {
+  display: grid;
+  min-width: 0;
+  gap: clamp(10px, 1.6vw, 16px);
+  scroll-margin-top: 18px;
+}
+
+.sectionHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+  gap: clamp(12px, 2vw, 24px);
+  align-items: end;
+  border-top: 1px solid var(--civic-border);
+  padding-top: clamp(14px, 2vw, 22px);
+}
+
+.sectionHeader h2 {
+  font-size: clamp(1.2rem, 1.8vw, 1.9rem);
+  line-height: 1.08;
+}
+
+.sectionHeader p:last-child {
+  margin-bottom: 0;
+  color: var(--civic-muted);
+  line-height: 1.45;
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(12px, 2vw, 18px);
   align-items: start;
+}
+
+.sectionGrid {
+  min-width: 0;
+}
+
+.sectionGridExplorer,
+.sectionGridRun,
+.sectionGridRelease {
+  grid-template-columns: 1fr;
+}
+
+.selectedCaseWorkspace {
+  grid-template-columns: minmax(320px, 0.85fr) minmax(360px, 1.15fr);
+}
+
+.selectedCaseWorkspace .timelinePanel {
+  grid-column: 1 / -1;
 }
 
 .buildMetadata {
@@ -1124,6 +1175,7 @@ dd {
 @media (max-width: 860px) {
   .hero,
   .grid,
+  .sectionHeader,
   .metricGrid,
   .detailList,
   .caseGlance,
@@ -1134,6 +1186,10 @@ dd {
   .filterBar,
   .graph {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .selectedCaseWorkspace {
+    grid-template-columns: 1fr;
   }
 
   .integrity {
