@@ -1,3 +1,5 @@
+import { Check, Copy } from "lucide-react";
+import { useState } from "react";
 import type { LedgerEvent } from "../ledger/types";
 import type { Dictionary } from "../i18n";
 import { eventProofSummary } from "./auditReceipt";
@@ -56,30 +58,30 @@ export function RequestTrail({
                 </dl>
                 <details className="proofDetails">
                   <summary>{labels.proofTitle}</summary>
-                  <dl>
+                  <dl className="proofGrid">
                     <div>
                       <dt>{labels.signerDidHash}</dt>
-                      <dd>{proof.signerDidHash}</dd>
+                      <dd><ProofValue value={proof.signerDidHash} labels={labels} /></dd>
                     </div>
                     <div>
                       <dt>{labels.credentialHash}</dt>
-                      <dd>{proof.credentialHash}</dd>
+                      <dd><ProofValue value={proof.credentialHash} labels={labels} /></dd>
                     </div>
                     <div>
                       <dt>{labels.payloadHash}</dt>
-                      <dd>{proof.payloadHash}</dd>
+                      <dd><ProofValue value={proof.payloadHash} labels={labels} /></dd>
                     </div>
                     <div>
                       <dt>{labels.previousStateHash}</dt>
-                      <dd>{proof.previousStateHash}</dd>
+                      <dd><ProofValue value={proof.previousStateHash} labels={labels} /></dd>
                     </div>
                     <div>
                       <dt>{labels.stateHash}</dt>
-                      <dd>{proof.stateHash}</dd>
+                      <dd><ProofValue value={proof.stateHash} labels={labels} /></dd>
                     </div>
                     <div>
                       <dt>{labels.signature}</dt>
-                      <dd>{proof.signature}</dd>
+                      <dd><ProofValue value={proof.signature} labels={labels} /></dd>
                     </div>
                   </dl>
                 </details>
@@ -91,5 +93,30 @@ export function RequestTrail({
         <p className="emptyState">{labels.empty}</p>
       )}
     </section>
+  );
+}
+
+function ProofValue({ value, labels }: { value: string; labels: Dictionary["trail"] }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copyValue() {
+    await navigator.clipboard.writeText(value);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1_200);
+  }
+
+  return (
+    <span className="proofValue">
+      <code>{value}</code>
+      <button
+        aria-label={`${labels.copy}: ${value}`}
+        className="iconButton"
+        onClick={() => void copyValue()}
+        type="button"
+      >
+        {copied ? <Check size={16} /> : <Copy size={16} />}
+        <span>{copied ? labels.copied : labels.copy}</span>
+      </button>
+    </span>
   );
 }
