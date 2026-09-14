@@ -219,8 +219,37 @@ function createScenarioMetadata(context: DemoContext, step: GuidedScenarioStep):
     return { reason: "large-volume-public-records", legalLimit: "30-day-extension" };
   }
 
+  if (step.metadata === "deadline-warning") {
+    return {
+      reason: "third-party-consultation",
+      legalLimit: "30-day-extension",
+      extensionDeadlineAt: "2026-10-14",
+      escalation: "director-visible",
+    };
+  }
+
+  if (step.metadata === "partial-disclosure") {
+    return {
+      disclosure: "partial",
+      redactionBasis: "third-party-personal-data",
+      publicInterestTest: "recorded",
+    };
+  }
+
+  if (step.metadata === "redirected-response") {
+    return {
+      outcome: "redirected",
+      targetInstitution: "Ministry of Development",
+      legalBasis: "competent-authority-routing",
+    };
+  }
+
   if (step.metadata === "overdue-check") {
     return { checkedBy: "registry-bot", reason: "deadline-window-expired" };
+  }
+
+  if (step.metadata === "rejection-reason") {
+    return { outcome: "rejected", legalBasis: "request-outside-law-544-scope" };
   }
 
   return undefined;

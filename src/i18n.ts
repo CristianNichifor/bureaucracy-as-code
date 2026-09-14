@@ -312,6 +312,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       scenarios: {
         "happy-path": "Run full scenario",
         extension: "Extension",
+        "deadline-warning": "Deadline warning",
+        "partial-disclosure": "Partial disclosure",
+        redirected: "Redirected",
         overdue: "Overdue",
         rejected: "Rejected",
       },
@@ -588,6 +591,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       scenarios: {
         "happy-path": "Ruleaza complet",
         extension: "Prelungire",
+        "deadline-warning": "Termen apropiat",
+        "partial-disclosure": "Divulgare partiala",
+        redirected: "Redirectionata",
         overdue: "Intarziata",
         rejected: "Respinsa",
       },

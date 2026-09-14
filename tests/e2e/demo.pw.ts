@@ -73,6 +73,9 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Release readiness" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Presenter checklist" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /deadline warning/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /partial disclosure/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Redirected", exact: true })).toBeVisible();
   await expect(page.getByText("Browser demo ready")).toBeVisible();
   await expect(page.getByText(/No ROeID integration/)).toBeVisible();
   await expect(page.getByText("pnpm demo:verify")).toBeVisible();
@@ -293,6 +296,30 @@ test("supports step and auto-run timeline controls", async ({ page }, testInfo) 
   await expect(page.getByText(/verified ledger events: 6/i)).toBeVisible();
   await expect(page.getByText(/Request_Resolved · PublicServant/i)).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
+});
+
+test("replays exceptional Law 544 simulations with signed metadata", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chromium", "Scenario variants are covered once on desktop.");
+
+  await page.goto("./");
+
+  await page.getByRole("button", { name: /deadline warning/i }).click();
+  await expect(page.getByText("Extension Requested").first()).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText("Extension_Requested", { exact: true })).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText(/extensionDeadlineAt: 2026-10-14/i)).toBeVisible();
+  await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");
+
+  await page.getByRole("button", { name: /partial disclosure/i }).click();
+  await expect(page.getByText("Resolved").first()).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText(/disclosure: partial/i).first()).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText(/redactionBasis: third-party-personal-data/i).first()).toBeVisible();
+  await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
+
+  await page.getByRole("button", { name: "Redirected", exact: true }).click();
+  await expect(page.getByText("Resolved").first()).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText(/outcome: redirected/i)).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText(/targetInstitution: Ministry of Development/i)).toBeVisible();
+  await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");
 });
 
 test("verifies the final response hash locally in the browser", async ({ page }, testInfo) => {
