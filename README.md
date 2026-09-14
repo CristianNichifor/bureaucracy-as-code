@@ -91,6 +91,16 @@ pnpm demo:capture
 This writes the standard README/presentation screenshots to
 `artifacts/demo-captures/`. See [docs/demo-capture.md](docs/demo-capture.md).
 
+Complete demo release check:
+
+```bash
+pnpm demo:release
+```
+
+This runs the local verifier, browser demo verifier, and capture pack, then
+writes ignored operator reports to `artifacts/demo-release/report.md` and
+`artifacts/demo-release/report.json`.
+
 Offline demo mode:
 
 - production builds register a service worker

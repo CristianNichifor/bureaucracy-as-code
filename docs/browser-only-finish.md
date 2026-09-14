@@ -15,7 +15,27 @@ experience is convincing without external services.
 - Export/import refuses tampered state and never exports private signing keys.
 - Audit receipt export works for seeded and live browser-created requests.
 - Romanian and English modes remain usable on desktop and mobile.
-- `pnpm verify` and `pnpm verify:e2e` are green before release.
+- `pnpm demo:release` is green before release.
+- The release report exists at `artifacts/demo-release/report.md`.
+- The standard capture pack exists at `artifacts/demo-captures/`.
+
+## Operator Release Command
+
+Run the complete local release gate with:
+
+```bash
+pnpm demo:release
+```
+
+The command runs `pnpm verify`, `pnpm demo:verify`, and `pnpm demo:capture` in
+sequence. It writes ignored local reports to:
+
+- `artifacts/demo-release/report.md`
+- `artifacts/demo-release/report.json`
+
+The report records the branch, commit, check status, runtime, and screenshot
+filenames. A passing report means the browser-only demo is ready for a local or
+Cloudflare Pages presentation run.
 
 ## Explicit Non-goals
 
