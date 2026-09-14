@@ -401,6 +401,7 @@ h2 {
 .guidedPanel,
 .integrityPanel,
 .timelinePanel,
+.demoCompletenessPanel,
 .presenterPanel,
 .readinessPanel {
   grid-column: 1 / -1;
@@ -1467,6 +1468,49 @@ dd {
   overflow-wrap: anywhere;
 }
 
+.demoCompletenessGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demoCompletenessGrid article {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 7px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  background: var(--civic-raised);
+}
+
+.demoCompletenessGrid svg {
+  color: var(--civic-success);
+}
+
+.demoCompletenessGrid span {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.demoCompletenessGrid strong,
+.demoCompletenessGrid small {
+  overflow-wrap: anywhere;
+}
+
+.demoCompletenessGrid strong {
+  color: var(--civic-text);
+  font-size: 0.96rem;
+}
+
+.demoCompletenessGrid small {
+  color: var(--civic-muted);
+  line-height: 1.35;
+}
+
 .readinessGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1929,6 +1973,7 @@ dd {
   .scenarioComparisonGrid,
   .evidenceBriefGrid,
   .transferSafetyGrid,
+  .demoCompletenessGrid,
   .detailList,
   .caseGlance,
   .deadlineStrip,
