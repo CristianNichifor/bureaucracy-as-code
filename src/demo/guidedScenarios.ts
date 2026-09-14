@@ -3,7 +3,14 @@ import type { DemoContext } from "./scenarioLaw544";
 
 export type DemoActorKey = keyof DemoContext["identities"];
 
-export type GuidedScenarioId = "happy-path" | "extension" | "overdue" | "rejected";
+export type GuidedScenarioId =
+  | "happy-path"
+  | "extension"
+  | "deadline-warning"
+  | "partial-disclosure"
+  | "redirected"
+  | "overdue"
+  | "rejected";
 
 export type GuidedScenarioStep = {
   id: string;
@@ -11,7 +18,15 @@ export type GuidedScenarioStep = {
   fromStatus: Law544Status;
   toStatus: Law544Status;
   actor: DemoActorKey;
-  metadata?: "registry-number" | "routing-assignment" | "extension-reason" | "overdue-check";
+  metadata?:
+    | "registry-number"
+    | "routing-assignment"
+    | "extension-reason"
+    | "deadline-warning"
+    | "partial-disclosure"
+    | "redirected-response"
+    | "overdue-check"
+    | "rejection-reason";
   document?: {
     name: string;
     type: string;
@@ -111,6 +126,68 @@ export const browserGuidedScenarios: GuidedScenario[] = [
     ],
   },
   {
+    id: "deadline-warning",
+    label: "Deadline warning",
+    description: "Stop at a legally allowed extension with explicit deadline and escalation metadata.",
+    finalStatus: "ExtensionRequested",
+    steps: [
+      ...createRegisteredRoutedStartedSteps,
+      {
+        id: "deadline-warning",
+        action: "Extension_Requested",
+        fromStatus: "InProgress",
+        toStatus: "ExtensionRequested",
+        actor: "publicServant",
+        metadata: "deadline-warning",
+      },
+    ],
+  },
+  {
+    id: "partial-disclosure",
+    label: "Partial disclosure",
+    description: "Attach a redaction note, then resolve with a partially disclosed response hash.",
+    finalStatus: "Resolved",
+    steps: [
+      ...createRegisteredRoutedStartedSteps,
+      {
+        id: "redaction-note",
+        action: "Document_Attached",
+        fromStatus: "InProgress",
+        toStatus: "InProgress",
+        actor: "publicServant",
+        metadata: "partial-disclosure",
+        document: { name: "redaction-note-third-party-data.pdf", type: "application/pdf" },
+      },
+      {
+        id: "resolve-partial",
+        action: "Request_Resolved",
+        fromStatus: "InProgress",
+        toStatus: "Resolved",
+        actor: "publicServant",
+        metadata: "partial-disclosure",
+        document: { name: "partial-disclosure-response.pdf", type: "application/pdf" },
+      },
+    ],
+  },
+  {
+    id: "redirected",
+    label: "Redirected",
+    description: "Resolve with a signed redirect response that names the competent institution.",
+    finalStatus: "Resolved",
+    steps: [
+      ...createRegisteredRoutedStartedSteps,
+      {
+        id: "redirect-response",
+        action: "Request_Resolved",
+        fromStatus: "InProgress",
+        toStatus: "Resolved",
+        actor: "publicServant",
+        metadata: "redirected-response",
+        document: { name: "redirect-response.pdf", type: "application/pdf" },
+      },
+    ],
+  },
+  {
     id: "overdue",
     label: "Overdue",
     description: "Run the normal intake path, then mark the file overdue with a registry check.",
@@ -140,6 +217,7 @@ export const browserGuidedScenarios: GuidedScenario[] = [
         fromStatus: "InProgress",
         toStatus: "Rejected",
         actor: "publicServant",
+        metadata: "rejection-reason",
         document: { name: "refusal-response.pdf", type: "application/pdf" },
       },
     ],
