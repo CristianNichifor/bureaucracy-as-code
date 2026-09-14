@@ -4,6 +4,7 @@ import type { LedgerEvent } from "../ledger/types";
 import type { RequestExplorerItem } from "./requestExplorer";
 
 export type PublicAuditReceipt = ReturnType<typeof buildPublicAuditReceipt>;
+export type PublicProofReport = ReturnType<typeof buildPublicProofReport>;
 
 export type PublicAuditReceiptVerification = {
   valid: boolean;
@@ -13,6 +14,74 @@ export type PublicAuditReceiptVerification = {
   responseDocumentHash?: string;
   reason?: string;
 };
+
+export function buildPublicProofReport({
+  exportedAt,
+  items,
+  language,
+}: {
+  exportedAt: string;
+  items: RequestExplorerItem[];
+  language: Language;
+}) {
+  const requests = items.map((item) => {
+    const finalEvent = item.events.at(-1);
+    const brokenLink = findBrokenHashLink(item.events);
+
+    return {
+      id: item.request.id,
+      source: item.source === "active" ? "live-browser-chain" : "seeded-public-scenario",
+      institution: item.request.institution,
+      subject: item.request.subject,
+      status: item.request.status,
+      deadlineAt: item.request.deadlineAt,
+      responseDocumentHash: item.request.responseDocumentHash,
+      chain: {
+        eventCount: item.events.length,
+        firstRecordedAt: item.events[0]?.timestamp,
+        lastRecordedAt: finalEvent?.timestamp,
+        headHash: finalEvent?.stateHash,
+        validLinks: !brokenLink,
+        brokenAtSequence: brokenLink?.sequence,
+      },
+      signers: Array.from(new Set(item.events.map((event) => event.signerRole))),
+      events: item.events.map((event, index) => ({
+        sequence: index + 1,
+        action: event.action,
+        signerRole: event.signerRole,
+        signerDidHash: event.signerDidHash,
+        credentialHash: event.credentialHash,
+        payloadHash: event.payloadHash,
+        previousStateHash: event.previousStateHash,
+        stateHash: event.stateHash,
+        documentHash: event.documentHash,
+        recordedAt: event.timestamp,
+      })),
+    };
+  });
+
+  return {
+    schema: "law544-public-proof-report/v1",
+    exportedAt,
+    displayLanguage: language,
+    title: "Public Law 544 proof report",
+    caveat:
+      "This browser-demo report contains public verification evidence only. It does not contain raw documents, private keys, or personal data.",
+    summary: {
+      requestCount: requests.length,
+      eventCount: requests.reduce((count, request) => count + request.chain.eventCount, 0),
+      invalidChainCount: requests.filter((request) => !request.chain.validLinks).length,
+      responseHashCount: requests.filter((request) => Boolean(request.responseDocumentHash)).length,
+    },
+    verification: [
+      "For each request, confirm every event previousStateHash matches the prior event stateHash.",
+      "Use each payloadHash, signerDidHash, credentialHash, and signature with the authoritative identity provider to verify authorship.",
+      "Hash any received final response document locally and compare it with responseDocumentHash.",
+      "Treat this report as a public proof summary, not as the production source of truth.",
+    ],
+    requests,
+  };
+}
 
 export function buildPublicAuditReceipt({
   exportedAt,
@@ -201,6 +270,16 @@ export function verifyPublicAuditReceipt(receipt: unknown): PublicAuditReceiptVe
     headHash,
     responseDocumentHash,
   };
+}
+
+function findBrokenHashLink(events: LedgerEvent[]): { sequence: number } | undefined {
+  for (let index = 1; index < events.length; index += 1) {
+    if (events[index].previousStateHash !== events[index - 1].stateHash) {
+      return { sequence: index + 1 };
+    }
+  }
+
+  return undefined;
 }
 
 function toPublicRequest(request: Law544Request) {

@@ -1,8 +1,58 @@
 import { describe, expect, it } from "vitest";
 import { seededRequestScenarios } from "../demo/seededRequests";
-import { buildPublicAuditReceipt, eventProofSummary, verifyPublicAuditReceipt } from "./auditReceipt";
+import {
+  buildPublicAuditReceipt,
+  buildPublicProofReport,
+  eventProofSummary,
+  verifyPublicAuditReceipt,
+} from "./auditReceipt";
 
 describe("public audit receipt", () => {
+  it("exports a public proof report across selected requests", () => {
+    const report = buildPublicProofReport({
+      exportedAt: "2026-09-14T12:00:00.000Z",
+      items: seededRequestScenarios.slice(0, 2).map((scenario) => ({ ...scenario, source: "seed" })),
+      language: "en",
+    });
+
+    expect(report.schema).toBe("law544-public-proof-report/v1");
+    expect(report.summary).toMatchObject({
+      requestCount: 2,
+      eventCount: seededRequestScenarios[0].events.length + seededRequestScenarios[1].events.length,
+      invalidChainCount: 0,
+      responseHashCount: 1,
+    });
+    expect(report.requests[0]).toMatchObject({
+      id: seededRequestScenarios[0].request.id,
+      chain: {
+        validLinks: true,
+        headHash: seededRequestScenarios[0].events.at(-1)?.stateHash,
+      },
+    });
+    expect(JSON.stringify(report)).not.toContain("rawDocument");
+    expect(JSON.stringify(report)).not.toContain("privateKey");
+  });
+
+  it("marks the broken sequence in a public proof report", () => {
+    const brokenScenario = {
+      ...seededRequestScenarios[0],
+      events: seededRequestScenarios[0].events.map((event, index) =>
+        index === 1 ? { ...event, previousStateHash: "edited" } : event,
+      ),
+    };
+    const report = buildPublicProofReport({
+      exportedAt: "2026-09-14T12:00:00.000Z",
+      items: [{ ...brokenScenario, source: "seed" }],
+      language: "en",
+    });
+
+    expect(report.summary.invalidChainCount).toBe(1);
+    expect(report.requests[0].chain).toMatchObject({
+      validLinks: false,
+      brokenAtSequence: 2,
+    });
+  });
+
   it("exports portable public evidence without raw document data", () => {
     const receipt = buildPublicAuditReceipt({
       exportedAt: "2026-09-14T12:00:00.000Z",

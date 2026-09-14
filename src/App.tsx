@@ -13,7 +13,7 @@ import { AuditReceiptVerifier } from "./dashboard/AuditReceiptVerifier";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
-import { buildPublicAuditReceipt } from "./dashboard/auditReceipt";
+import { buildPublicAuditReceipt, buildPublicProofReport } from "./dashboard/auditReceipt";
 import { demoSteps, getCurrentStepIndex, type DemoStep } from "./dashboard/demoProgress";
 import {
   DEFAULT_EXPLORER_FILTERS,
@@ -114,6 +114,21 @@ export function App() {
     link.click();
     URL.revokeObjectURL(url);
     setMessage(`Exported audit receipt for ${selectedItem.request.id}.`);
+  }
+
+  function exportProofReport(items: RequestExplorerItem[]) {
+    const report = buildPublicProofReport({
+      exportedAt: new Date().toISOString(),
+      items,
+      language,
+    });
+    const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `law544-public-proof-report-${report.summary.requestCount}-requests.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setMessage(`Exported proof report for ${report.summary.requestCount} visible requests.`);
   }
 
   async function importState(file: File) {
@@ -311,6 +326,7 @@ export function App() {
       <section className="toolbar" aria-label={t.app.actionsLabel}>
         <button className="civicButton civicButtonSecondary" onClick={() => void exportState()} type="button"><Download size={18} />{t.app.exportState}</button>
         <button className="civicButton civicButtonSecondary" onClick={() => exportAuditReceipt()} type="button"><Download size={18} />{t.app.exportReceipt}</button>
+        <button className="civicButton civicButtonSecondary" onClick={() => exportProofReport(filteredItems)} type="button"><Download size={18} />{t.app.exportProofReport}</button>
         <button className="civicButton civicButtonSecondary" onClick={() => fileInput.current?.click()} type="button"><FileUp size={18} />{t.app.importState}</button>
         <button className="civicButton civicButtonSecondary" onClick={() => void resetDemo()} type="button"><RefreshCw size={18} />{t.app.reset}</button>
         <input

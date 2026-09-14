@@ -11,6 +11,7 @@ export type Dictionary = {
     exportState: string;
     importState: string;
     exportReceipt: string;
+    exportProofReport: string;
     reset: string;
     languageLabel: string;
     english: string;
@@ -173,6 +174,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       exportState: "Export state",
       importState: "Import",
       exportReceipt: "Export receipt",
+      exportProofReport: "Export proof report",
       reset: "Reset",
       languageLabel: "Language",
       english: "EN",
@@ -348,6 +350,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       exportState: "Exporta stare",
       importState: "Importa",
       exportReceipt: "Exporta dovada",
+      exportProofReport: "Exporta raport",
       reset: "Reseteaza",
       languageLabel: "Limba",
       english: "EN",
