@@ -36,6 +36,19 @@ looks like a national transparency view before the guided browser run begins:
 Use the guided run to create a fresh local request, then export a public audit
 receipt for either the live request or any seeded scenario.
 
+## Presentation Pack
+
+Run the release gate and capture pack before a live demo:
+
+```bash
+pnpm demo:release
+```
+
+The app also includes a presenter checklist in the dashboard with the same
+five-minute flow. Use [docs/public-walkthrough.md](docs/public-walkthrough.md)
+for audience-facing narration and [docs/operator-runbook.md](docs/operator-runbook.md)
+for local setup, reset, capture, and deployment smoke steps.
+
 ## Browser-only milestone boundary
 
 This milestone intentionally finishes the app as a browser-only civic demo.
@@ -124,6 +137,8 @@ Deployment:
 - [Production readiness](docs/production-readiness.md)
 - [QA](docs/qa.md)
 - [Demo script](docs/demo-script.md)
+- [Public walkthrough](docs/public-walkthrough.md)
+- [Operator runbook](docs/operator-runbook.md)
 - [Demo capture guide](docs/demo-capture.md)
 - [Offline demo mode](docs/offline-demo.md)
 - [Future ledger adapters](docs/future-ledger-adapters.md)

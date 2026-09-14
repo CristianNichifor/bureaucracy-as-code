@@ -15,6 +15,7 @@ import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
 import { BuildMetadata } from "./dashboard/BuildMetadata";
 import { ReleaseReadiness } from "./dashboard/ReleaseReadiness";
+import { PresenterChecklist } from "./dashboard/PresenterChecklist";
 import { buildPublicAuditReceipt, buildPublicProofReport } from "./dashboard/auditReceipt";
 import { demoSteps, getCurrentStepIndex, type DemoStep } from "./dashboard/demoProgress";
 import { fallbackBuildInfo, loadBuildInfo, type BuildInfo } from "./buildInfo";
@@ -404,6 +405,7 @@ export function App() {
         <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
         <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
         <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
+        <PresenterChecklist labels={t.presenter} />
         <ReleaseReadiness buildInfo={buildInfo} labels={t.readiness} />
       </div>
       <BuildMetadata buildInfo={buildInfo} labels={t.build} />

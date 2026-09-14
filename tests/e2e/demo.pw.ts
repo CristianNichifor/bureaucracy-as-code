@@ -68,6 +68,7 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Guided Law 544 run" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Release readiness" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Presenter checklist" })).toBeVisible();
   await expect(page.getByText("Browser demo ready")).toBeVisible();
   await expect(page.getByText(/No ROeID integration/)).toBeVisible();
   await expect(page.getByText("pnpm demo:verify")).toBeVisible();
@@ -127,6 +128,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Signed audit trail" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Presenter checklist" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Release readiness" })).toBeVisible();
     await expect(page.getByText("Ledger verifies")).toBeVisible();
 
@@ -137,7 +139,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
     expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
 
-    const boxes = await page.locator(".panel, .feedRow, .graphNode, .caseGlance, .readinessLink").evaluateAll((nodes) =>
+    const boxes = await page.locator(".panel, .feedRow, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
       nodes.map((node) => {
         const rect = node.getBoundingClientRect();
         return {
@@ -189,6 +191,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Birocratie ca Software", level: 1 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pregatire release" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Checklist prezentare" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Depune cererea/i })).toBeVisible();
   await expect(page.getByRole("region", { name: "Actiuni demo" }).getByRole("button", { name: "Exporta dovada" })).toBeVisible();
 });
@@ -303,4 +306,14 @@ test("keeps the public screen free of obvious demo PII", async ({ page }) => {
   expect(bodyText).not.toMatch(/\b[1-9]\d{12}\b/);
   expect(bodyText).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
   expect(bodyText).not.toMatch(/\+40\s?\d{3}\s?\d{3}\s?\d{3}/);
+});
+
+test("shows the presenter checklist and operator commands", async ({ page }) => {
+  await page.goto("./");
+
+  const panel = page.getByRole("region", { name: "Presenter checklist" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByText("Open the explorer and point to anonymized seeded Law 544 requests.")).toBeVisible();
+  await expect(panel.getByText("pnpm demo:release")).toBeVisible();
+  await expect(panel.getByText("pnpm demo:capture")).toBeVisible();
 });
