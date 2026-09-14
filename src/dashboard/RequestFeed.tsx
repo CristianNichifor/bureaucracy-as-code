@@ -182,7 +182,7 @@ export function RequestFeed({
           </select>
         </label>
         <button
-          className="filterReset"
+          className="civicButton civicButtonSecondary filterReset"
           disabled={!filtersActive}
           onClick={() => onFiltersChange(DEFAULT_EXPLORER_FILTERS)}
           type="button"
@@ -215,7 +215,7 @@ export function RequestFeed({
           <div className="emptyState" role="status">
             <strong>{labels.emptyTitle}</strong>
             <p>{labels.empty}</p>
-            <button onClick={() => onFiltersChange(DEFAULT_EXPLORER_FILTERS)} type="button">
+            <button className="civicButton civicButtonSecondary" onClick={() => onFiltersChange(DEFAULT_EXPLORER_FILTERS)} type="button">
               {labels.resetFilters}
             </button>
           </div>

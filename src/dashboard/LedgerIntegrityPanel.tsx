@@ -46,7 +46,7 @@ export function LedgerIntegrityPanel({
           <dd>{verification.firstInvalidEvent ? `${verification.firstInvalidEvent.slice(0, 28)}...` : labels.none}</dd>
         </div>
       </dl>
-      <button className="panelAction" disabled={events.length === 0} onClick={onTamperDemo}>
+      <button className="civicButton panelAction" disabled={events.length === 0} onClick={onTamperDemo} type="button">
         <Fingerprint size={18} />
         {labels.tamperButton}
       </button>

@@ -270,10 +270,10 @@ export function App() {
       </header>
 
       <section className="toolbar" aria-label={t.app.actionsLabel}>
-        <button className="secondary" onClick={() => void exportState()}><Download size={18} />{t.app.exportState}</button>
-        <button className="secondary" onClick={() => exportAuditReceipt()}><Download size={18} />{t.app.exportReceipt}</button>
-        <button className="secondary" onClick={() => fileInput.current?.click()}><FileUp size={18} />{t.app.importState}</button>
-        <button className="secondary" onClick={() => void resetDemo()}><RefreshCw size={18} />{t.app.reset}</button>
+        <button className="civicButton civicButtonSecondary" onClick={() => void exportState()} type="button"><Download size={18} />{t.app.exportState}</button>
+        <button className="civicButton civicButtonSecondary" onClick={() => exportAuditReceipt()} type="button"><Download size={18} />{t.app.exportReceipt}</button>
+        <button className="civicButton civicButtonSecondary" onClick={() => fileInput.current?.click()} type="button"><FileUp size={18} />{t.app.importState}</button>
+        <button className="civicButton civicButtonSecondary" onClick={() => void resetDemo()} type="button"><RefreshCw size={18} />{t.app.reset}</button>
         <input
           ref={fileInput}
           type="file"

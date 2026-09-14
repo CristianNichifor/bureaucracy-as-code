@@ -66,7 +66,7 @@ export function AuditReceiptVerifier({
       </div>
       <p className="panelCopy">{labels.copy}</p>
       <div className="verifierActions">
-        <label className="fileButton">
+        <label className="civicButton civicButtonSecondary fileButton">
           {labels.chooseFile}
           <input
             accept="application/json"
@@ -75,7 +75,7 @@ export function AuditReceiptVerifier({
             onChange={(event) => void onFile(event.target.files?.[0])}
           />
         </label>
-        <button className="panelAction" onClick={runTamperDemo} type="button">
+        <button className="civicButton panelAction" onClick={runTamperDemo} type="button">
           {labels.tamperButton}
         </button>
       </div>
