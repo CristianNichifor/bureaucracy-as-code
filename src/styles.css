@@ -711,6 +711,40 @@ dd {
   margin-bottom: 12px;
 }
 
+.timelineControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.timelineControls .civicButton {
+  padding: 0 12px;
+}
+
+.lastRecorded {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 10px;
+  background: var(--civic-raised);
+}
+
+.lastRecorded span {
+  color: var(--civic-subtle);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.lastRecorded strong {
+  overflow-wrap: anywhere;
+}
+
 .scenarioButton {
   padding: 0 12px;
 }

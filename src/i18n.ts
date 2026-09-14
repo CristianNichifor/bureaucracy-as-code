@@ -22,6 +22,12 @@ export type Dictionary = {
     nextStep: string;
     signs: string;
     scenariosLabel: string;
+    controlsLabel: string;
+    stepNext: string;
+    autoRun: string;
+    pause: string;
+    recordedLabel: string;
+    noRecordedEvent: string;
     scenarios: Record<string, string>;
     steps: Record<string, { label: string; actor: string }>;
   };
@@ -178,6 +184,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       nextStep: "next step",
       signs: "signs",
       scenariosLabel: "One-click scenario replay",
+      controlsLabel: "Timeline controls",
+      stepNext: "Step next",
+      autoRun: "Auto-run",
+      pause: "Pause",
+      recordedLabel: "Just recorded",
+      noRecordedEvent: "No chain event recorded yet",
       scenarios: {
         "happy-path": "Run full scenario",
         extension: "Extension",
@@ -347,6 +359,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       nextStep: "pasul urmator",
       signs: "semneaza",
       scenariosLabel: "Reluare scenariu dintr-un click",
+      controlsLabel: "Controale cronologie",
+      stepNext: "Pasul urmator",
+      autoRun: "Ruleaza automat",
+      pause: "Pauza",
+      recordedLabel: "Tocmai inregistrat",
+      noRecordedEvent: "Niciun eveniment inregistrat inca",
       scenarios: {
         "happy-path": "Ruleaza complet",
         extension: "Prelungire",

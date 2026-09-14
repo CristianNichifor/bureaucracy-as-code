@@ -14,6 +14,7 @@ import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
 import { buildPublicAuditReceipt } from "./dashboard/auditReceipt";
+import { demoSteps, getCurrentStepIndex, type DemoStep } from "./dashboard/demoProgress";
 import {
   DEFAULT_EXPLORER_FILTERS,
   filterRequestExplorerItems,
@@ -43,6 +44,8 @@ export function App() {
   const [language, setLanguage] = useState<Language>("en");
   const [message, setMessage] = useState("Start the scenario to create a signed Law 544 request.");
   const [isRunningScenario, setIsRunningScenario] = useState(false);
+  const [isAutoRunning, setIsAutoRunning] = useState(false);
+  const [lastRecordedEvent, setLastRecordedEvent] = useState<LedgerEvent | undefined>();
   const fileInput = useRef<HTMLInputElement>(null);
   const t = dictionaries[language];
 
@@ -58,6 +61,8 @@ export function App() {
     setSelectedRequestId(nextContext.request.id);
     setEvents([]);
     setChainVerification(initialVerification);
+    setIsAutoRunning(false);
+    setLastRecordedEvent(undefined);
     setMessage("Demo reset. Submit the request to begin the chain.");
   }, [runtime]);
 
@@ -167,6 +172,7 @@ export function App() {
       setContext(result.context);
       setEvents(result.events);
       setSelectedRequestId(result.context.request.id);
+      setLastRecordedEvent(result.events.at(-1));
       setChainVerification(await runtime.verifyChain());
       setMessage(`Replayed ${result.scenario.label}: ${result.events.length} signed state changes.`);
     } catch (error) {
@@ -176,7 +182,7 @@ export function App() {
     }
   }
 
-  async function runAction(kind: "create" | "register" | "route" | "start" | "attach" | "resolve") {
+  const runAction = useCallback(async (kind: DemoStep["id"]) => {
     if (!context) return;
 
     try {
@@ -219,15 +225,45 @@ export function App() {
               : undefined,
       });
       const nextRequest = result.request;
+      const nextEvents = await runtime.listEvents();
+      const nextVerification = await runtime.verifyChain();
 
       setContext({ ...context, request: nextRequest });
+      setEvents(nextEvents);
+      setChainVerification(nextVerification);
       setSelectedRequestId(nextRequest.id);
-      setMessage(`Recorded ${nextRequest.status} transition.`);
-      await refresh();
+      setLastRecordedEvent(result.event);
+      setMessage(`Recorded ${result.event.action}: ${result.event.stateHash.slice(0, 18)}.`);
     } catch (error) {
+      setIsAutoRunning(false);
       setMessage(error instanceof Error ? error.message : "Could not apply transition.");
     }
-  }
+  }, [context, runtime]);
+
+  const runNextStep = useCallback(() => {
+    if (!context) return;
+
+    const nextStep = demoSteps[getCurrentStepIndex(context.request.status, events.length)];
+    if (!nextStep) {
+      setIsAutoRunning(false);
+      return;
+    }
+
+    void runAction(nextStep.id);
+  }, [context, events.length, runAction]);
+
+  useEffect(() => {
+    if (!isAutoRunning || !context) return;
+
+    const nextStep = demoSteps[getCurrentStepIndex(context.request.status, events.length)];
+    if (!nextStep) {
+      setIsAutoRunning(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => runNextStep(), 700);
+    return () => window.clearTimeout(timer);
+  }, [context, events.length, isAutoRunning, runNextStep]);
 
   if (!context) {
     return <main className="appShell">Loading demo...</main>;
@@ -296,9 +332,14 @@ export function App() {
         <GuidedProgress
           status={request.status}
           eventsCount={events.length}
+          lastEvent={lastRecordedEvent}
+          isAutoRunning={isAutoRunning}
           isRunningScenario={isRunningScenario}
           onRunScenario={(scenarioId) => void runGuidedScenario(scenarioId)}
           onRunStep={(stepId) => void runAction(stepId)}
+          onRunNext={runNextStep}
+          onAutoRun={() => setIsAutoRunning(true)}
+          onPause={() => setIsAutoRunning(false)}
           labels={t.guided}
         />
         <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
