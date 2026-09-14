@@ -23,6 +23,7 @@
     "verify:e2e": "RUN_E2E=1 node scripts/verify-local.mjs",
     "demo:verify": "node scripts/verify-browser-demo.mjs",
     "ui:verify": "pnpm build && playwright test --grep @ui",
+    "deploy:smoke": "node scripts/smoke-live-deploy.mjs",
     "security:gitleaks": "gitleaks detect --source . --verbose"
   },
   "dependencies": {

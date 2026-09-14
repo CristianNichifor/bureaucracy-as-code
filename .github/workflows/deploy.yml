@@ -57,6 +57,12 @@ jobs:
           # to a preview URL named after its branch; main deploys to production.
           command: pages deploy --branch=${{ github.event_name == 'push' && 'main' || github.head_ref }}
 
+      - name: Smoke production deploy
+        if: env.HAS_CREDENTIALS == 'true' && github.event_name == 'push'
+        env:
+          DEPLOY_SMOKE_URL: https://bureaucracy-as-code.pages.dev/
+        run: pnpm deploy:smoke
+
       - name: Say why nothing was deployed
         if: env.HAS_CREDENTIALS != 'true'
         run: |
