@@ -240,6 +240,23 @@ export type Dictionary = {
     match: string;
     waiting: string;
   };
+  proofPreview: {
+    title: string;
+    copy: string;
+    localOnly: string;
+    receipt: string;
+    report: string;
+    privacy: string;
+    receiptScope: string;
+    reportScope: string;
+    reportEvents: string;
+    privacyCopy: string;
+    schema: string;
+    chainHead: string;
+    responseHashes: string;
+    invalidChains: string;
+    none: string;
+  };
   receipt: {
     title: string;
     verified: string;
@@ -594,6 +611,24 @@ export const dictionaries: Record<Language, Dictionary> = {
       mismatch: "The selected file does not match the recorded hash.",
       match: "The selected file matches the recorded response hash.",
       waiting: "Waiting for a file",
+    },
+    proofPreview: {
+      title: "Proof export preview",
+      copy:
+        "Inspect the public evidence package before exporting. The preview is generated locally from the selected request and visible explorer scope.",
+      localOnly: "local preview",
+      receipt: "Selected receipt",
+      report: "Visible report",
+      privacy: "Privacy boundary",
+      receiptScope: "{count} receipt events",
+      reportScope: "{count} requests",
+      reportEvents: "{count} signed events",
+      privacyCopy: "No raw documents, private keys, or personal data are included.",
+      schema: "Receipt schema",
+      chainHead: "Selected chain head",
+      responseHashes: "Response hashes",
+      invalidChains: "Invalid chains",
+      none: "None",
     },
     receipt: {
       title: "Receipt verifier",
@@ -956,6 +991,24 @@ export const dictionaries: Record<Language, Dictionary> = {
       mismatch: "Fisierul selectat nu corespunde hash-ului inregistrat.",
       match: "Fisierul selectat corespunde hash-ului raspunsului inregistrat.",
       waiting: "In asteptarea unui fisier",
+    },
+    proofPreview: {
+      title: "Previzualizare dovezi",
+      copy:
+        "Inspecteaza pachetul public de dovezi inainte de export. Previzualizarea este generata local din cererea selectata si filtrul vizibil.",
+      localOnly: "previzualizare locala",
+      receipt: "Dovada selectata",
+      report: "Raport vizibil",
+      privacy: "Limita de confidentialitate",
+      receiptScope: "{count} evenimente in dovada",
+      reportScope: "{count} cereri",
+      reportEvents: "{count} evenimente semnate",
+      privacyCopy: "Nu include documente brute, chei private sau date personale.",
+      schema: "Schema dovada",
+      chainHead: "Capat lant selectat",
+      responseHashes: "Hash-uri raspuns",
+      invalidChains: "Lanturi invalide",
+      none: "Niciunul",
     },
     receipt: {
       title: "Verificator dovada",

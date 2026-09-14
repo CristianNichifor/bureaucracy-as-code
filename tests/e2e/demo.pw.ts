@@ -69,6 +69,8 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Request accountability" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
+  await expect(page.getByText("Selected receipt")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
   await expect(page.getByText("Operational view of open queues")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guided Law 544 run" })).toBeVisible();
@@ -144,6 +146,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Request accountability" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
     await expect(page.getByText("Next file").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
@@ -220,6 +223,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Incarcare institutii" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Responsabilitate pe cerere" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pregatire release" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Checklist prezentare" })).toBeVisible();
@@ -276,6 +280,8 @@ test("exports a public audit receipt for the selected request", async ({ page })
 test("exports a public proof report for visible requests", async ({ page }) => {
   await page.goto("./");
 
+  await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
+  await expect(page.getByText("Visible report")).toBeVisible();
   await expect(page.getByText(/\d+ visible requests/).first()).toBeVisible();
   await page.getByPlaceholder("Search request, subject, institution, registry").fill("rail");
   await expect(page.getByText("1 visible requests")).toBeVisible();

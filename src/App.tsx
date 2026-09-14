@@ -12,6 +12,7 @@ import { RequestFeed } from "./dashboard/RequestFeed";
 import { RequestTrail } from "./dashboard/RequestTrail";
 import { HashVerifier } from "./dashboard/HashVerifier";
 import { AuditReceiptVerifier } from "./dashboard/AuditReceiptVerifier";
+import { ProofPreviewPanel } from "./dashboard/ProofPreviewPanel";
 import { OperationsPanel } from "./dashboard/OperationsPanel";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
@@ -466,6 +467,12 @@ export function App() {
 
         <DashboardSection id="proof-verification" title={t.sections.proof.title} copy={t.sections.proof.copy}>
           <div className="grid sectionGrid sectionGridProof">
+            <ProofPreviewPanel
+              items={filteredItems}
+              language={language}
+              selectedItem={selectedItem ?? explorerItems[0]}
+              labels={t.proofPreview}
+            />
             <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
             <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
           </div>

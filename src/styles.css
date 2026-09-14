@@ -363,6 +363,52 @@ h2 {
   min-height: 100%;
 }
 
+.proofPreviewPanel {
+  grid-column: 1 / -1;
+}
+
+.proofPreviewGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.proofPreviewGrid div {
+  display: grid;
+  min-width: 0;
+  min-height: 118px;
+  align-content: start;
+  gap: 7px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 10px;
+  background: var(--civic-raised);
+}
+
+.proofPreviewGrid span,
+.proofPreviewList dt {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.proofPreviewGrid strong,
+.proofPreviewGrid small,
+.proofPreviewList dd {
+  overflow-wrap: anywhere;
+}
+
+.proofPreviewGrid small {
+  color: var(--civic-muted);
+  font-weight: 800;
+}
+
+.proofPreviewList {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .panel {
   min-width: 0;
   border: 1px solid var(--civic-border);
@@ -1615,6 +1661,8 @@ dd {
   .caseGlance,
   .deadlineStrip,
   .handoffSteps,
+  .proofPreviewGrid,
+  .proofPreviewList,
   .receiptResult,
   .readinessGrid {
     grid-template-columns: 1fr;
