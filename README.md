@@ -38,9 +38,9 @@ receipt for either the live request or any seeded scenario.
 ## Browser-only milestone boundary
 
 This milestone intentionally finishes the app as a browser-only civic demo.
-Cloudflare Pages Functions, D1/KV adapters, and Hardhat contracts remain useful
-engineering references, but the public experience must work without accounts,
-secrets, network calls, or external infrastructure.
+Cloudflare Pages Functions and D1/KV adapters remain useful engineering
+references, but the public experience must work without accounts, secrets,
+network calls, or external infrastructure.
 
 For this milestone:
 

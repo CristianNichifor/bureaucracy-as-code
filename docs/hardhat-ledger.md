@@ -1,60 +1,12 @@
-# Hardhat Ledger Devnet
+# Archived Hardhat Ledger Notes
 
-This repo includes a local Ethereum devnet path for anchoring Law 544/2001
-audit events in `contracts/Law544Ledger.sol`.
+This repo previously included a runnable Hardhat devnet for
+`contracts/Law544Ledger.sol`. The browser-only milestone no longer installs or
+runs Hardhat because the demo must work as a static civic application without a
+local blockchain toolchain.
 
-The browser demo can still run without a chain. The Hardhat path is a
-developer-facing proof that the same hashed transition records can be compiled,
-deployed, tested, and appended to an append-only ledger.
-
-## What Runs Locally
-
-- `contracts/Law544Ledger.sol`: append-only Solidity event ledger.
-- `hardhat.config.ts`: Hardhat 3 config using the viem toolbox.
-- `test/hardhat/Law544Ledger.ts`: contract tests against the in-process Hardhat
-  network.
-- `test/hardhat/Law544LedgerIndexer.ts`: indexes real emitted contract events
-  into public request projections and a local chain head anchor.
-- `scripts/deploy-law544-ledger.ts`: deploy script for either the in-process
-  network or a running local node.
-
-## Commands
-
-Install dependencies first:
-
-```sh
-pnpm install
-```
-
-Compile the contract:
-
-```sh
-pnpm ledger:compile
-```
-
-Run the contract tests:
-
-```sh
-pnpm ledger:test
-```
-
-Deploy to an in-process Hardhat network:
-
-```sh
-pnpm ledger:deploy
-```
-
-Run a persistent local node in one terminal:
-
-```sh
-pnpm ledger:node
-```
-
-Deploy to that node from another terminal:
-
-```sh
-pnpm exec hardhat run scripts/deploy-law544-ledger.ts --network localhost
-```
+The Solidity contract is kept as reference material for a future external ledger
+adapter. It models the same public audit anchors used by the browser ledger.
 
 ## Contract Shape
 
@@ -75,15 +27,23 @@ pnpm exec hardhat run scripts/deploy-law544-ledger.ts --network localhost
 
 No PII and no raw documents belong on-chain.
 
-The contract enforces append-only ordering:
+The contract shape enforces append-only ordering:
 
 - `eventIndex` must equal the current contract `eventCount`.
 - `previousStateHash` must equal the current contract `headHash`.
 - `stateHash` must be non-empty.
 
+The active demo ledger is `src/ledger/LocalLedgerProvider.ts`, backed by an
+append-only hash chain and verified by the normal browser test suite:
+
+```sh
+pnpm verify
+pnpm demo:verify
+```
+
 The Law 544 legal workflow checks remain in the TypeScript state machine and API
-ingestion layer. The contract is intentionally narrow: it anchors accepted state
-transitions and makes skipped or rewritten history visible.
+ingestion layer. If a local Ethereum path is restored, keep it outside the
+default browser demo dependency graph unless it has a patched dependency chain.
 
 ## Adapter Boundary
 

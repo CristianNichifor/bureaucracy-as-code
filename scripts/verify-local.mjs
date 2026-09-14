@@ -5,7 +5,6 @@ const checks = [
   ["pnpm", ["typecheck"]],
   ["pnpm", ["privacy:scan"]],
   ["pnpm", ["test"]],
-  ["pnpm", ["ledger:test"]],
   ["pnpm", ["build"]],
 ];
 
