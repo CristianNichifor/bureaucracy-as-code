@@ -51,6 +51,7 @@ export type Dictionary = {
   };
   integrity: {
     title: string;
+    explainLabel: string;
     valid: string;
     failed: string;
     validTitle: string;
@@ -113,6 +114,8 @@ export type Dictionary = {
   };
   graph: {
     title: string;
+    explainLabel: string;
+    copy: string;
     currentPath: string;
     citizenDid: string;
     institution: string;
@@ -131,6 +134,8 @@ export type Dictionary = {
   };
   trail: {
     title: string;
+    explainLabel: string;
+    explainerCopy: string;
     proofTitle: string;
     state: string;
     signerRole: string;
@@ -149,6 +154,7 @@ export type Dictionary = {
   };
   hash: {
     title: string;
+    explainLabel: string;
     verified: string;
     local: string;
     copy: string;
@@ -285,6 +291,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     integrity: {
       title: "Ledger integrity",
+      explainLabel: "What this shows",
       valid: "valid",
       failed: "failed",
       validTitle: "Hash chain verifies",
@@ -348,6 +355,9 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     graph: {
       title: "Bureaucratic machinery",
+      explainLabel: "What this shows",
+      copy:
+        "The graph maps the current owner of the file: citizen, institution, registry, director, assigned servant, or final response.",
       currentPath: "current path",
       citizenDid: "Citizen DID",
       institution: "Institution",
@@ -366,6 +376,9 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     trail: {
       title: "Signed audit trail",
+      explainLabel: "What this shows",
+      explainerCopy:
+        "Each row is a signed administrative state transition with hashes that link it to the previous state.",
       proofTitle: "Event proof",
       state: "State",
       signerRole: "Signer role",
@@ -384,6 +397,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     hash: {
       title: "Response hash verifier",
+      explainLabel: "What this shows",
       verified: "verified",
       local: "local",
       copy:
@@ -528,6 +542,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     integrity: {
       title: "Integritatea registrului",
+      explainLabel: "Ce arata",
       valid: "valid",
       failed: "esuata",
       validTitle: "Lantul de hash-uri se verifica",
@@ -591,6 +606,9 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     graph: {
       title: "Mecanism birocratic",
+      explainLabel: "Ce arata",
+      copy:
+        "Graful arata responsabilul curent al dosarului: cetatean, institutie, registratura, director, functionar alocat sau raspuns final.",
       currentPath: "traseu curent",
       citizenDid: "DID cetatean",
       institution: "Institutie",
@@ -609,6 +627,9 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     trail: {
       title: "Traseu de audit semnat",
+      explainLabel: "Ce arata",
+      explainerCopy:
+        "Fiecare rand este o tranzitie administrativa semnata, legata de starea precedenta prin hash-uri.",
       proofTitle: "Dovada eveniment",
       state: "Stare",
       signerRole: "Rol semnatar",
@@ -627,6 +648,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     hash: {
       title: "Verificator hash raspuns",
+      explainLabel: "Ce arata",
       verified: "verificat",
       local: "local",
       copy:

@@ -32,6 +32,10 @@ export function LedgerIntegrityPanel({
           </p>
         </div>
       </div>
+      <div className="explainBox">
+        <strong>{labels.explainLabel}</strong>
+        <p>{verification.valid ? labels.validCopy : labels.failedCopy}</p>
+      </div>
       <dl>
         <div>
           <dt>{labels.eventsChecked}</dt>

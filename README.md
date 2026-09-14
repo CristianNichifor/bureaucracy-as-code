@@ -32,9 +32,31 @@ looks like a national transparency view before the guided browser run begins:
 - registered City Hall request waiting for director routing
 - Ministry of Environment request with a legally visible extension
 - overdue cadastral-data request that shows deadline accountability
+- rejected consumer-protection request with signed refusal evidence
+- redirected transport request showing institution responsibility transfer
+- in-progress education request with partial-disclosure evidence
+- energy request with an extension close to its deadline
 
 Use the guided run to create a fresh local request, then export a public audit
 receipt for either the live request or any seeded scenario.
+
+## Visual Showcase
+
+Generate the local screenshot pack with:
+
+```bash
+pnpm demo:capture
+```
+
+The generated files are ignored by git and live under `artifacts/demo-captures/`:
+
+| Frame | What it shows |
+| --- | --- |
+| `01-public-explorer-desktop.png` | seeded public explorer with anonymized requests |
+| `02-resolved-request-desktop.png` | completed guided Law 544 request |
+| `03-proof-report-ready-desktop.png` | public proof report export path |
+| `04-romanian-mobile.png` | Romanian mobile presentation mode |
+| `05-ultrawide-centered-layout.png` | centered layout above 1920px |
 
 ## Presentation Pack
 
@@ -144,6 +166,8 @@ Deployment:
 - [Future ledger adapters](docs/future-ledger-adapters.md)
 - [Cloudflare Pages](docs/cloudflare-pages.md)
 - [GitHub security setup](docs/github-security-setup.md)
+- [Changelog](docs/changelog.md)
+- [v0.1.0 release notes](docs/release-v0.1.0.md)
 
 ## GitHub setup
 

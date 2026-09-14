@@ -942,6 +942,27 @@ dd {
   line-height: 1.45;
 }
 
+.explainBox {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 14px;
+  border-left: 3px solid var(--civic-action);
+  padding: 8px 10px;
+  background: var(--civic-info-bg);
+  color: var(--civic-muted);
+  line-height: 1.4;
+}
+
+.explainBox strong {
+  color: var(--civic-action-hover);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.explainBox p {
+  margin-bottom: 0;
+}
+
 .panelAction {
   margin-top: 14px;
   padding: 0 12px;

@@ -9,6 +9,10 @@ experience is convincing without external services.
 - A presenter can run a complete request from submission to resolution.
 - Alternate request states are visible: extension, overdue, rejected, and
   in-progress.
+- Rich seeded cases are visible: redirected, partial disclosure, extension near
+  deadline, rejected, resolved, registered, and overdue.
+- Key panels explain what citizens are seeing without exposing implementation
+  details.
 - Every visible administrative action has a signer role, signer DID hash,
   timestamp, previous state hash, current state hash, and payload hash.
 - The final response verifier compares a local file hash with the ledger hash.
@@ -36,6 +40,18 @@ sequence. It writes ignored local reports to:
 The report records the branch, commit, check status, runtime, and screenshot
 filenames. A passing report means the browser-only demo is ready for a local or
 Cloudflare Pages presentation run.
+
+## Release Tag Readiness
+
+Before creating `v0.1.0`:
+
+- merge the final release PR
+- run `pnpm demo:release` on the merged branch
+- review `artifacts/demo-release/report.md`
+- confirm the Cloudflare Pages deployment check is green
+- create the tag with signing enabled
+
+Release notes are maintained in [v0.1.0 release notes](release-v0.1.0.md).
 
 ## Explicit Non-goals
 

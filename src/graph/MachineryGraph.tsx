@@ -47,6 +47,10 @@ export function MachineryGraph({ request, labels }: { request: Law544Request; la
         <h2>{labels.title}</h2>
         <span className="pill">{labels.currentPath}</span>
       </div>
+      <div className="explainBox">
+        <strong>{labels.explainLabel}</strong>
+        <p>{labels.copy}</p>
+      </div>
       <div className="graphOwner">
         <span>{labels.currentOwner}</span>
         <strong>{currentOwner}</strong>
