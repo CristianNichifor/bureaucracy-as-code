@@ -264,6 +264,52 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.transferSafetyPanel {
+  margin-bottom: var(--civic-space-5);
+}
+
+.transferSafetyGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.transferSafetyGrid article {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 7px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  background: var(--civic-raised);
+}
+
+.transferSafetyGrid svg {
+  color: var(--civic-action);
+}
+
+.transferSafetyGrid span {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.transferSafetyGrid strong,
+.transferSafetyGrid small {
+  overflow-wrap: anywhere;
+}
+
+.transferSafetyGrid strong {
+  color: var(--civic-text);
+}
+
+.transferSafetyGrid small {
+  color: var(--civic-muted);
+  line-height: 1.35;
+}
+
 .loadingShell {
   min-height: 100dvh;
   display: grid;
@@ -1882,6 +1928,7 @@ dd {
   .operationsMetrics,
   .scenarioComparisonGrid,
   .evidenceBriefGrid,
+  .transferSafetyGrid,
   .detailList,
   .caseGlance,
   .deadlineStrip,

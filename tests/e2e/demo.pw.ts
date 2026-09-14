@@ -82,12 +82,14 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("button", { name: "Redirected", exact: true })).toBeVisible();
   await expect(page.getByText("Normal request lifecycle with evidence and a final response hash.")).toBeVisible();
   await expect(page.getByText("Proves missed deadlines remain visible instead of being overwritten.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Transfer safety" })).toBeVisible();
+  await expect(page.getByText("No private keys exported")).toBeVisible();
   await expect(page.getByText("signed events").first()).toBeVisible();
   await expect(page.getByPlaceholder("Search request, subject, institution, registry")).toBeVisible();
   await expect(page.getByText("Browser demo ready")).toBeVisible();
   await expect(page.getByText(/No ROeID integration/)).toBeVisible();
   await expect(page.getByText("pnpm demo:verify")).toBeVisible();
-  await expect(page.getByText("Ready for a live run. Submit the request to record the first signed transition.")).toBeVisible();
+  await expect(page.locator(".message")).toContainText("Ready for a live run. Submit the request to record the first signed transition.");
   await expect(page.getByText("Ledger verifies")).toBeVisible();
   await expect(page.getByLabel("Deployed build")).toBeVisible();
 
@@ -172,7 +174,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
     expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
 
-    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
+    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .transferSafetyGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
       nodes.map((node) => {
         const rect = node.getBoundingClientRect();
         return {
@@ -248,6 +250,27 @@ test("summarizes the selected request as a public evidence brief", async ({ page
   await expect(panel.getByText("Citizen can verify the receipt and response hash.")).toBeVisible();
 });
 
+test("explains export and import transfer safety", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chromium", "Transfer controls are covered once on desktop.");
+
+  await page.goto("./");
+
+  const panel = page.getByRole("region", { name: "Transfer safety" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByText("Hash chain must verify")).toBeVisible();
+  await expect(panel.getByText("No private keys exported")).toBeVisible();
+  await expect(panel.getByText(/No transfer action yet/)).toBeVisible();
+
+  await page.getByRole("button", { name: /submit request/i }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export state" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/REQ-2026-[a-z0-9-]+-demo-state\.json/);
+  await expect(panel.locator(".pill").filter({ hasText: "exported" })).toBeVisible();
+  await expect(panel.getByText("1 live events")).toBeVisible();
+  await expect(panel.getByText("Signing keys stay in this browser.")).toBeVisible();
+});
+
 test("switches the public dashboard between English and Romanian", async ({ page }) => {
   await page.goto("./");
 
@@ -258,6 +281,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Incarcare institutii" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Comparatie scenarii" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Siguranta transferului" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Rezumat public al dovezilor" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Responsabilitate pe cerere" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
@@ -379,7 +403,8 @@ test("runs the guided Law 544 flow and proves edited exports are refused", async
   await expect(page.locator(".timelinePanel").getByText("PublicServant", { exact: true }).first()).toBeVisible();
 
   await page.getByRole("button", { name: /test edited export/i }).click();
-  await expect(page.getByText(/Tamper demo worked/i)).toBeVisible();
+  await expect(page.locator(".message")).toContainText(/Tamper demo worked/i);
+  await expect(page.getByRole("region", { name: "Transfer safety" }).locator(".pill").filter({ hasText: "rejected" })).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
 });
 
