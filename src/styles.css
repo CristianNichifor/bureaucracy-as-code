@@ -396,7 +396,7 @@ h2 {
   margin-bottom: 14px;
 }
 
-.operationsMetrics div {
+.operationsMetrics button {
   display: grid;
   min-height: 94px;
   align-content: start;
@@ -404,7 +404,15 @@ h2 {
   border: 1px solid var(--civic-border);
   border-radius: var(--civic-panel-radius);
   padding: 10px;
+  color: var(--civic-text);
   background: var(--civic-raised);
+  text-align: left;
+  cursor: pointer;
+}
+
+.operationsMetrics button:hover {
+  border-color: var(--civic-action);
+  background: var(--civic-raised-bg);
 }
 
 .operationsMetrics span {
@@ -462,7 +470,7 @@ h2 {
 
 .operationsRow dl {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
   margin: 0;
 }
