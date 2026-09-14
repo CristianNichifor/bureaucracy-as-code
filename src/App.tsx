@@ -459,7 +459,7 @@ export function App() {
         <DashboardSection id="request-accountability" title={t.sections.accountability.title} copy={t.sections.accountability.copy}>
           <div className="grid sectionGrid selectedCaseWorkspace">
             <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
-            <MachineryGraph request={selectedRequest} labels={t.graph} />
+            <MachineryGraph request={selectedRequest} events={selectedEvents} labels={t.graph} />
             <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
           </div>
         </DashboardSection>

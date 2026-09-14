@@ -193,6 +193,17 @@ export type Dictionary = {
     hashEvidence: string;
     currentOwner: string;
     finalResponse: string;
+    refusalResponse: string;
+    escalationQueue: string;
+    exceptionLane: string;
+    standardFlow: string;
+    noExceptions: string;
+    extensionSignal: string;
+    partialDisclosureSignal: string;
+    redirectSignal: string;
+    overdueSignal: string;
+    rejectionSignal: string;
+    signedMetadata: string;
   };
   trail: {
     title: string;
@@ -535,6 +546,17 @@ export const dictionaries: Record<Language, Dictionary> = {
       hashEvidence: "hash evidence",
       currentOwner: "Current owner",
       finalResponse: "Final response",
+      refusalResponse: "Refusal response",
+      escalationQueue: "Escalation queue",
+      exceptionLane: "Internal exception lane",
+      standardFlow: "Standard flow",
+      noExceptions: "No exceptional internal route recorded.",
+      extensionSignal: "Extension",
+      partialDisclosureSignal: "Partial disclosure",
+      redirectSignal: "Redirect",
+      overdueSignal: "Overdue escalation",
+      rejectionSignal: "Refusal",
+      signedMetadata: "Signed metadata",
     },
     trail: {
       title: "Signed audit trail",
@@ -886,6 +908,17 @@ export const dictionaries: Record<Language, Dictionary> = {
       hashEvidence: "dovada hash",
       currentOwner: "Responsabil curent",
       finalResponse: "Raspuns final",
+      refusalResponse: "Raspuns de refuz",
+      escalationQueue: "Coada escaladare",
+      exceptionLane: "Ruta interna speciala",
+      standardFlow: "Flux standard",
+      noExceptions: "Nu exista ruta interna speciala inregistrata.",
+      extensionSignal: "Prelungire",
+      partialDisclosureSignal: "Divulgare partiala",
+      redirectSignal: "Redirectionare",
+      overdueSignal: "Escaladare intarziere",
+      rejectionSignal: "Refuz",
+      signedMetadata: "Metadate semnate",
     },
     trail: {
       title: "Traseu de audit semnat",
