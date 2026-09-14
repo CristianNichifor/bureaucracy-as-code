@@ -66,6 +66,19 @@ export type Dictionary = {
     scenarioProofs: Record<string, string>;
     steps: Record<string, { label: string; actor: string }>;
   };
+  dataFlow: {
+    title: string;
+    label: string;
+    copy: string;
+    publicData: string;
+    privateData: string;
+    steps: Array<{
+      title: string;
+      actor: string;
+      data: string;
+      proof: string;
+    }>;
+  };
   integrity: {
     title: string;
     explainLabel: string;
@@ -519,6 +532,40 @@ export const dictionaries: Record<Language, Dictionary> = {
         attach: { label: "Attach evidence", actor: "Public servant" },
         resolve: { label: "Resolve request", actor: "Public servant" },
       },
+    },
+    dataFlow: {
+      title: "Signed data flow",
+      label: "What moves through the system",
+      copy:
+        "The demo separates private request content from public verification evidence. Every step records enough proof to audit the machine without publishing raw documents.",
+      publicData: "Public ledger evidence",
+      privateData: "Private browser/document data",
+      steps: [
+        {
+          title: "Citizen submits",
+          actor: "Citizen credential",
+          data: "Request text stays local or off-chain; payload hash and DID hash become public evidence.",
+          proof: "Request_Created with signed payload hash",
+        },
+        {
+          title: "Registry assigns",
+          actor: "Registry bot",
+          data: "Internal number joins the public trail without exposing the full file.",
+          proof: "Registry_Assigned links to the previous state hash",
+        },
+        {
+          title: "Director routes",
+          actor: "Director credential",
+          data: "Responsibility moves to a public-servant DID hash.",
+          proof: "Task_Routed records signer role and assignee hash",
+        },
+        {
+          title: "Officer resolves",
+          actor: "Public servant",
+          data: "Evidence and final response remain off-chain; only document hashes are visible.",
+          proof: "Document_Attached and Request_Resolved close the chain",
+        },
+      ],
     },
     integrity: {
       title: "Ledger integrity",
@@ -1051,6 +1098,40 @@ export const dictionaries: Record<Language, Dictionary> = {
         attach: { label: "Ataseaza dovada", actor: "Functionar public" },
         resolve: { label: "Rezolva cererea", actor: "Functionar public" },
       },
+    },
+    dataFlow: {
+      title: "Flux de date semnat",
+      label: "Ce se muta prin sistem",
+      copy:
+        "Demo-ul separa continutul privat al cererii de dovezile publice de verificare. Fiecare pas inregistreaza suficienta dovada pentru audit fara publicarea documentelor brute.",
+      publicData: "Dovezi publice in registru",
+      privateData: "Date private in browser/documente",
+      steps: [
+        {
+          title: "Cetateanul depune",
+          actor: "Credential cetatean",
+          data: "Textul cererii ramane local sau off-chain; hash-ul payloadului si hash-ul DID devin dovezi publice.",
+          proof: "Request_Created cu hash payload semnat",
+        },
+        {
+          title: "Registratura aloca",
+          actor: "Robot registratura",
+          data: "Numarul intern intra in traseul public fara expunerea dosarului complet.",
+          proof: "Registry_Assigned leaga noua stare de hash-ul anterior",
+        },
+        {
+          title: "Directorul repartizeaza",
+          actor: "Credential director",
+          data: "Responsabilitatea trece catre hash-ul DID al functionarului public.",
+          proof: "Task_Routed inregistreaza rolul semnatarului si hash-ul responsabilului",
+        },
+        {
+          title: "Functionarul rezolva",
+          actor: "Functionar public",
+          data: "Dovezile si raspunsul final raman off-chain; numai hash-urile documentelor sunt vizibile.",
+          proof: "Document_Attached si Request_Resolved inchid lantul",
+        },
+      ],
     },
     integrity: {
       title: "Integritatea registrului",
