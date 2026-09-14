@@ -82,6 +82,27 @@ export type Dictionary = {
     none: string;
     tamperButton: string;
   };
+  transferSafety: {
+    title: string;
+    label: string;
+    copy: string;
+    idle: string;
+    exported: string;
+    imported: string;
+    rejected: string;
+    reset: string;
+    idleDetail: string;
+    exportScope: string;
+    importGate: string;
+    keyBoundary: string;
+    lastResult: string;
+    eventCount: string;
+    request: string;
+    chainMustVerify: string;
+    refusesTampering: string;
+    noPrivateKeys: string;
+    localKeys: string;
+  };
   feed: {
     title: string;
     visible: string;
@@ -508,6 +529,28 @@ export const dictionaries: Record<Language, Dictionary> = {
       noEvents: "No events yet",
       none: "None",
       tamperButton: "Test edited export",
+    },
+    transferSafety: {
+      title: "Transfer safety",
+      label: "Export and import",
+      copy:
+        "Demo state can move between browsers only as public ledger evidence. Imports are refused unless the hash chain still verifies.",
+      idle: "ready",
+      exported: "exported",
+      imported: "imported",
+      rejected: "rejected",
+      reset: "reset",
+      idleDetail: "No transfer action yet. Export state after recording at least one signed event.",
+      exportScope: "Export scope",
+      importGate: "Import gate",
+      keyBoundary: "Key boundary",
+      lastResult: "Last result",
+      eventCount: "{count} live events",
+      request: "Active request {requestId}",
+      chainMustVerify: "Hash chain must verify",
+      refusesTampering: "Edited exports are rejected before they replace local state.",
+      noPrivateKeys: "No private keys exported",
+      localKeys: "Imported demos can be read and re-verified, but original signers cannot be impersonated.",
     },
     feed: {
       title: "Public request explorer",
@@ -979,6 +1022,28 @@ export const dictionaries: Record<Language, Dictionary> = {
       noEvents: "Niciun eveniment",
       none: "Niciunul",
       tamperButton: "Testeaza export modificat",
+    },
+    transferSafety: {
+      title: "Siguranta transferului",
+      label: "Export si import",
+      copy:
+        "Starea demo se muta intre browsere doar ca dovada publica de registru. Importul este refuzat daca lantul de hash-uri nu se verifica.",
+      idle: "pregatit",
+      exported: "exportat",
+      imported: "importat",
+      rejected: "respins",
+      reset: "resetat",
+      idleDetail: "Nicio actiune de transfer inca. Exporta starea dupa cel putin un eveniment semnat.",
+      exportScope: "Scop export",
+      importGate: "Poarta import",
+      keyBoundary: "Limita cheilor",
+      lastResult: "Ultimul rezultat",
+      eventCount: "{count} evenimente live",
+      request: "Cerere activa {requestId}",
+      chainMustVerify: "Lantul de hash-uri trebuie sa se verifice",
+      refusesTampering: "Exporturile modificate sunt respinse inainte sa inlocuiasca starea locala.",
+      noPrivateKeys: "Fara chei private exportate",
+      localKeys: "Demo-urile importate pot fi citite si reverificate, dar semnatarii initiali nu pot fi imitati.",
     },
     feed: {
       title: "Explorer public de cereri",

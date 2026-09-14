@@ -15,6 +15,7 @@ import { AuditReceiptVerifier } from "./dashboard/AuditReceiptVerifier";
 import { ProofPreviewPanel } from "./dashboard/ProofPreviewPanel";
 import { OperationsPanel } from "./dashboard/OperationsPanel";
 import { ScenarioComparisonPanel } from "./dashboard/ScenarioComparisonPanel";
+import { TransferSafetyPanel, type TransferStatus } from "./dashboard/TransferSafetyPanel";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
@@ -65,6 +66,8 @@ export function App() {
   const [language, setLanguage] = useState<Language>("en");
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
   const [message, setMessage] = useState(dictionaries.en.app.startMessage);
+  const [transferStatus, setTransferStatus] = useState<TransferStatus>("idle");
+  const [transferDetail, setTransferDetail] = useState(dictionaries.en.transferSafety.idleDetail);
   const [isRunningScenario, setIsRunningScenario] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
   const [lastRecordedEvent, setLastRecordedEvent] = useState<LedgerEvent | undefined>();
@@ -78,7 +81,7 @@ export function App() {
     setChainVerification(await runtime.verifyChain());
   }, [runtime]);
 
-  const resetDemo = useCallback(async (nextMessage: string) => {
+  const resetDemo = useCallback(async (nextMessage: string, nextTransferStatus: TransferStatus = "reset") => {
     const nextContext = await runtime.reset();
     setContext(nextContext);
     setSelectedRequestId(nextContext.request.id);
@@ -86,11 +89,13 @@ export function App() {
     setChainVerification(initialVerification);
     setIsAutoRunning(false);
     setLastRecordedEvent(undefined);
+    setTransferStatus(nextTransferStatus);
+    setTransferDetail(nextTransferStatus === "idle" ? dictionaries.en.transferSafety.idleDetail : nextMessage);
     setMessage(nextMessage);
   }, [runtime]);
 
   useEffect(() => {
-    void resetDemo(dictionaries.en.app.startMessage);
+    void resetDemo(dictionaries.en.app.startMessage, "idle");
   }, [resetDemo]);
 
   useEffect(() => {
@@ -115,7 +120,10 @@ export function App() {
     link.download = `${context.request.id}-demo-state.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setMessage(formatMessage(t.app.exportStateMessage, { count: state.events.length }));
+    const nextMessage = formatMessage(t.app.exportStateMessage, { count: state.events.length });
+    setTransferStatus("exported");
+    setTransferDetail(nextMessage);
+    setMessage(nextMessage);
   }
 
   function exportAuditReceipt() {
@@ -171,9 +179,15 @@ export function App() {
       setContext(context ? { ...context, request: state.request } : context);
       setSelectedRequestId(state.request.id);
       await refresh();
-      setMessage(formatMessage(t.app.importSuccessMessage, { count: state.events.length }));
+      const nextMessage = formatMessage(t.app.importSuccessMessage, { count: state.events.length });
+      setTransferStatus("imported");
+      setTransferDetail(nextMessage);
+      setMessage(nextMessage);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : t.app.importFailureMessage);
+      const nextMessage = error instanceof Error ? error.message : t.app.importFailureMessage;
+      setTransferStatus("rejected");
+      setTransferDetail(nextMessage);
+      setMessage(nextMessage);
     }
   }
 
@@ -186,6 +200,8 @@ export function App() {
       const lastIndex = state.events.length - 1;
 
       if (lastIndex < 0) {
+        setTransferStatus("idle");
+        setTransferDetail(t.app.tamperNeedsEventMessage);
         setMessage(t.app.tamperNeedsEventMessage);
         return;
       }
@@ -198,14 +214,18 @@ export function App() {
       };
 
       await importDemoState({ ledger: runtime.ledger, json: serializeDemoState(forgedState) });
+      setTransferStatus("rejected");
+      setTransferDetail(t.app.tamperUnexpectedMessage);
       setMessage(t.app.tamperUnexpectedMessage);
     } catch (error) {
       await refresh();
-      setMessage(
+      const nextMessage =
         error instanceof Error
           ? formatMessage(t.app.tamperWorkedMessage, { reason: error.message })
-          : t.app.tamperWorkedFallbackMessage,
-      );
+          : t.app.tamperWorkedFallbackMessage;
+      setTransferStatus("rejected");
+      setTransferDetail(nextMessage);
+      setMessage(nextMessage);
     }
   }
 
@@ -418,6 +438,13 @@ export function App() {
       </section>
 
       <p className="message">{message}</p>
+      <TransferSafetyPanel
+        labels={t.transferSafety}
+        eventCount={events.length}
+        requestId={context.request.id}
+        status={transferStatus}
+        detail={transferDetail}
+      />
 
       <div className="dashboardSections">
         <DashboardSection id="run-request" title={t.sections.run.title} copy={t.sections.run.copy}>
