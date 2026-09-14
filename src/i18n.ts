@@ -68,6 +68,13 @@ export type Dictionary = {
     institution: string;
     deadline: string;
     latestSignerRole: string;
+    currentStatus: string;
+    latestAction: string;
+    responsibility: string;
+    evidence: string;
+    registryQueue: string;
+    directorQueue: string;
+    finalResponse: string;
     noSigner: string;
     events: string;
     citizenDidHash: string;
@@ -228,6 +235,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       institution: "Institution",
       deadline: "Deadline",
       latestSignerRole: "Latest signer role",
+      currentStatus: "Current status",
+      latestAction: "Latest action",
+      responsibility: "Responsibility",
+      evidence: "Evidence",
+      registryQueue: "Registry queue",
+      directorQueue: "Director queue",
+      finalResponse: "Final response",
       noSigner: "No signer yet",
       events: "Events",
       citizenDidHash: "Citizen DID hash",
@@ -388,6 +402,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       institution: "Institutie",
       deadline: "Termen",
       latestSignerRole: "Ultimul rol semnatar",
+      currentStatus: "Status curent",
+      latestAction: "Ultima actiune",
+      responsibility: "Responsabilitate",
+      evidence: "Dovada",
+      registryQueue: "Coada registratura",
+      directorQueue: "Coada director",
+      finalResponse: "Raspuns final",
       noSigner: "Fara semnatar inca",
       events: "Evenimente",
       citizenDidHash: "Hash DID cetatean",
