@@ -266,6 +266,7 @@ h2 {
 .guidedPanel,
 .integrityPanel,
 .timelinePanel,
+.presenterPanel,
 .readinessPanel {
   grid-column: 1 / -1;
 }
@@ -1028,6 +1029,62 @@ dd {
   background: var(--civic-raised-bg);
 }
 
+.presenterSteps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.presenterSteps li {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 10px;
+  background: var(--civic-raised);
+  color: var(--civic-muted);
+  line-height: 1.35;
+}
+
+.presenterSteps svg {
+  color: var(--civic-success);
+}
+
+.presenterCommands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--civic-border);
+  padding-top: 12px;
+}
+
+.presenterCommands span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--civic-subtle);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.presenterCommands code {
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-radius);
+  padding: 6px 8px;
+  background: var(--civic-raised);
+  color: var(--civic-text);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+}
+
 @media (max-width: 860px) {
   .hero,
   .grid,
@@ -1056,6 +1113,10 @@ dd {
   }
 
   .stepList {
+    grid-template-columns: 1fr;
+  }
+
+  .presenterSteps {
     grid-template-columns: 1fr;
   }
 

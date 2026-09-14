@@ -207,6 +207,15 @@ export type Dictionary = {
     gitleaks: string;
     dependencyReview: string;
   };
+  presenter: {
+    title: string;
+    label: string;
+    copy: string;
+    steps: string[];
+    commandsTitle: string;
+    releaseCommand: string;
+    captureCommand: string;
+  };
 };
 
 export const dictionaries: Record<Language, Dictionary> = {
@@ -435,6 +444,23 @@ export const dictionaries: Record<Language, Dictionary> = {
       gitleaks: "Secret Scan / gitleaks",
       dependencyReview: "dependency-review",
     },
+    presenter: {
+      title: "Presenter checklist",
+      label: "Live demo flow",
+      copy:
+        "Use this sequence for a five-minute public walkthrough after running the release check.",
+      steps: [
+        "Open the explorer and point to anonymized seeded Law 544 requests.",
+        "Run the full guided scenario from citizen submission to final response.",
+        "Show signer roles, DID hashes, state hashes, and the machinery graph.",
+        "Export an audit receipt and explain that documents stay off-ledger.",
+        "Verify a received response file against the recorded hash.",
+        "Switch to Romanian mode for civic stakeholders.",
+      ],
+      commandsTitle: "Operator commands",
+      releaseCommand: "pnpm demo:release",
+      captureCommand: "pnpm demo:capture",
+    },
   },
   ro: {
     app: {
@@ -660,6 +686,23 @@ export const dictionaries: Record<Language, Dictionary> = {
       codeql: "CodeQL",
       gitleaks: "Secret Scan / gitleaks",
       dependencyReview: "dependency-review",
+    },
+    presenter: {
+      title: "Checklist prezentare",
+      label: "Flux demo live",
+      copy:
+        "Foloseste aceasta ordine pentru o prezentare publica de cinci minute dupa verificarea release-ului.",
+      steps: [
+        "Deschide explorerul si arata cererile Legea 544 anonimizate.",
+        "Ruleaza scenariul complet de la depunere pana la raspuns final.",
+        "Arata rolurile semnatare, hash-urile DID, hash-urile de stare si graful.",
+        "Exporta dovada de audit si explica faptul ca documentele raman in afara registrului.",
+        "Verifica un fisier de raspuns primit fata de hash-ul inregistrat.",
+        "Ramai in limba romana pentru stakeholderii civici.",
+      ],
+      commandsTitle: "Comenzi operator",
+      releaseCommand: "pnpm demo:release",
+      captureCommand: "pnpm demo:capture",
     },
   },
 };
