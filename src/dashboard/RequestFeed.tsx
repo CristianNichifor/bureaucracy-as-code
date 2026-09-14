@@ -194,7 +194,7 @@ export function RequestFeed({
         </button>
       </div>
 
-      <div className="feedTable" role="list">
+      <div className="feedTable" role="group" aria-label={labels.title}>
         <div className="feedHeader" aria-hidden="true">
           <span>Request</span>
           <span>{labels.institution}</span>

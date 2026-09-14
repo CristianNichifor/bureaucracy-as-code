@@ -23,6 +23,7 @@
     "verify:e2e": "RUN_E2E=1 node scripts/verify-local.mjs",
     "demo:verify": "node scripts/verify-browser-demo.mjs",
     "ui:verify": "pnpm build && playwright test --grep @ui",
+    "a11y:verify": "pnpm build && playwright test --grep @a11y",
     "deploy:smoke": "node scripts/smoke-live-deploy.mjs",
     "security:gitleaks": "gitleaks detect --source . --verbose"
   },
@@ -34,6 +35,7 @@
     "zod": "^4.1.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.35.0",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.7",
     "@playwright/test": "^1.63.0",
