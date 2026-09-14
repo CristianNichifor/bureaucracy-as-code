@@ -231,6 +231,29 @@ h2 {
   align-items: start;
 }
 
+.buildMetadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  margin: var(--civic-space-5) 0 0;
+  border-top: 1px solid var(--civic-border);
+  padding-top: var(--civic-space-4);
+  color: var(--civic-muted);
+  font-size: 0.84rem;
+}
+
+.buildMetadata span {
+  color: var(--civic-subtle);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.buildMetadata strong {
+  color: var(--civic-text);
+  overflow-wrap: anywhere;
+}
+
 .guidedPanel,
 .integrityPanel,
 .timelinePanel {

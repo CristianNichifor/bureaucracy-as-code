@@ -68,6 +68,7 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Guided Law 544 run" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
+  await expect(page.getByLabel("Deployed build")).toBeVisible();
 
   expect(pageErrors).toEqual([]);
 });

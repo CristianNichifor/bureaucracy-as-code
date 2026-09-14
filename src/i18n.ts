@@ -159,6 +159,12 @@ export type Dictionary = {
     tamperButton: string;
     noReceipt: string;
   };
+  build: {
+    title: string;
+    environment: string;
+    builtAt: string;
+    local: string;
+  };
 };
 
 export const dictionaries: Record<Language, Dictionary> = {
@@ -337,6 +343,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       tamperButton: "Test tampered receipt",
       noReceipt: "No receipt loaded yet",
     },
+    build: {
+      title: "Deployed build",
+      environment: "Environment",
+      builtAt: "Built",
+      local: "Local build",
+    },
   },
   ro: {
     app: {
@@ -512,6 +524,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       responseHash: "Hash raspuns",
       tamperButton: "Testeaza dovada modificata",
       noReceipt: "Nicio dovada incarcata",
+    },
+    build: {
+      title: "Versiune publicata",
+      environment: "Mediu",
+      builtAt: "Construita",
+      local: "Build local",
     },
   },
 };
