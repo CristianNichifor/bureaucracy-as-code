@@ -20,6 +20,7 @@ Presenter note:
 - standalone URL: `https://bureaucracy-as-code.pages.dev/`
 - target digital URL: `https://digital.cristian-nichifor.com/bureaucracy-as-code/`
 - all identities, credentials, documents, and ledger events are local demo data
+- open the deployed demo once while online to warm the offline presentation cache
 
 Point out the public feed first. It already contains seeded anonymized requests
 so the dashboard looks useful before the guided scenario begins.

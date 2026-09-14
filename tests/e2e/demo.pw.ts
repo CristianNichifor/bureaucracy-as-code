@@ -78,6 +78,24 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   expect(pageErrors).toEqual([]);
 });
 
+test("registers the offline presentation service worker", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chromium", "Service worker registration is covered once on desktop.");
+
+  await page.goto("./");
+
+  const registration = await page.evaluate(async () => {
+    if (!("serviceWorker" in navigator)) return null;
+    const ready = await navigator.serviceWorker.ready;
+    return {
+      scope: ready.scope,
+      scriptURL: ready.active?.scriptURL ?? null,
+    };
+  });
+
+  expect(registration?.scope).toContain("/bureaucracy-as-code/");
+  expect(registration?.scriptURL).toContain("/bureaucracy-as-code/sw.js");
+});
+
 test("keeps the browser demo usable on the configured viewport", async ({ page }, testInfo) => {
   await page.goto("./");
 

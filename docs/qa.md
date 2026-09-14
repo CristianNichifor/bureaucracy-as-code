@@ -48,6 +48,7 @@ The e2e suite checks:
 - the app loads at the Cloudflare Pages base path
 - important landmarks and controls are present
 - the public demo renders on desktop Chromium and a mobile Chromium viewport
+- the production preview registers the offline presentation service worker
 - the Civic UI layout remains stable across the target viewport matrix
 - the public receipt export is available
 - Romanian/English presentation mode works
