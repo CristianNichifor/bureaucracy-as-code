@@ -835,6 +835,48 @@ dd {
   margin-top: 10px;
 }
 
+.proofGrid {
+  grid-template-columns: 1fr;
+}
+
+.proofValue {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.proofValue code {
+  min-width: 0;
+  color: var(--civic-text);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.iconButton {
+  display: inline-flex;
+  min-width: 88px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-radius);
+  padding: 0 10px;
+  color: var(--civic-action-hover);
+  background: var(--civic-surface);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.iconButton:hover {
+  border-color: var(--civic-border-strong);
+  background: var(--civic-raised-bg);
+}
+
 @media (max-width: 860px) {
   .hero,
   .grid,

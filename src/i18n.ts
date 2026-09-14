@@ -118,6 +118,8 @@ export type Dictionary = {
     signature: string;
     documentHash: string;
     metadata: string;
+    copy: string;
+    copied: string;
     none: string;
     empty: string;
   };
@@ -285,6 +287,8 @@ export const dictionaries: Record<Language, Dictionary> = {
       signature: "Signature",
       documentHash: "Document hash",
       metadata: "Metadata",
+      copy: "Copy",
+      copied: "Copied",
       none: "None",
       empty: "No signed events have been recorded for this request yet.",
     },
@@ -452,6 +456,8 @@ export const dictionaries: Record<Language, Dictionary> = {
       signature: "Semnatura",
       documentHash: "Hash document",
       metadata: "Metadate",
+      copy: "Copiaza",
+      copied: "Copiat",
       none: "Niciuna",
       empty: "Nu exista inca evenimente semnate pentru aceasta cerere.",
     },
