@@ -18,6 +18,7 @@ import { ScenarioComparisonPanel } from "./dashboard/ScenarioComparisonPanel";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
+import { EvidenceBrief } from "./dashboard/EvidenceBrief";
 import { BuildMetadata } from "./dashboard/BuildMetadata";
 import { ReleaseReadiness } from "./dashboard/ReleaseReadiness";
 import { PresenterChecklist } from "./dashboard/PresenterChecklist";
@@ -466,6 +467,7 @@ export function App() {
 
         <DashboardSection id="request-accountability" title={t.sections.accountability.title} copy={t.sections.accountability.copy}>
           <div className="grid sectionGrid selectedCaseWorkspace">
+            <EvidenceBrief request={selectedRequest} events={selectedEvents} labels={t.evidenceBrief} />
             <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
             <MachineryGraph request={selectedRequest} events={selectedEvents} labels={t.graph} />
             <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
