@@ -84,6 +84,7 @@ function RequestFeedRow({
 }
 
 export function RequestFeed({
+  id,
   items,
   selectedRequestId,
   filters,
@@ -91,6 +92,7 @@ export function RequestFeed({
   onSelectRequest,
   labels,
 }: {
+  id?: string;
   items: RequestExplorerItem[];
   selectedRequestId: string | null;
   filters: RequestExplorerFilters;
@@ -107,7 +109,7 @@ export function RequestFeed({
     filters.role !== DEFAULT_EXPLORER_FILTERS.role;
 
   return (
-    <section className="panel requestFeedPanel">
+    <section className="panel requestFeedPanel" id={id}>
       <div className="panelHeader">
         <h2>{labels.title}</h2>
         <span className="pill">{filteredItems.length} {labels.visible}</span>

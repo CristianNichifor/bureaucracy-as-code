@@ -246,7 +246,10 @@ export function App() {
   const selectedSource = selectedItem?.source ?? "active";
 
   return (
-    <main className="appShell">
+    <main className="appShell" id="main-content">
+      <a className="skipLink" href="#request-explorer">
+        Skip to public request explorer
+      </a>
       <header className="hero">
         <div>
           <p className="eyebrow">{t.app.eyebrow}</p>
@@ -300,6 +303,7 @@ export function App() {
         />
         <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
         <RequestFeed
+          id="request-explorer"
           filters={filters}
           items={explorerItems}
           labels={t.feed}
