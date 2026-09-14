@@ -431,7 +431,8 @@ h2 {
   grid-column: 1 / -1;
 }
 
-.operationsPanel {
+.operationsPanel,
+.scenarioComparisonPanel {
   grid-column: 1 / -1;
 }
 
@@ -546,6 +547,98 @@ h2 {
   justify-content: flex-end;
   gap: 6px;
   font-weight: 800;
+}
+
+.scenarioComparisonGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.scenarioComparisonCard {
+  display: grid;
+  min-width: 0;
+  min-height: 232px;
+  align-content: start;
+  gap: 10px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 12px;
+  color: var(--civic-text);
+  background: var(--civic-surface);
+  text-align: left;
+  cursor: pointer;
+}
+
+.scenarioComparisonCard:hover,
+.scenarioComparisonCard.selected {
+  border-color: var(--civic-action);
+  background: var(--civic-raised);
+}
+
+.scenarioComparisonCard.selected {
+  box-shadow: inset 0 0 0 1px var(--civic-action);
+}
+
+.scenarioComparisonCard > div:first-of-type {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.scenarioComparisonCard svg {
+  color: var(--civic-action);
+}
+
+.scenarioComparisonCard strong,
+.scenarioComparisonCard p,
+.scenarioComparisonCard dd {
+  overflow-wrap: anywhere;
+}
+
+.scenarioComparisonCard p {
+  margin: 0;
+  color: var(--civic-muted);
+  line-height: 1.35;
+}
+
+.scenarioComparisonCard dl {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.scenarioComparisonCard dl div {
+  display: flex;
+  min-width: 0;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--civic-border);
+  padding-top: 7px;
+}
+
+.scenarioComparisonCard dt {
+  color: var(--civic-subtle);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.scenarioComparisonCard dd {
+  margin: 0;
+  color: var(--civic-text);
+  font-weight: 800;
+  text-align: right;
+}
+
+.scenarioComparisonCard small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  color: var(--civic-action-hover);
+  font-weight: 900;
 }
 
 .statusSummary {
@@ -1731,12 +1824,19 @@ dd {
   font-size: 0.82rem;
 }
 
+@media (max-width: 1180px) {
+  .scenarioComparisonGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 860px) {
   .hero,
   .grid,
   .sectionHeader,
   .metricGrid,
   .operationsMetrics,
+  .scenarioComparisonGrid,
   .detailList,
   .caseGlance,
   .deadlineStrip,

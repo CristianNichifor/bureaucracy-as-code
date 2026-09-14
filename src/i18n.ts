@@ -134,6 +134,23 @@ export type Dictionary = {
     closedQueue: string;
     none: string;
   };
+  scenarioComparison: {
+    title: string;
+    copy: string;
+    browserOnly: string;
+    events: string;
+    deadline: string;
+    owner: string;
+    inspect: string;
+    officer: string;
+    escalation: string;
+    closed: string;
+    refusal: string;
+    scenarios: Record<
+      "Resolved" | "ExtensionRequested" | "Overdue" | "Rejected" | "InProgress",
+      string
+    >;
+  };
   detail: {
     title: string;
     live: string;
@@ -507,6 +524,27 @@ export const dictionaries: Record<Language, Dictionary> = {
       noOpenFiles: "No open files",
       closedQueue: "Queue closed",
       none: "None",
+    },
+    scenarioComparison: {
+      title: "Scenario comparison",
+      copy:
+        "Jump between the main Law 544 outcomes the demo can simulate: normal answer, extension, overdue escalation, refusal, and active processing.",
+      browserOnly: "seeded simulations",
+      events: "Events",
+      deadline: "Deadline",
+      owner: "Owner",
+      inspect: "Inspect this path",
+      officer: "Officer desk",
+      escalation: "Escalation",
+      closed: "Closed",
+      refusal: "Refusal file",
+      scenarios: {
+        Resolved: "Normal response",
+        ExtensionRequested: "Legal extension",
+        Overdue: "Deadline breach",
+        Rejected: "Refusal response",
+        InProgress: "Active processing",
+      },
     },
     detail: {
       title: "Request detail",
@@ -920,6 +958,27 @@ export const dictionaries: Record<Language, Dictionary> = {
       noOpenFiles: "Fara dosare deschise",
       closedQueue: "Coada inchisa",
       none: "Niciunul",
+    },
+    scenarioComparison: {
+      title: "Comparatie scenarii",
+      copy:
+        "Sari intre rezultatele principale simulate pentru Legea 544: raspuns normal, prelungire, intarziere, refuz si procesare activa.",
+      browserOnly: "simulari preincarcate",
+      events: "Evenimente",
+      deadline: "Termen",
+      owner: "Responsabil",
+      inspect: "Inspecteaza traseul",
+      officer: "Birou functionar",
+      escalation: "Escaladare",
+      closed: "Inchis",
+      refusal: "Dosar refuz",
+      scenarios: {
+        Resolved: "Raspuns normal",
+        ExtensionRequested: "Prelungire legala",
+        Overdue: "Termen depasit",
+        Rejected: "Raspuns de refuz",
+        InProgress: "Procesare activa",
+      },
     },
     detail: {
       title: "Detaliu cerere",
