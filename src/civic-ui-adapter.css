@@ -1,0 +1,59 @@
+/* Civic UI alignment adapter.
+   Mirrors the CSS-only Civic UI token contract used by sibling civic apps while
+   keeping this browser demo's domain-specific components host-owned. */
+:root {
+  --civic-bg: #f6f7f3;
+  --civic-surface: #ffffff;
+  --civic-raised: #f8faf7;
+  --civic-text: #1d2528;
+  --civic-muted: #516157;
+  --civic-subtle: #69746d;
+  --civic-border: #d8ddd2;
+  --civic-border-strong: #cbd5ca;
+  --civic-focus: #22496f;
+  --civic-action: #1d2528;
+  --civic-action-hover: #294337;
+  --civic-accent: #22496f;
+  --civic-danger: #8c2d24;
+  --civic-success: #116137;
+  --civic-warning: #8a5a00;
+  --civic-on-action: #ffffff;
+  --civic-success-bg: #dff4e6;
+  --civic-danger-bg: #fbebe8;
+  --civic-info-bg: #edf3fb;
+  --civic-raised-bg: #eef3ec;
+  --civic-space-1: 0.25rem;
+  --civic-space-2: 0.5rem;
+  --civic-space-3: 0.75rem;
+  --civic-space-4: 1rem;
+  --civic-space-5: 1.25rem;
+  --civic-space-6: 1.5rem;
+  --civic-radius: 6px;
+  --civic-panel-radius: 8px;
+  --civic-control-height: 44px;
+  --civic-page-max: 1180px;
+  --civic-readable: 72ch;
+  --civic-shadow-focus: 0 0 0 3px rgb(34 73 111 / 22%);
+}
+
+button,
+input,
+select,
+textarea {
+  letter-spacing: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--civic-focus);
+  outline-offset: 3px;
+  box-shadow: var(--civic-shadow-focus);
+}
+
+::selection {
+  color: var(--civic-on-action);
+  background: var(--civic-accent);
+}
