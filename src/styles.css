@@ -274,31 +274,8 @@ h2 {
   gap: 10px;
 }
 
-.transferSafetyGrid article {
-  display: grid;
-  min-width: 0;
-  align-content: start;
-  gap: 7px;
-  border: 1px solid var(--civic-border);
-  border-radius: var(--civic-panel-radius);
-  padding: 12px;
-  background: var(--civic-raised);
-}
-
 .transferSafetyGrid svg {
   color: var(--civic-action);
-}
-
-.transferSafetyGrid span {
-  color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.transferSafetyGrid strong,
-.transferSafetyGrid small {
-  overflow-wrap: anywhere;
 }
 
 .transferSafetyGrid strong {
@@ -361,9 +338,12 @@ h2 {
 }
 
 .sectionGridExplorer,
-.sectionGridRun,
-.sectionGridRelease {
+.sectionGridRun {
   grid-template-columns: 1fr;
+}
+
+.sectionGridRelease {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .selectedCaseWorkspace {
@@ -401,9 +381,7 @@ h2 {
 .guidedPanel,
 .integrityPanel,
 .timelinePanel,
-.demoCompletenessPanel,
-.presenterPanel,
-.readinessPanel {
+.demoCompletenessPanel {
   grid-column: 1 / -1;
 }
 
@@ -422,20 +400,30 @@ h2 {
   margin-bottom: 14px;
 }
 
-.proofPreviewGrid div {
+.proofPreviewGrid div,
+.transferSafetyGrid article,
+.evidenceBriefGrid article,
+.demoCompletenessGrid article {
   display: grid;
   min-width: 0;
-  min-height: 118px;
   align-content: start;
   gap: 7px;
   border: 1px solid var(--civic-border);
   border-radius: var(--civic-panel-radius);
-  padding: 10px;
+  padding: 12px;
   background: var(--civic-raised);
 }
 
+.proofPreviewGrid div {
+  min-height: 118px;
+  padding: 10px;
+}
+
 .proofPreviewGrid span,
-.proofPreviewList dt {
+.proofPreviewList dt,
+.transferSafetyGrid span,
+.evidenceBriefGrid span,
+.demoCompletenessGrid span {
   color: var(--civic-subtle);
   font-size: 0.74rem;
   font-weight: 900;
@@ -444,7 +432,13 @@ h2 {
 
 .proofPreviewGrid strong,
 .proofPreviewGrid small,
-.proofPreviewList dd {
+.proofPreviewList dd,
+.transferSafetyGrid strong,
+.transferSafetyGrid small,
+.evidenceBriefGrid strong,
+.evidenceBriefGrid small,
+.demoCompletenessGrid strong,
+.demoCompletenessGrid small {
   overflow-wrap: anywhere;
 }
 
@@ -922,31 +916,8 @@ h2 {
   gap: 10px;
 }
 
-.evidenceBriefGrid article {
-  display: grid;
-  min-width: 0;
-  align-content: start;
-  gap: 7px;
-  border: 1px solid var(--civic-border);
-  border-radius: var(--civic-panel-radius);
-  padding: 12px;
-  background: var(--civic-raised);
-}
-
 .evidenceBriefGrid svg {
   color: var(--civic-action);
-}
-
-.evidenceBriefGrid span {
-  color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.evidenceBriefGrid strong,
-.evidenceBriefGrid small {
-  overflow-wrap: anywhere;
 }
 
 .evidenceBriefGrid strong {
@@ -1474,31 +1445,8 @@ dd {
   gap: 10px;
 }
 
-.demoCompletenessGrid article {
-  display: grid;
-  min-width: 0;
-  align-content: start;
-  gap: 7px;
-  border: 1px solid var(--civic-border);
-  border-radius: var(--civic-panel-radius);
-  padding: 12px;
-  background: var(--civic-raised);
-}
-
 .demoCompletenessGrid svg {
   color: var(--civic-success);
-}
-
-.demoCompletenessGrid span {
-  color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.demoCompletenessGrid strong,
-.demoCompletenessGrid small {
-  overflow-wrap: anywhere;
 }
 
 .demoCompletenessGrid strong {
@@ -1981,7 +1929,8 @@ dd {
   .proofPreviewGrid,
   .proofPreviewList,
   .receiptResult,
-  .readinessGrid {
+  .readinessGrid,
+  .sectionGridRelease {
     grid-template-columns: 1fr;
   }
 

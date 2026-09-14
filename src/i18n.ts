@@ -827,7 +827,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       label: "Browser-only milestone",
       status: "100% demo scope",
       copy:
-        "The current app satisfies the agreed browser-only demo scope without ROeID, real identity services, durable Cloudflare resources, or legal sign-off dependencies.",
+        "The app meets the agreed browser-only demo scope without ROeID, real identity services, durable Cloudflare resources, or legal sign-off dependencies.",
       criteria: [
         {
           category: "Public explorer",
@@ -837,7 +837,7 @@ export const dictionaries: Record<Language, Dictionary> = {
         {
           category: "Signed workflow",
           title: "Complete request lifecycle",
-          copy: "A presenter can run citizen submission, registry, routing, processing, evidence attachment, and resolution.",
+          copy: "A presenter can run submission, registry, routing, processing, evidence attachment, and resolution.",
         },
         {
           category: "Alternate paths",
@@ -857,7 +857,7 @@ export const dictionaries: Record<Language, Dictionary> = {
         {
           category: "Presentation",
           title: "Responsive EN/RO walkthrough",
-          copy: "Civic UI alignment, light/dark theme, Romanian mode, presenter cues, and release checks are covered by tests.",
+          copy: "Civic UI alignment, light/dark theme, Romanian mode, presenter cues, and release checks are tested.",
         },
       ],
     },
@@ -890,7 +890,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       title: "Presenter checklist",
       label: "Live demo flow",
       copy:
-        "Use this sequence for a five-minute public walkthrough after running the release check.",
+        "Use this sequence for a five-minute public walkthrough after the release check passes.",
       modeTitle: "Presenter mode",
       cues: {
         explorer: {
@@ -1359,7 +1359,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       label: "Milestone doar in browser",
       status: "100% scop demo",
       copy:
-        "Aplicatia curenta acopera scopul demo agreat doar in browser, fara ROeID, servicii reale de identitate, resurse Cloudflare durabile sau dependinte de avizare juridica.",
+        "Aplicatia acopera scopul demo agreat doar in browser, fara ROeID, servicii reale de identitate, resurse Cloudflare durabile sau dependinte de avizare juridica.",
       criteria: [
         {
           category: "Explorer public",
@@ -1369,7 +1369,7 @@ export const dictionaries: Record<Language, Dictionary> = {
         {
           category: "Flux semnat",
           title: "Ciclu complet al cererii",
-          copy: "Prezentatorul poate rula depunere, registratura, rutare, procesare, atasare dovezi si rezolvare.",
+          copy: "Prezentatorul poate rula depunere, registratura, rutare, procesare, atasare dovezi si raspuns.",
         },
         {
           category: "Rute alternative",
@@ -1389,7 +1389,7 @@ export const dictionaries: Record<Language, Dictionary> = {
         {
           category: "Prezentare",
           title: "Walkthrough responsive EN/RO",
-          copy: "Alinierea Civic UI, tema luminos/intunecat, romana, indiciile de prezentare si verificarile release sunt testate.",
+          copy: "Alinierea Civic UI, tema luminos/intunecat, romana, indiciile si verificarile release sunt testate.",
         },
       ],
     },
@@ -1422,7 +1422,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       title: "Checklist prezentare",
       label: "Flux demo live",
       copy:
-        "Foloseste aceasta ordine pentru o prezentare publica de cinci minute dupa verificarea release-ului.",
+        "Foloseste aceasta ordine pentru o prezentare publica de cinci minute dupa ce release-ul este verificat.",
       modeTitle: "Mod prezentare",
       cues: {
         explorer: {

@@ -550,7 +550,6 @@ function DashboardSection({
     <section className="dashboardSection" aria-labelledby={titleId} id={id}>
       <div className="sectionHeader">
         <div>
-          <p className="eyebrow">Dashboard section</p>
           <h2 id={titleId}>{title}</h2>
         </div>
         <p>{copy}</p>
