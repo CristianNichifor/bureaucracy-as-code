@@ -79,6 +79,7 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByText("Normal request lifecycle with evidence and a final response hash.")).toBeVisible();
   await expect(page.getByText("Proves missed deadlines remain visible instead of being overwritten.")).toBeVisible();
   await expect(page.getByText("signed events").first()).toBeVisible();
+  await expect(page.getByPlaceholder("Search request, subject, institution, registry")).toBeVisible();
   await expect(page.getByText("Browser demo ready")).toBeVisible();
   await expect(page.getByText(/No ROeID integration/)).toBeVisible();
   await expect(page.getByText("pnpm demo:verify")).toBeVisible();
@@ -228,6 +229,22 @@ test("switches and persists light and dark themes", async ({ page }) => {
 
   await page.getByLabel("Theme").getByRole("button", { name: "Light", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+});
+
+test("searches and sorts the public request explorer", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chromium", "Explorer control behavior is covered once on desktop.");
+
+  await page.goto("./");
+
+  await page.getByPlaceholder("Search request, subject, institution, registry").fill("rail");
+  await expect(page.getByRole("button", { name: /REQ-2026-0008/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /REQ-2026-0002/i })).toHaveCount(0);
+
+  await page.getByLabel("Sort").selectOption("events-desc");
+  await expect(page.getByRole("button", { name: /REQ-2026-0008/i })).toBeVisible();
+
+  await page.getByRole("button", { name: "Reset filters" }).click();
+  await expect(page.getByRole("button", { name: /REQ-2026-0002/i })).toBeVisible();
 });
 
 test("exports a public audit receipt for the selected request", async ({ page }) => {

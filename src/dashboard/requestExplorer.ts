@@ -6,6 +6,8 @@ export type RequestExplorerFilters = {
   status: Law544Status | "All";
   institution: string;
   role: DemoRole | "All";
+  query: string;
+  sort: RequestExplorerSort;
 };
 
 export type RequestExplorerItem = {
@@ -19,10 +21,14 @@ export type StatusSummary = {
   count: number;
 };
 
+export type RequestExplorerSort = "deadline-asc" | "newest" | "events-desc" | "status";
+
 export const DEFAULT_EXPLORER_FILTERS: RequestExplorerFilters = {
   status: "All",
   institution: "All",
   role: "All",
+  query: "",
+  sort: "deadline-asc",
 };
 
 export function getRequestLatestRole(events: LedgerEvent[]): DemoRole | undefined {
@@ -54,14 +60,25 @@ export function filterRequestExplorerItems(
   items: RequestExplorerItem[],
   filters: RequestExplorerFilters,
 ): RequestExplorerItem[] {
+  const query = filters.query.trim().toLowerCase();
+
   return items.filter((item) => {
     const statusMatch = filters.status === "All" || item.request.status === filters.status;
     const institutionMatch = filters.institution === "All" || item.request.institution === filters.institution;
     const roleMatch =
       filters.role === "All" || item.events.some((event) => event.signerRole === filters.role);
+    const queryMatch =
+      query.length === 0 ||
+      [
+        item.request.id,
+        item.request.subject,
+        item.request.institution,
+        item.request.registryNumber,
+        item.request.assignedToDidHash,
+      ].some((value) => value?.toLowerCase().includes(query));
 
-    return statusMatch && institutionMatch && roleMatch;
-  });
+    return statusMatch && institutionMatch && roleMatch && queryMatch;
+  }).sort((a, b) => compareExplorerItems(a, b, filters.sort));
 }
 
 export function getInstitutionOptions(items: RequestExplorerItem[]): string[] {
@@ -85,4 +102,20 @@ export function getSelectedExplorerItem(
   selectedRequestId: string | null,
 ): RequestExplorerItem | null {
   return items.find((item) => item.request.id === selectedRequestId) ?? items[0] ?? null;
+}
+
+function compareExplorerItems(a: RequestExplorerItem, b: RequestExplorerItem, sort: RequestExplorerSort): number {
+  if (sort === "events-desc") {
+    return getRequestEventCount(b.events) - getRequestEventCount(a.events) || a.request.id.localeCompare(b.request.id);
+  }
+
+  if (sort === "newest") {
+    return Date.parse(b.request.createdAt) - Date.parse(a.request.createdAt) || a.request.id.localeCompare(b.request.id);
+  }
+
+  if (sort === "status") {
+    return a.request.status.localeCompare(b.request.status) || a.request.id.localeCompare(b.request.id);
+  }
+
+  return Date.parse(a.request.deadlineAt) - Date.parse(b.request.deadlineAt) || a.request.id.localeCompare(b.request.id);
 }

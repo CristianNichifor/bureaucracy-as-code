@@ -417,7 +417,7 @@ h2 {
 
 .filterBar {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(0, 1fr)) auto;
   gap: 10px;
   margin-bottom: 14px;
   align-items: end;
@@ -435,7 +435,8 @@ h2 {
   text-transform: uppercase;
 }
 
-.filterBar select {
+.filterBar select,
+.filterBar input {
   width: 100%;
   min-height: var(--civic-control-height);
   min-width: 0;
@@ -444,6 +445,9 @@ h2 {
   padding: 0 10px;
   color: var(--civic-text);
   background: var(--civic-surface);
+}
+
+.filterBar select {
   cursor: pointer;
 }
 
