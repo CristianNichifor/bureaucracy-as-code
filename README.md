@@ -167,6 +167,7 @@ Deployment:
 - [Production readiness](docs/production-readiness.md)
 - [QA](docs/qa.md)
 - [Demo script](docs/demo-script.md)
+- [Presenter handoff](docs/presenter-handoff.md)
 - [Public walkthrough](docs/public-walkthrough.md)
 - [Operator runbook](docs/operator-runbook.md)
 - [Demo capture guide](docs/demo-capture.md)
