@@ -16,6 +16,23 @@ export type Dictionary = {
     languageLabel: string;
     english: string;
     romanian: string;
+    loadingTitle: string;
+    loadingCopy: string;
+    startMessage: string;
+    resetMessage: string;
+    exportStateMessage: string;
+    exportReceiptMessage: string;
+    exportProofReportMessage: string;
+    importSuccessMessage: string;
+    importFailureMessage: string;
+    tamperNeedsEventMessage: string;
+    tamperUnexpectedMessage: string;
+    tamperWorkedMessage: string;
+    tamperWorkedFallbackMessage: string;
+    scenarioReplayedMessage: string;
+    transitionRecordedMessage: string;
+    transitionProofMessage: string;
+    transitionFailureMessage: string;
   };
   guided: {
     title: string;
@@ -185,6 +202,25 @@ export const dictionaries: Record<Language, Dictionary> = {
       languageLabel: "Language",
       english: "EN",
       romanian: "RO",
+      loadingTitle: "Preparing browser ledger",
+      loadingCopy: "Creating local demo identities, credentials, and an empty hash-chain ledger.",
+      startMessage: "Ready for a live run. Submit the request to record the first signed transition.",
+      resetMessage: "Demo reset. The live request is empty and ready for the first citizen signature.",
+      exportStateMessage: "Exported {count} events. Signing keys stay in this browser.",
+      exportReceiptMessage: "Exported audit receipt for {requestId}.",
+      exportProofReportMessage: "Exported proof report for {count} visible requests.",
+      importSuccessMessage:
+        "Imported {count} events and verified the hash chain. Private signing keys were not imported.",
+      importFailureMessage: "Could not read that file.",
+      tamperNeedsEventMessage: "Create at least one event before testing a tampered export.",
+      tamperUnexpectedMessage: "Unexpected result: the edited export imported successfully.",
+      tamperWorkedMessage: "Tamper demo worked: {reason}",
+      tamperWorkedFallbackMessage: "Tamper demo worked: the edited export was rejected.",
+      scenarioReplayedMessage: "Replayed {scenario}: {count} signed state changes now verify.",
+      transitionRecordedMessage:
+        "{actor} signed {action}. Status moved from {fromStatus} to {toStatus}.",
+      transitionProofMessage: "Proof hash {hash}; verified ledger events: {count}.",
+      transitionFailureMessage: "Could not apply transition.",
     },
     guided: {
       title: "Guided Law 544 run",
@@ -367,6 +403,25 @@ export const dictionaries: Record<Language, Dictionary> = {
       languageLabel: "Limba",
       english: "EN",
       romanian: "RO",
+      loadingTitle: "Pregatim registrul local",
+      loadingCopy: "Cream identitati demo, credentiale si un lant de hash-uri gol in browser.",
+      startMessage: "Gata pentru rulare live. Depune cererea pentru prima tranzitie semnata.",
+      resetMessage: "Demo resetat. Cererea live este goala si asteapta prima semnatura a cetateanului.",
+      exportStateMessage: "Au fost exportate {count} evenimente. Cheile de semnare raman in browser.",
+      exportReceiptMessage: "Dovada de audit pentru {requestId} a fost exportata.",
+      exportProofReportMessage: "Raportul pentru {count} cereri vizibile a fost exportat.",
+      importSuccessMessage:
+        "Au fost importate {count} evenimente si lantul de hash-uri se verifica. Cheile private nu au fost importate.",
+      importFailureMessage: "Fisierul nu a putut fi citit.",
+      tamperNeedsEventMessage: "Creeaza cel putin un eveniment inainte sa testezi un export modificat.",
+      tamperUnexpectedMessage: "Rezultat neasteptat: exportul modificat a fost importat cu succes.",
+      tamperWorkedMessage: "Testul de modificare a functionat: {reason}",
+      tamperWorkedFallbackMessage: "Testul de modificare a functionat: exportul editat a fost respins.",
+      scenarioReplayedMessage: "Scenariul {scenario} a rulat: {count} schimbari semnate se verifica.",
+      transitionRecordedMessage:
+        "{actor} a semnat {action}. Statusul a trecut de la {fromStatus} la {toStatus}.",
+      transitionProofMessage: "Hash dovada {hash}; evenimente verificate in registru: {count}.",
+      transitionFailureMessage: "Tranzitia nu a putut fi aplicata.",
     },
     guided: {
       title: "Flux ghidat Legea 544",

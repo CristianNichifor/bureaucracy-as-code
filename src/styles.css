@@ -219,9 +219,18 @@ h2 {
 }
 
 .message {
-  min-height: 24px;
+  min-height: 48px;
+  border-left: 4px solid var(--civic-action);
+  padding: 10px 12px;
+  background: var(--civic-info-bg);
   color: var(--civic-muted);
   overflow-wrap: anywhere;
+}
+
+.loadingShell {
+  min-height: 100dvh;
+  display: grid;
+  align-items: center;
 }
 
 .grid {

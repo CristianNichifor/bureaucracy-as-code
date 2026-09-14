@@ -44,7 +44,7 @@ export function App() {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filters, setFilters] = useState<RequestExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
   const [language, setLanguage] = useState<Language>("en");
-  const [message, setMessage] = useState("Start the scenario to create a signed Law 544 request.");
+  const [message, setMessage] = useState(dictionaries.en.app.startMessage);
   const [isRunningScenario, setIsRunningScenario] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
   const [lastRecordedEvent, setLastRecordedEvent] = useState<LedgerEvent | undefined>();
@@ -58,7 +58,7 @@ export function App() {
     setChainVerification(await runtime.verifyChain());
   }, [runtime]);
 
-  const resetDemo = useCallback(async () => {
+  const resetDemo = useCallback(async (nextMessage: string) => {
     const nextContext = await runtime.reset();
     setContext(nextContext);
     setSelectedRequestId(nextContext.request.id);
@@ -66,11 +66,11 @@ export function App() {
     setChainVerification(initialVerification);
     setIsAutoRunning(false);
     setLastRecordedEvent(undefined);
-    setMessage("Demo reset. Submit the request to begin the chain.");
+    setMessage(nextMessage);
   }, [runtime]);
 
   useEffect(() => {
-    void resetDemo();
+    void resetDemo(dictionaries.en.app.startMessage);
   }, [resetDemo]);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ export function App() {
     link.download = `${context.request.id}-demo-state.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setMessage(`Exported ${state.events.length} events. Signing keys stay in this browser.`);
+    setMessage(formatMessage(t.app.exportStateMessage, { count: state.events.length }));
   }
 
   function exportAuditReceipt() {
@@ -120,7 +120,7 @@ export function App() {
     link.download = `${selectedItem.request.id}-audit-receipt.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setMessage(`Exported audit receipt for ${selectedItem.request.id}.`);
+    setMessage(formatMessage(t.app.exportReceiptMessage, { requestId: selectedItem.request.id }));
   }
 
   function exportProofReport(items: RequestExplorerItem[]) {
@@ -135,7 +135,7 @@ export function App() {
     link.download = `law544-public-proof-report-${report.summary.requestCount}-requests.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setMessage(`Exported proof report for ${report.summary.requestCount} visible requests.`);
+    setMessage(formatMessage(t.app.exportProofReportMessage, { count: report.summary.requestCount }));
   }
 
   async function importState(file: File) {
@@ -146,12 +146,9 @@ export function App() {
       setContext(context ? { ...context, request: state.request } : context);
       setSelectedRequestId(state.request.id);
       await refresh();
-      setMessage(
-        `Imported ${state.events.length} events and the chain verifies. Keys are not part of an ` +
-          `export, so anything signed from here on uses this browser's demo identities.`,
-      );
+      setMessage(formatMessage(t.app.importSuccessMessage, { count: state.events.length }));
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Could not read that file.");
+      setMessage(error instanceof Error ? error.message : t.app.importFailureMessage);
     }
   }
 
@@ -164,7 +161,7 @@ export function App() {
       const lastIndex = state.events.length - 1;
 
       if (lastIndex < 0) {
-        setMessage("Create at least one event before testing a tampered export.");
+        setMessage(t.app.tamperNeedsEventMessage);
         return;
       }
 
@@ -176,13 +173,13 @@ export function App() {
       };
 
       await importDemoState({ ledger: runtime.ledger, json: serializeDemoState(forgedState) });
-      setMessage("Unexpected result: the edited export imported successfully.");
+      setMessage(t.app.tamperUnexpectedMessage);
     } catch (error) {
       await refresh();
       setMessage(
         error instanceof Error
-          ? `Tamper demo worked: ${error.message}`
-          : "Tamper demo worked: the edited export was rejected.",
+          ? formatMessage(t.app.tamperWorkedMessage, { reason: error.message })
+          : t.app.tamperWorkedFallbackMessage,
       );
     }
   }
@@ -196,9 +193,14 @@ export function App() {
       setSelectedRequestId(result.context.request.id);
       setLastRecordedEvent(result.events.at(-1));
       setChainVerification(await runtime.verifyChain());
-      setMessage(`Replayed ${result.scenario.label}: ${result.events.length} signed state changes.`);
+      setMessage(
+        formatMessage(t.app.scenarioReplayedMessage, {
+          scenario: result.scenario.label,
+          count: result.events.length,
+        }),
+      );
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Could not replay that scenario.");
+      setMessage(error instanceof Error ? error.message : t.app.transitionFailureMessage);
     } finally {
       setIsRunningScenario(false);
     }
@@ -255,12 +257,25 @@ export function App() {
       setChainVerification(nextVerification);
       setSelectedRequestId(nextRequest.id);
       setLastRecordedEvent(result.event);
-      setMessage(`Recorded ${result.event.action}: ${result.event.stateHash.slice(0, 18)}.`);
+      setMessage(
+        [
+          formatMessage(t.app.transitionRecordedMessage, {
+            actor: t.guided.steps[kind].actor,
+            action: result.event.action,
+            fromStatus: result.event.fromStatus,
+            toStatus: result.event.toStatus,
+          }),
+          formatMessage(t.app.transitionProofMessage, {
+            hash: result.event.stateHash.slice(0, 18),
+            count: nextVerification.checkedEvents,
+          }),
+        ].join(" "),
+      );
     } catch (error) {
       setIsAutoRunning(false);
-      setMessage(error instanceof Error ? error.message : "Could not apply transition.");
+      setMessage(error instanceof Error ? error.message : t.app.transitionFailureMessage);
     }
-  }, [context, runtime]);
+  }, [context, runtime, t.app.transitionFailureMessage, t.app.transitionProofMessage, t.app.transitionRecordedMessage, t.guided.steps]);
 
   const runNextStep = useCallback(() => {
     if (!context) return;
@@ -288,7 +303,15 @@ export function App() {
   }, [context, events.length, isAutoRunning, runNextStep]);
 
   if (!context) {
-    return <main className="appShell">Loading demo...</main>;
+    return (
+      <main className="appShell loadingShell">
+        <section className="panel">
+          <p className="eyebrow">{t.app.eyebrow}</p>
+          <h1>{t.app.loadingTitle}</h1>
+          <p>{t.app.loadingCopy}</p>
+        </section>
+      </main>
+    );
   }
 
   const request = context.request;
@@ -335,7 +358,7 @@ export function App() {
         <button className="civicButton civicButtonSecondary" onClick={() => exportAuditReceipt()} type="button"><Download size={18} />{t.app.exportReceipt}</button>
         <button className="civicButton civicButtonSecondary" onClick={() => exportProofReport(filteredItems)} type="button"><Download size={18} />{t.app.exportProofReport}</button>
         <button className="civicButton civicButtonSecondary" onClick={() => fileInput.current?.click()} type="button"><FileUp size={18} />{t.app.importState}</button>
-        <button className="civicButton civicButtonSecondary" onClick={() => void resetDemo()} type="button"><RefreshCw size={18} />{t.app.reset}</button>
+        <button className="civicButton civicButtonSecondary" onClick={() => void resetDemo(t.app.resetMessage)} type="button"><RefreshCw size={18} />{t.app.reset}</button>
         <input
           ref={fileInput}
           type="file"
@@ -383,5 +406,11 @@ export function App() {
       </div>
       <BuildMetadata buildInfo={buildInfo} labels={t.build} />
     </main>
+  );
+}
+
+function formatMessage(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
+    Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : match,
   );
 }
