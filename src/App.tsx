@@ -12,6 +12,7 @@ import { RequestFeed } from "./dashboard/RequestFeed";
 import { RequestTrail } from "./dashboard/RequestTrail";
 import { HashVerifier } from "./dashboard/HashVerifier";
 import { AuditReceiptVerifier } from "./dashboard/AuditReceiptVerifier";
+import { OperationsPanel } from "./dashboard/OperationsPanel";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
@@ -437,6 +438,7 @@ export function App() {
 
         <DashboardSection id="request-explorer-section" title={t.sections.explorer.title} copy={t.sections.explorer.copy}>
           <div className="grid sectionGrid sectionGridExplorer">
+            <OperationsPanel items={explorerItems} labels={t.operations} onSelectRequest={setSelectedRequestId} />
             <RequestFeed
               id="request-explorer"
               filters={filters}

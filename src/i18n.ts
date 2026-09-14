@@ -110,6 +110,21 @@ export type Dictionary = {
     emptyTitle: string;
     empty: string;
   };
+  operations: {
+    title: string;
+    copy: string;
+    browserOnly: string;
+    summary: string;
+    institutions: string;
+    open: string;
+    overdue: string;
+    finalized: string;
+    nextFile: string;
+    nextDeadline: string;
+    noOpenFiles: string;
+    closedQueue: string;
+    none: string;
+  };
   detail: {
     title: string;
     live: string;
@@ -425,6 +440,22 @@ export const dictionaries: Record<Language, Dictionary> = {
       seed: "seed",
       emptyTitle: "No matching requests",
       empty: "The browser ledger has requests, but none match the current filters.",
+    },
+    operations: {
+      title: "Institution workload",
+      copy:
+        "Operational view of open queues, overdue files, and next deadlines across the visible browser ledger.",
+      browserOnly: "browser simulation",
+      summary: "Institution workload summary",
+      institutions: "Institutions",
+      open: "Open",
+      overdue: "Overdue",
+      finalized: "Finalized",
+      nextFile: "Next file",
+      nextDeadline: "Next deadline",
+      noOpenFiles: "No open files",
+      closedQueue: "Queue closed",
+      none: "None",
     },
     detail: {
       title: "Request detail",
@@ -751,6 +782,22 @@ export const dictionaries: Record<Language, Dictionary> = {
       seed: "exemplu",
       emptyTitle: "Nicio cerere gasita",
       empty: "Registrul local are cereri, dar niciuna nu corespunde filtrelor curente.",
+    },
+    operations: {
+      title: "Incarcare institutii",
+      copy:
+        "Vedere operationala cu cozi deschise, dosare intarziate si urmatoarele termene din registrul local.",
+      browserOnly: "simulare in browser",
+      summary: "Rezumat incarcare institutii",
+      institutions: "Institutii",
+      open: "Deschise",
+      overdue: "Intarziate",
+      finalized: "Finalizate",
+      nextFile: "Urmatorul dosar",
+      nextDeadline: "Urmatorul termen",
+      noOpenFiles: "Fara dosare deschise",
+      closedQueue: "Coada inchisa",
+      none: "Niciunul",
     },
     detail: {
       title: "Detaliu cerere",
