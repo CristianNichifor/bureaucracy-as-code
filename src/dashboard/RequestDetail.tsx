@@ -3,7 +3,7 @@ import type { Dictionary } from "../i18n";
 import { isOverdue } from "../law544/deadlines";
 import type { Law544Request } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
-import { getRequestLatestRole } from "./requestExplorer";
+import { formatLaw544Status, getRequestLatestRole } from "./requestExplorer";
 
 export function RequestDetail({
   request,
@@ -33,7 +33,7 @@ export function RequestDetail({
       </div>
       <div className="detailHero">
         <div>
-          <span className={`status status-${request.status.toLowerCase()}`}>{request.status}</span>
+          <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status)}</span>
           <h3>{request.id}</h3>
           <p>{request.subject}</p>
         </div>
@@ -41,7 +41,7 @@ export function RequestDetail({
       <div className="caseGlance" aria-label={labels.title}>
         <div>
           <span>{labels.currentStatus}</span>
-          <strong>{request.status}</strong>
+          <strong>{formatLaw544Status(request.status)}</strong>
         </div>
         <div>
           <span>{labels.latestAction}</span>
