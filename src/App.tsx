@@ -14,6 +14,7 @@ import { HashVerifier } from "./dashboard/HashVerifier";
 import { AuditReceiptVerifier } from "./dashboard/AuditReceiptVerifier";
 import { ProofPreviewPanel } from "./dashboard/ProofPreviewPanel";
 import { OperationsPanel } from "./dashboard/OperationsPanel";
+import { ScenarioComparisonPanel } from "./dashboard/ScenarioComparisonPanel";
 import { GuidedProgress } from "./dashboard/GuidedProgress";
 import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
@@ -444,6 +445,12 @@ export function App() {
               labels={t.operations}
               onApplyFilters={(nextFilters) => setFilters((currentFilters) => ({ ...currentFilters, ...nextFilters }))}
               onSelectRequest={setSelectedRequestId}
+            />
+            <ScenarioComparisonPanel
+              items={explorerItems}
+              labels={t.scenarioComparison}
+              onSelectRequest={setSelectedRequestId}
+              selectedRequestId={selectedRequest.id}
             />
             <RequestFeed
               id="request-explorer"

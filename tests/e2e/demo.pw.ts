@@ -148,6 +148,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Scenario comparison" })).toBeVisible();
     await expect(page.getByText("Next file").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
@@ -169,7 +170,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
     expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
 
-    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
+    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
       nodes.map((node) => {
         const rect = node.getBoundingClientRect();
         return {
@@ -213,6 +214,23 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
   }
 });
 
+test("compares seeded Law 544 scenario outcomes", async ({ page }) => {
+  await page.goto("./");
+
+  const panel = page.getByRole("region", { name: "Scenario comparison" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole("button", { name: /Normal response/ })).toBeVisible();
+  await expect(panel.getByRole("button", { name: /Legal extension/ })).toBeVisible();
+  await expect(panel.getByRole("button", { name: /Deadline breach/ })).toBeVisible();
+  await expect(panel.getByRole("button", { name: /Refusal response/ })).toBeVisible();
+  await expect(panel.getByRole("button", { name: /Active processing/ })).toBeVisible();
+
+  await panel.getByRole("button", { name: /Deadline breach/ }).click();
+  await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "REQ-2026-0006" })).toBeVisible();
+  await expect(panel.getByRole("button", { name: /Deadline breach/ })).toHaveAttribute("aria-pressed", "true");
+});
+
 test("switches the public dashboard between English and Romanian", async ({ page }) => {
   await page.goto("./");
 
@@ -222,6 +240,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Ruleaza cererea" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Incarcare institutii" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comparatie scenarii" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Responsabilitate pe cerere" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
