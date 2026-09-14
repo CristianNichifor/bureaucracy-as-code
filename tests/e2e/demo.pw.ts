@@ -177,6 +177,31 @@ test("exports a public audit receipt for the selected request", async ({ page })
   expect(download.suggestedFilename()).toMatch(/REQ-2026-[a-z0-9-]+-audit-receipt\.json/);
 });
 
+test("exports a public proof report for visible requests", async ({ page }) => {
+  await page.goto("./");
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export proof report" }).click();
+  const download = await downloadPromise;
+  const file = await download.createReadStream();
+  const chunks: Buffer[] = [];
+
+  for await (const chunk of file) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+
+  const report = JSON.parse(Buffer.concat(chunks).toString("utf8")) as {
+    schema: string;
+    summary: { requestCount: number; eventCount: number; invalidChainCount: number };
+  };
+
+  expect(download.suggestedFilename()).toMatch(/law544-public-proof-report-\d+-requests\.json/);
+  expect(report.schema).toBe("law544-public-proof-report/v1");
+  expect(report.summary.requestCount).toBeGreaterThan(0);
+  expect(report.summary.eventCount).toBeGreaterThan(0);
+  expect(report.summary.invalidChainCount).toBe(0);
+});
+
 test("runs the guided Law 544 flow and proves edited exports are refused", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "Full guided flow is covered on desktop; mobile is covered by the viewport smoke.");
 
