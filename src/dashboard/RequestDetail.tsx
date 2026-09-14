@@ -20,6 +20,7 @@ export function RequestDetail({
   const latestEvent = events.at(-1);
   const responsibility = getResponsibilityLabel(request, labels);
   const deadlineSummary = getDeadlineSummary(request, labels);
+  const handoffSteps = getHandoffSteps(request, events, labels);
   const evidenceState = request.responseDocumentHash
     ? request.responseDocumentHash.slice(0, 18)
     : latestEvent?.documentHash
@@ -67,6 +68,21 @@ export function RequestDetail({
           <strong>{new Date(request.deadlineAt).toLocaleDateString()}</strong>
         </div>
         <p>{deadlineSummary.copy}</p>
+      </div>
+      <div className="handoffPanel" aria-label={labels.handoffTitle}>
+        <div className="handoffHeader">
+          <span>{labels.handoffTitle}</span>
+          <strong>{responsibility}</strong>
+        </div>
+        <ol className="handoffSteps">
+          {handoffSteps.map((step) => (
+            <li className={`handoffStep handoffStep-${step.state}`} key={step.label}>
+              <span>{step.label}</span>
+              <strong>{step.owner}</strong>
+              <small>{step.proof}</small>
+            </li>
+          ))}
+        </ol>
       </div>
       <div className="metricGrid">
         <div className="metric">
@@ -159,6 +175,45 @@ function getDeadlineSummary(
     copy: labels.daysRemaining.replace("{days}", daysUntil.toString()),
     tone: "ok",
   };
+}
+
+function getHandoffSteps(
+  request: Law544Request,
+  events: LedgerEvent[],
+  labels: Dictionary["detail"],
+): Array<{ label: string; owner: string; proof: string; state: "complete" | "current" | "waiting" }> {
+  const registryEvent = events.find((event) => event.action === "Registry_Assigned");
+  const routeEvent = events.find((event) => event.action === "Task_Routed");
+  const processingEvent = events.find((event) => event.action === "Processing_Started");
+  const finalEvent = events.find((event) => event.action === "Request_Resolved" || event.action === "Request_Rejected");
+  const isClosed = request.status === "Resolved" || request.status === "Rejected";
+
+  return [
+    {
+      label: labels.registryStep,
+      owner: request.registryNumber ?? labels.registryQueue,
+      proof: registryEvent ? labels.signedBy.replace("{role}", registryEvent.signerRole) : labels.waitingForSignature,
+      state: registryEvent ? "complete" : "current",
+    },
+    {
+      label: labels.directorStep,
+      owner: routeEvent ? labels.directorQueue : labels.notAssigned,
+      proof: routeEvent ? labels.signedBy.replace("{role}", routeEvent.signerRole) : labels.waitingForSignature,
+      state: routeEvent ? "complete" : registryEvent ? "current" : "waiting",
+    },
+    {
+      label: labels.officerStep,
+      owner: request.assignedToDidHash ? request.assignedToDidHash.slice(0, 18) : labels.notAssigned,
+      proof: processingEvent ? labels.signedBy.replace("{role}", processingEvent.signerRole) : labels.waitingForSignature,
+      state: isClosed ? "complete" : processingEvent ? "current" : "waiting",
+    },
+    {
+      label: labels.responseStep,
+      owner: request.responseDocumentHash ? request.responseDocumentHash.slice(0, 18) : labels.noResponse,
+      proof: finalEvent ? labels.signedBy.replace("{role}", finalEvent.signerRole) : labels.waitingForSignature,
+      state: finalEvent ? "complete" : "waiting",
+    },
+  ];
 }
 
 function getResponsibilityLabel(request: Law544Request, labels: Dictionary["detail"]): string {
