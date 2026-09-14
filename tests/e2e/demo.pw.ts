@@ -144,6 +144,8 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
+    await expect(page.getByText("Deadline status")).toBeVisible();
+    await expect(page.getByText(/days remaining|days overdue/i).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Signed audit trail" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
@@ -216,6 +218,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Checklist prezentare" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Depune cererea/i })).toBeVisible();
   await expect(page.getByText("Ciclul normal al cererii, cu dovada si hash pentru raspunsul final.")).toBeVisible();
+  await expect(page.getByText("Status termen")).toBeVisible();
   await expect(page.getByRole("region", { name: "Actiuni demo" }).getByRole("button", { name: "Exporta dovada" })).toBeVisible();
 });
 
