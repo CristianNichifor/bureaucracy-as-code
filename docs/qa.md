@@ -9,13 +9,14 @@ pnpm verify
 That runs linting, type checking, the privacy fixture scan, unit tests, and the
 production build.
 
-Run the browser smoke suite separately:
+Run the base verifier plus browser suite separately when you want one broad
+local command:
 
 ```bash
 pnpm verify:e2e
 ```
 
-For a focused browser-only release gate, use:
+For the canonical browser-only demo gate, use:
 
 ```bash
 pnpm demo:verify
@@ -50,7 +51,11 @@ The e2e suite checks:
 - the public demo renders on desktop Chromium and a mobile Chromium viewport
 - the production preview registers the offline presentation service worker
 - the Civic UI layout remains stable across the target viewport matrix
+- the Demo completeness panel is present in English and Romanian
+- transfer safety copy stays visible around export/import boundaries
+- release readiness and presenter checklist panels are present
 - the public receipt export is available
+- the public proof report export is available
 - Romanian/English presentation mode works
 - the guided Law 544 scenario reaches resolution
 - the signed audit trail shows the final `Request_Resolved` transition

@@ -33,14 +33,16 @@ CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://digital.cristian-nichifor.com/bu
 
 1. Start on the public explorer and show that multiple anonymized Law 544
    requests are already visible.
-2. Select the Ministry of Environment extension scenario to show legal
+2. Point at the Demo completeness panel to show the browser-only finish criteria
+   are visible in the app, not only in docs.
+3. Select the Ministry of Environment extension scenario to show legal
    deadlines and non-final states.
-3. Select the overdue cadastral-data scenario to show accountability when a file
+4. Select the overdue cadastral-data scenario to show accountability when a file
    misses the 30-day window.
-4. Run the guided request from submission through resolution.
-5. Export the public audit receipt and show the schema, summary, privacy block,
-   verification steps, and evidence sequence.
-6. End on the response hash verifier, explaining that the document itself stays
+5. Run the guided request from submission through resolution.
+6. Export the public audit receipt and proof report, then show the schema,
+   summary, privacy block, verification steps, and evidence sequence.
+7. End on the response hash verifier, explaining that the document itself stays
    off-ledger while its hash can be checked locally.
 
 ## Capture Checklist
@@ -51,6 +53,8 @@ CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://digital.cristian-nichifor.com/bu
 - Keep the address bar visible only when showing the deployment URL.
 - Do not include terminals, account menus, extension toolbars, or real files.
 - Use seeded demo data or the browser-generated request only.
+- Run `pnpm demo:release` for final demo readiness; use `pnpm demo:capture`
+  only when refreshing screenshots.
 
 ## Suggested Assets
 

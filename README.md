@@ -17,6 +17,9 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - Tamper-evident local ledger with previous-state hashes.
 - IndexedDB document storage and document hash verification.
 - Public dashboard with anonymized request feed, audit trail, and machinery graph.
+- Demo completeness panel that maps the browser-only app to the agreed finish criteria.
+- Transfer safety panel for export/import boundaries and local signing-key limits.
+- Public proof report export across the visible request set.
 - Romanian/English presentation toggle for live demos.
 - Light/dark Civic UI theme toggle with saved browser preference.
 - Public audit receipt export for the selected request.
@@ -112,11 +115,15 @@ Full local verification:
 pnpm verify
 ```
 
-Browser smoke checks:
+Browser demo checks:
 
 ```bash
-pnpm verify:e2e
+pnpm demo:verify
 ```
+
+`pnpm verify:e2e` remains available when you want the base verifier plus the
+full browser suite in one command. For demo readiness, prefer `pnpm demo:verify`
+or the complete `pnpm demo:release` gate below.
 
 Demo capture pack:
 
