@@ -1186,6 +1186,46 @@ dd {
   margin-bottom: 14px;
 }
 
+.receiptResult {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  background: var(--civic-border);
+}
+
+.receiptResult div {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+  padding: 12px;
+  background: var(--civic-surface);
+}
+
+.receiptResult span {
+  color: var(--civic-subtle);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.receiptResult strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.receiptResult-ok {
+  border-color: var(--civic-success);
+}
+
+.receiptResult-danger {
+  border-color: var(--civic-danger);
+}
+
 .fileButton {
   padding: 0 12px;
 }
@@ -1321,6 +1361,7 @@ dd {
   .detailList,
   .caseGlance,
   .deadlineStrip,
+  .receiptResult,
   .readinessGrid {
     grid-template-columns: 1fr;
   }

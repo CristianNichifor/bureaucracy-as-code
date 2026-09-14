@@ -39,17 +39,24 @@ export function AuditReceiptVerifier({
   function runTamperDemo() {
     const tamperedReceipt = {
       ...demoReceipt,
-      evidence: demoReceipt.evidence.map((entry, index) =>
-        index === demoReceipt.evidence.length - 1
-          ? {
-              ...entry,
-              proof: {
-                ...entry.proof,
-                signedPayloadHash: `${entry.proof.signedPayloadHash.slice(0, -1)}0`,
-              },
-            }
-          : entry,
-      ),
+      summary:
+        demoReceipt.evidence.length === 0
+          ? { ...demoReceipt.summary, eventCount: demoReceipt.summary.eventCount + 1 }
+          : demoReceipt.summary,
+      evidence:
+        demoReceipt.evidence.length === 0
+          ? demoReceipt.evidence
+          : demoReceipt.evidence.map((entry, index) =>
+              index === demoReceipt.evidence.length - 1
+                ? {
+                    ...entry,
+                    proof: {
+                      ...entry.proof,
+                      signedPayloadHash: replaceLastHexCharacter(entry.proof.signedPayloadHash),
+                    },
+                  }
+                : entry,
+            ),
     };
 
     setLoadedName(`${item.request.id}-tampered-audit-receipt.json`);
@@ -79,6 +86,20 @@ export function AuditReceiptVerifier({
           {labels.tamperButton}
         </button>
       </div>
+      <div className={`receiptResult ${result?.valid ? "receiptResult-ok" : result ? "receiptResult-danger" : ""}`}>
+        <div>
+          <span>{labels.verdict}</span>
+          <strong>{status}</strong>
+        </div>
+        <div>
+          <span>{labels.receiptId}</span>
+          <strong>{result?.receiptId ?? labels.noReceipt}</strong>
+        </div>
+        <div>
+          <span>{labels.eventsChecked}</span>
+          <strong>{result?.checkedEvents ?? 0}</strong>
+        </div>
+      </div>
       <dl>
         <div>
           <dt>{labels.loadedReceipt}</dt>
@@ -96,8 +117,17 @@ export function AuditReceiptVerifier({
           <dt>{labels.responseHash}</dt>
           <dd>{result?.responseDocumentHash ? `${result.responseDocumentHash.slice(0, 28)}...` : labels.noReceipt}</dd>
         </div>
+        <div>
+          <dt>{labels.reason}</dt>
+          <dd>{result?.reason ?? labels.noReceipt}</dd>
+        </div>
       </dl>
       {result?.reason ? <p className="danger">{result.reason}</p> : null}
     </section>
   );
+}
+
+function replaceLastHexCharacter(value: string): string {
+  const replacement = value.endsWith("0") ? "1" : "0";
+  return `${value.slice(0, -1)}${replacement}`;
 }

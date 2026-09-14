@@ -207,6 +207,9 @@ export type Dictionary = {
     chooseFile: string;
     chooseReceipt: string;
     loadedReceipt: string;
+    receiptId: string;
+    verdict: string;
+    reason: string;
     eventsChecked: string;
     chainHead: string;
     responseHash: string;
@@ -517,6 +520,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       chooseFile: "Choose receipt",
       chooseReceipt: "Choose a receipt JSON file",
       loadedReceipt: "Loaded receipt",
+      receiptId: "Receipt request",
+      verdict: "Verification verdict",
+      reason: "Failure reason",
       eventsChecked: "Receipt entries",
       chainHead: "Chain head",
       responseHash: "Response hash",
@@ -833,6 +839,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       chooseFile: "Alege dovada",
       chooseReceipt: "Alege un fisier JSON de dovada",
       loadedReceipt: "Dovada incarcata",
+      receiptId: "Cerere dovada",
+      verdict: "Verdict verificare",
+      reason: "Motiv esec",
       eventsChecked: "Intrari dovada",
       chainHead: "Capat lant",
       responseHash: "Hash raspuns",

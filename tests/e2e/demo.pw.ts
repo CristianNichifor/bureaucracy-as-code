@@ -291,6 +291,23 @@ test("exports a public proof report for visible requests", async ({ page }) => {
   expect(report.summary.invalidChainCount).toBe(0);
 });
 
+test("shows detailed receipt verification results", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chromium", "Receipt verifier details are covered once on desktop.");
+
+  await page.goto("./");
+
+  const panel = page.locator(".verifierPanel").filter({ has: page.getByRole("heading", { name: "Receipt verifier" }) });
+  await expect(panel.getByText("Verification verdict")).toBeVisible();
+  await expect(panel.getByText("Receipt request")).toBeVisible();
+
+  await panel.getByRole("button", { name: "Test tampered receipt" }).click();
+  await expect(panel.locator(".receiptResult").getByText("receipt failed")).toBeVisible();
+  await expect(panel.locator(".receiptResult").getByText(/REQ-2026-/)).toBeVisible();
+  await expect(
+    panel.locator("p.danger").filter({ hasText: /Receipt event count does not match|Signed payload hash no longer matches/ }),
+  ).toBeVisible();
+});
+
 test("runs the guided Law 544 flow and proves edited exports are refused", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "Full guided flow is covered on desktop; mobile is covered by the viewport smoke.");
 
