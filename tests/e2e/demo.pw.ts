@@ -67,6 +67,7 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(toolbar.getByRole("button", { name: "Reset" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guided Law 544 run" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
+  await expect(page.getByText("Ready for a live run. Submit the request to record the first signed transition.")).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
   await expect(page.getByLabel("Deployed build")).toBeVisible();
 
@@ -228,11 +229,14 @@ test("supports step and auto-run timeline controls", async ({ page }, testInfo) 
   await page.goto("./");
 
   await page.getByRole("button", { name: /step next/i }).click();
-  await expect(page.getByText(/Recorded Request_Created/i)).toBeVisible();
+  await expect(page.getByText(/Citizen signed Request_Created/i)).toBeVisible();
+  await expect(page.getByText(/Proof hash [a-f0-9]{18}; verified ledger events: 1/i)).toBeVisible();
   await expect(page.getByText(/Request_Created · Citizen/i)).toBeVisible();
 
   await page.getByRole("button", { name: /auto-run/i }).click();
   await expect(page.getByText("complete").first()).toBeVisible({ timeout: 6_000 });
+  await expect(page.getByText(/Public servant signed Request_Resolved/i)).toBeVisible();
+  await expect(page.getByText(/verified ledger events: 6/i)).toBeVisible();
   await expect(page.getByText(/Request_Resolved · PublicServant/i)).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
 });
@@ -264,7 +268,7 @@ test("verifies the final response hash locally in the browser", async ({ page },
   await expect(
     page.locator("p.okText").filter({ hasText: "The selected file matches the recorded response hash." }),
   ).toBeVisible();
-  await expect(page.getByText("verified")).toBeVisible();
+  await expect(page.getByText("verified", { exact: true })).toBeVisible();
 });
 
 test("keeps the public screen free of obvious demo PII", async ({ page }) => {
