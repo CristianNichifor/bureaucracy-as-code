@@ -14,6 +14,9 @@ export type Dictionary = {
     exportProofReport: string;
     reset: string;
     languageLabel: string;
+    themeLabel: string;
+    lightTheme: string;
+    darkTheme: string;
     english: string;
     romanian: string;
     loadingTitle: string;
@@ -240,6 +243,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       exportProofReport: "Export proof report",
       reset: "Reset",
       languageLabel: "Language",
+      themeLabel: "Theme",
+      lightTheme: "Light",
+      darkTheme: "Dark",
       english: "EN",
       romanian: "RO",
       loadingTitle: "Preparing browser ledger",
@@ -491,6 +497,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       exportProofReport: "Exporta raport",
       reset: "Reseteaza",
       languageLabel: "Limba",
+      themeLabel: "Tema",
+      lightTheme: "Luminos",
+      darkTheme: "Intunecat",
       english: "EN",
       romanian: "RO",
       loadingTitle: "Pregatim registrul local",

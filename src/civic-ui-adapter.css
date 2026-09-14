@@ -2,6 +2,7 @@
    Mirrors the CSS-only Civic UI token contract used by sibling civic apps while
    keeping this browser demo's domain-specific components host-owned. */
 :root {
+  color-scheme: light;
   --civic-bg: #f6f7f3;
   --civic-surface: #ffffff;
   --civic-raised: #f8faf7;
@@ -35,6 +36,58 @@
   --civic-page-gutter: clamp(12px, 2vw, 32px);
   --civic-readable: 72ch;
   --civic-shadow-focus: 0 0 0 3px rgb(34 73 111 / 22%);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --civic-bg: #111816;
+  --civic-surface: #18221f;
+  --civic-raised: #202c28;
+  --civic-text: #edf4ef;
+  --civic-muted: #b9c7bf;
+  --civic-subtle: #93a399;
+  --civic-border: #33423c;
+  --civic-border-strong: #46584f;
+  --civic-focus: #8eb8e6;
+  --civic-action: #d9eee2;
+  --civic-action-hover: #b9dec8;
+  --civic-accent: #9ec7f4;
+  --civic-danger: #ffb3a8;
+  --civic-success: #92e5ae;
+  --civic-warning: #f3cd75;
+  --civic-on-action: #102019;
+  --civic-success-bg: #163323;
+  --civic-danger-bg: #3a211f;
+  --civic-info-bg: #16293c;
+  --civic-raised-bg: #22332b;
+  --civic-shadow-focus: 0 0 0 3px rgb(142 184 230 / 30%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --civic-bg: #111816;
+    --civic-surface: #18221f;
+    --civic-raised: #202c28;
+    --civic-text: #edf4ef;
+    --civic-muted: #b9c7bf;
+    --civic-subtle: #93a399;
+    --civic-border: #33423c;
+    --civic-border-strong: #46584f;
+    --civic-focus: #8eb8e6;
+    --civic-action: #d9eee2;
+    --civic-action-hover: #b9dec8;
+    --civic-accent: #9ec7f4;
+    --civic-danger: #ffb3a8;
+    --civic-success: #92e5ae;
+    --civic-warning: #f3cd75;
+    --civic-on-action: #102019;
+    --civic-success-bg: #163323;
+    --civic-danger-bg: #3a211f;
+    --civic-info-bg: #16293c;
+    --civic-raised-bg: #22332b;
+    --civic-shadow-focus: 0 0 0 3px rgb(142 184 230 / 30%);
+  }
 }
 
 button,

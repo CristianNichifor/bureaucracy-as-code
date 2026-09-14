@@ -18,6 +18,7 @@ https://digital.cristian-nichifor.com/bureaucracy-as-code
 - IndexedDB document storage and document hash verification.
 - Public dashboard with anonymized request feed, audit trail, and machinery graph.
 - Romanian/English presentation toggle for live demos.
+- Light/dark Civic UI theme toggle with saved browser preference.
 - Public audit receipt export for the selected request.
 - Export and import of the whole demo state as JSON, refused unless the hash chain still verifies.
 - Offline presentation cache for the built browser app shell.
@@ -162,6 +163,7 @@ Deployment:
 - [Public walkthrough](docs/public-walkthrough.md)
 - [Operator runbook](docs/operator-runbook.md)
 - [Demo capture guide](docs/demo-capture.md)
+- [Civic UI usage](docs/civic-ui-usage.md)
 - [Offline demo mode](docs/offline-demo.md)
 - [Future ledger adapters](docs/future-ledger-adapters.md)
 - [Cloudflare Pages](docs/cloudflare-pages.md)

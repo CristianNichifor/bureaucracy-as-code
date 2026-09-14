@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Moon,
   Download,
   FileUp,
   RefreshCw,
   ShieldCheck,
+  Sun,
 } from "lucide-react";
 import { dictionaries, type Language } from "./i18n";
 import { RequestFeed } from "./dashboard/RequestFeed";
@@ -38,6 +40,17 @@ const initialVerification: ChainVerificationResult = {
   checkedEvents: 0,
 };
 
+type Theme = "light" | "dark";
+
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+
+  const saved = window.localStorage.getItem("bac-theme");
+  if (saved === "light" || saved === "dark") return saved;
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 export function App() {
   const runtime = useMemo(() => createBrowserDemoRuntime(), []);
   const [context, setContext] = useState<DemoContext | null>(null);
@@ -46,6 +59,7 @@ export function App() {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filters, setFilters] = useState<RequestExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
   const [language, setLanguage] = useState<Language>("en");
+  const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
   const [message, setMessage] = useState(dictionaries.en.app.startMessage);
   const [isRunningScenario, setIsRunningScenario] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
@@ -78,6 +92,11 @@ export function App() {
   useEffect(() => {
     void loadBuildInfo().then(setBuildInfo);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem("bac-theme", theme);
+  }, [theme]);
 
   async function exportState() {
     if (!context) return;
@@ -340,13 +359,25 @@ export function App() {
           <p>{t.app.intro}</p>
         </div>
         <div className="heroActions">
-          <div className="languageToggle" aria-label={t.app.languageLabel}>
-            <button aria-pressed={language === "en"} onClick={() => setLanguage("en")} type="button">
-              {t.app.english}
-            </button>
-            <button aria-pressed={language === "ro"} onClick={() => setLanguage("ro")} type="button">
-              {t.app.romanian}
-            </button>
+          <div className="segmentedControls">
+            <div className="segmentedToggle" aria-label={t.app.languageLabel}>
+              <button aria-pressed={language === "en"} onClick={() => setLanguage("en")} type="button">
+                {t.app.english}
+              </button>
+              <button aria-pressed={language === "ro"} onClick={() => setLanguage("ro")} type="button">
+                {t.app.romanian}
+              </button>
+            </div>
+            <div className="segmentedToggle themeToggle" aria-label={t.app.themeLabel}>
+              <button aria-pressed={theme === "light"} onClick={() => setTheme("light")} title={t.app.lightTheme} type="button">
+                <Sun size={16} />
+                <span>{t.app.lightTheme}</span>
+              </button>
+              <button aria-pressed={theme === "dark"} onClick={() => setTheme("dark")} title={t.app.darkTheme} type="button">
+                <Moon size={16} />
+                <span>{t.app.darkTheme}</span>
+              </button>
+            </div>
           </div>
           <div className="integrity">
             <ShieldCheck size={20} />

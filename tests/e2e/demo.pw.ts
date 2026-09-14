@@ -196,6 +196,18 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("region", { name: "Actiuni demo" }).getByRole("button", { name: "Exporta dovada" })).toBeVisible();
 });
 
+test("switches and persists light and dark themes", async ({ page }) => {
+  await page.goto("./");
+
+  await page.getByLabel("Theme").getByRole("button", { name: "Dark", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+
+  await page.getByLabel("Theme").getByRole("button", { name: "Light", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+});
+
 test("exports a public audit receipt for the selected request", async ({ page }) => {
   await page.goto("./");
 
