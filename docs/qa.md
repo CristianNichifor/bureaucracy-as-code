@@ -25,6 +25,17 @@ That builds the Vite app and runs the Playwright demo suite against the local
 preview server. It does not require Cloudflare, external identity services,
 wallets, ROeID, secrets, or networked storage.
 
+For Civic UI alignment and responsive layout checks, use:
+
+```bash
+pnpm ui:verify
+```
+
+That builds the app and runs the `@ui` Playwright viewport matrix at 320, 375,
+768, 1024, 1440, and 1728px. The test checks key panels, body/root horizontal
+overflow, and panel/graph/feed bounds. Screenshots are attached as Playwright
+artifacts.
+
 If Playwright browsers are not installed but a system Chromium is available,
 point Playwright at it:
 
@@ -37,6 +48,7 @@ The e2e suite checks:
 - the app loads at the Cloudflare Pages base path
 - important landmarks and controls are present
 - the public demo renders on desktop Chromium and a mobile Chromium viewport
+- the Civic UI layout remains stable across the target viewport matrix
 - the public receipt export is available
 - Romanian/English presentation mode works
 - the guided Law 544 scenario reaches resolution

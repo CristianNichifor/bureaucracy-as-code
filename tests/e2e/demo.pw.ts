@@ -9,6 +9,15 @@ const fullScenarioSteps = [
   "Resolve request",
 ];
 
+const uiViewports = [
+  { name: "narrow mobile", width: 320, height: 760 },
+  { name: "standard mobile", width: 375, height: 812 },
+  { name: "tablet", width: 768, height: 900 },
+  { name: "laptop", width: 1024, height: 900 },
+  { name: "desktop", width: 1440, height: 960 },
+  { name: "wide desktop", width: 1728, height: 960 },
+];
+
 async function freezeBrowserClock(page: import("@playwright/test").Page, iso: string) {
   await page.addInitScript((fixedIso) => {
     const RealDate = Date;
@@ -76,6 +85,54 @@ test("keeps the browser demo usable on the configured viewport", async ({ page }
     body: await page.screenshot({ fullPage: true }),
     contentType: "image/png",
   });
+});
+
+test("keeps Civic UI layout stable across target viewports @ui", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chromium", "Viewport matrix runs once from the desktop browser context.");
+
+  for (const viewport of uiViewports) {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto("./");
+    await page.getByRole("button", { name: /run full scenario/i }).click();
+
+    await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Signed audit trail" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
+    await expect(page.getByText("Ledger verifies")).toBeVisible();
+
+    const overflow = await page.evaluate(() => ({
+      body: document.body.scrollWidth - window.innerWidth,
+      root: document.documentElement.scrollWidth - window.innerWidth,
+    }));
+    expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
+    expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
+
+    const boxes = await page.locator(".panel, .feedRow, .graphNode, .caseGlance").evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          left: rect.left,
+          right: rect.right,
+          width: rect.width,
+          viewport: window.innerWidth,
+        };
+      }),
+    );
+
+    for (const box of boxes) {
+      expect(box.width, `${viewport.name} element collapsed`).toBeGreaterThan(0);
+      expect(box.left, `${viewport.name} element leaks left`).toBeGreaterThanOrEqual(-1);
+      expect(box.right, `${viewport.name} element leaks right`).toBeLessThanOrEqual(box.viewport + 1);
+    }
+
+    await testInfo.attach(`civic-ui-${viewport.width}.png`, {
+      body: await page.screenshot({ fullPage: true }),
+      contentType: "image/png",
+    });
+  }
 });
 
 test("switches the public dashboard between English and Romanian", async ({ page }) => {
