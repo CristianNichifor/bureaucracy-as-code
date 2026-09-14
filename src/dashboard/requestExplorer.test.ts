@@ -41,6 +41,15 @@ describe("request explorer helpers", () => {
     expect(health.map((item) => item.request.id)).toEqual(["REQ-2026-0003"]);
   });
 
+  it("searches by request subject and institution", () => {
+    const result = filterRequestExplorerItems(items, {
+      ...DEFAULT_EXPLORER_FILTERS,
+      query: "rail",
+    });
+
+    expect(result.map((item) => item.request.id)).toEqual(["REQ-2026-0008"]);
+  });
+
   it("filters requests by signer role anywhere in the trail", () => {
     const directorSigned = filterRequestExplorerItems(items, {
       ...DEFAULT_EXPLORER_FILTERS,
@@ -48,14 +57,14 @@ describe("request explorer helpers", () => {
     });
 
     expect(directorSigned.map((item) => item.request.id)).toEqual([
-      "REQ-2026-0002",
-      "REQ-2026-0003",
-      "REQ-2026-0005",
       "REQ-2026-0006",
+      "REQ-2026-0010",
+      "REQ-2026-0005",
+      "REQ-2026-0002",
+      "REQ-2026-0009",
       "REQ-2026-0007",
       "REQ-2026-0008",
-      "REQ-2026-0009",
-      "REQ-2026-0010",
+      "REQ-2026-0003",
     ]);
   });
 
@@ -82,6 +91,15 @@ describe("request explorer helpers", () => {
       { status: "Rejected", count: 1 },
       { status: "Resolved", count: 2 },
     ]);
+  });
+
+  it("sorts visible requests by event count", () => {
+    const result = filterRequestExplorerItems(items, {
+      ...DEFAULT_EXPLORER_FILTERS,
+      sort: "events-desc",
+    });
+
+    expect(result[0].events.length).toBeGreaterThanOrEqual(result[1].events.length);
   });
 
   it("returns the latest signer role for a request", () => {

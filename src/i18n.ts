@@ -87,6 +87,13 @@ export type Dictionary = {
     statusSummary: string;
     institution: string;
     signerRole: string;
+    search: string;
+    searchPlaceholder: string;
+    sort: string;
+    sortDeadline: string;
+    sortNewest: string;
+    sortEvents: string;
+    sortStatus: string;
     all: string;
     resetFilters: string;
     latestRole: string;
@@ -376,6 +383,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       statusSummary: "Status summary",
       institution: "Institution",
       signerRole: "Signer role",
+      search: "Search",
+      searchPlaceholder: "Search request, subject, institution, registry",
+      sort: "Sort",
+      sortDeadline: "Deadline first",
+      sortNewest: "Newest",
+      sortEvents: "Most events",
+      sortStatus: "Status",
       all: "All",
       resetFilters: "Reset filters",
       latestRole: "Latest role",
@@ -675,6 +689,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       statusSummary: "Rezumat statusuri",
       institution: "Institutie",
       signerRole: "Rol semnatar",
+      search: "Cauta",
+      searchPlaceholder: "Cauta cerere, subiect, institutie, registru",
+      sort: "Sortare",
+      sortDeadline: "Termen apropiat",
+      sortNewest: "Cele mai noi",
+      sortEvents: "Cele mai multe evenimente",
+      sortStatus: "Status",
       all: "Toate",
       resetFilters: "Reseteaza filtrele",
       latestRole: "Ultimul rol",

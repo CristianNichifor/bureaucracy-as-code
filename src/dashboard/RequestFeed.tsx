@@ -12,6 +12,7 @@ import {
   getStatusSummaries,
   type RequestExplorerFilters,
   type RequestExplorerItem,
+  type RequestExplorerSort,
 } from "./requestExplorer";
 
 const statusOptions: Array<Law544Status | "All"> = [
@@ -28,6 +29,8 @@ const statusOptions: Array<Law544Status | "All"> = [
 ];
 
 const roleOptions: Array<DemoRole | "All"> = ["All", "Citizen", "RegistryBot", "Director", "PublicServant"];
+
+const sortOptions: RequestExplorerSort[] = ["deadline-asc", "newest", "events-desc", "status"];
 
 function RequestFeedRow({
   item,
@@ -106,7 +109,9 @@ export function RequestFeed({
   const filtersActive =
     filters.status !== DEFAULT_EXPLORER_FILTERS.status ||
     filters.institution !== DEFAULT_EXPLORER_FILTERS.institution ||
-    filters.role !== DEFAULT_EXPLORER_FILTERS.role;
+    filters.role !== DEFAULT_EXPLORER_FILTERS.role ||
+    filters.query !== DEFAULT_EXPLORER_FILTERS.query ||
+    filters.sort !== DEFAULT_EXPLORER_FILTERS.sort;
 
   return (
     <section className="panel requestFeedPanel" id={id}>
@@ -140,6 +145,15 @@ export function RequestFeed({
       </div>
 
       <div className="filterBar" aria-label="Request filters">
+        <label>
+          <span>{labels.search}</span>
+          <input
+            placeholder={labels.searchPlaceholder}
+            type="search"
+            value={filters.query}
+            onChange={(event) => onFiltersChange({ ...filters, query: event.target.value })}
+          />
+        </label>
         <label>
           <span>{labels.status}</span>
           <select
@@ -180,6 +194,19 @@ export function RequestFeed({
             {roleOptions.map((role) => (
               <option key={role} value={role}>
                 {role}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>{labels.sort}</span>
+          <select
+            value={filters.sort}
+            onChange={(event) => onFiltersChange({ ...filters, sort: event.target.value as RequestExplorerSort })}
+          >
+            {sortOptions.map((sort) => (
+              <option key={sort} value={sort}>
+                {getSortLabel(sort, labels)}
               </option>
             ))}
           </select>
@@ -226,4 +253,11 @@ export function RequestFeed({
       </div>
     </section>
   );
+}
+
+function getSortLabel(sort: RequestExplorerSort, labels: Dictionary["feed"]): string {
+  if (sort === "newest") return labels.sortNewest;
+  if (sort === "events-desc") return labels.sortEvents;
+  if (sort === "status") return labels.sortStatus;
+  return labels.sortDeadline;
 }
