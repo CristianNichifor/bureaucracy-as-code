@@ -27,8 +27,13 @@ PR82: Final UX/copy/spacing pass.
 
 PR83: Release evidence package.
 
-- Refresh final release notes and capture instructions if needed.
 - Add a concise presenter handoff for the completed browser-only demo.
+- Link release notes and operator docs to the evidence package.
+- Keep `pnpm demo:release` as the final readiness command.
+
+Closeout status: PR80 through PR83 complete the browser-only demo plan. Future
+work should be tracked as productionization or post-demo enhancement, not as a
+blocker for this milestone.
 
 ## Finish Criteria Status
 

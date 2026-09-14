@@ -2,6 +2,9 @@
 
 Use this runbook before a live browser-only demo.
 
+For the shortest presenter-facing version, use
+[Presenter Handoff](presenter-handoff.md).
+
 ## Local setup
 
 ```bash
