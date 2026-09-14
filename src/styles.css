@@ -81,7 +81,14 @@ button,
   gap: 10px;
 }
 
-.languageToggle {
+.segmentedControls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.segmentedToggle {
   display: inline-grid;
   grid-template-columns: repeat(2, minmax(44px, 1fr));
   overflow: hidden;
@@ -90,8 +97,12 @@ button,
   background: var(--civic-surface);
 }
 
-.languageToggle button {
+.segmentedToggle button {
+  display: inline-flex;
   min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   border: 0;
   padding: 0 12px;
   color: var(--civic-muted);
@@ -100,9 +111,13 @@ button,
   font-weight: 800;
 }
 
-.languageToggle button[aria-pressed="true"] {
+.segmentedToggle button[aria-pressed="true"] {
   color: var(--civic-on-action);
   background: var(--civic-action);
+}
+
+.themeToggle {
+  grid-template-columns: repeat(2, minmax(86px, 1fr));
 }
 
 .eyebrow {
@@ -1129,6 +1144,10 @@ dd {
     justify-items: start;
   }
 
+  .segmentedControls {
+    justify-content: flex-start;
+  }
+
   dl {
     grid-template-columns: 1fr;
   }
@@ -1193,6 +1212,11 @@ dd {
   .fileButton {
     width: 100%;
     justify-content: center;
+  }
+
+  .segmentedToggle,
+  .themeToggle {
+    width: 100%;
   }
 
   .statusSummaryChip {
