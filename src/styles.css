@@ -40,9 +40,9 @@ button,
 }
 
 .appShell {
-  width: min(var(--civic-page-max), calc(100% - clamp(20px, 4vw, 48px)));
+  width: min(100%, var(--civic-page-max));
   margin: 0 auto;
-  padding: clamp(18px, 3vw, 34px) 0;
+  padding: clamp(18px, 3vw, 34px) var(--civic-page-gutter);
 }
 
 .hero {
@@ -873,8 +873,7 @@ dd {
 
 @media (max-width: 560px) {
   .appShell {
-    width: min(var(--civic-page-max), calc(100% - 20px));
-    padding: 18px 0;
+    padding: 18px 10px;
   }
 
   .hero {
