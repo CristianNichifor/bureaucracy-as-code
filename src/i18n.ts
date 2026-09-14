@@ -356,6 +356,13 @@ export type Dictionary = {
     builtAt: string;
     local: string;
   };
+  demoCompleteness: {
+    title: string;
+    label: string;
+    status: string;
+    copy: string;
+    criteria: Array<{ category: string; title: string; copy: string }>;
+  };
   readiness: {
     title: string;
     status: string;
@@ -814,6 +821,45 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Environment",
       builtAt: "Built",
       local: "Local build",
+    },
+    demoCompleteness: {
+      title: "Demo completeness",
+      label: "Browser-only milestone",
+      status: "100% demo scope",
+      copy:
+        "The current app satisfies the agreed browser-only demo scope without ROeID, real identity services, durable Cloudflare resources, or legal sign-off dependencies.",
+      criteria: [
+        {
+          category: "Public explorer",
+          title: "Seeded anonymized Law 544 feed",
+          copy: "The dashboard opens with seeded and live requests, status filters, workload summaries, and scenario comparison.",
+        },
+        {
+          category: "Signed workflow",
+          title: "Complete request lifecycle",
+          copy: "A presenter can run citizen submission, registry, routing, processing, evidence attachment, and resolution.",
+        },
+        {
+          category: "Alternate paths",
+          title: "Exceptions remain visible",
+          copy: "Extension, overdue, rejected, redirected, and partial-disclosure paths are represented as signed scenarios.",
+        },
+        {
+          category: "Public proofs",
+          title: "Receipts and hash verification",
+          copy: "Audit receipts, proof reports, response hash verification, and tamper rejection are visible in the browser.",
+        },
+        {
+          category: "Privacy boundary",
+          title: "No raw documents or private keys",
+          copy: "Ledger evidence stays public and minimal; signing keys remain local and imports cannot impersonate original actors.",
+        },
+        {
+          category: "Presentation",
+          title: "Responsive EN/RO walkthrough",
+          copy: "Civic UI alignment, light/dark theme, Romanian mode, presenter cues, and release checks are covered by tests.",
+        },
+      ],
     },
     readiness: {
       title: "Release readiness",
@@ -1307,6 +1353,45 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Mediu",
       builtAt: "Construita",
       local: "Build local",
+    },
+    demoCompleteness: {
+      title: "Completitudine demo",
+      label: "Milestone doar in browser",
+      status: "100% scop demo",
+      copy:
+        "Aplicatia curenta acopera scopul demo agreat doar in browser, fara ROeID, servicii reale de identitate, resurse Cloudflare durabile sau dependinte de avizare juridica.",
+      criteria: [
+        {
+          category: "Explorer public",
+          title: "Feed Legea 544 anonimizat",
+          copy: "Dashboardul porneste cu cereri preincarcate si live, filtre de status, incarcarea institutiilor si comparatie scenarii.",
+        },
+        {
+          category: "Flux semnat",
+          title: "Ciclu complet al cererii",
+          copy: "Prezentatorul poate rula depunere, registratura, rutare, procesare, atasare dovezi si rezolvare.",
+        },
+        {
+          category: "Rute alternative",
+          title: "Exceptiile raman vizibile",
+          copy: "Prelungirea, intarzierea, refuzul, redirectionarea si divulgarea partiala sunt scenarii semnate.",
+        },
+        {
+          category: "Dovezi publice",
+          title: "Dovezi si verificare hash",
+          copy: "Dovezile de audit, raportul de dovezi, verificarea hash-ului raspunsului si respingerea modificarilor sunt vizibile.",
+        },
+        {
+          category: "Limita de confidentialitate",
+          title: "Fara documente brute sau chei private",
+          copy: "Dovada din registru ramane publica si minima; cheile raman locale, iar importurile nu pot imita semnatarii initiali.",
+        },
+        {
+          category: "Prezentare",
+          title: "Walkthrough responsive EN/RO",
+          copy: "Alinierea Civic UI, tema luminos/intunecat, romana, indiciile de prezentare si verificarile release sunt testate.",
+        },
+      ],
     },
     readiness: {
       title: "Pregatire release",

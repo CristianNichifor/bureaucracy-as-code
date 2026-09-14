@@ -23,6 +23,7 @@ import { EvidenceBrief } from "./dashboard/EvidenceBrief";
 import { BuildMetadata } from "./dashboard/BuildMetadata";
 import { ReleaseReadiness } from "./dashboard/ReleaseReadiness";
 import { PresenterChecklist } from "./dashboard/PresenterChecklist";
+import { DemoCompletenessPanel } from "./dashboard/DemoCompletenessPanel";
 import { buildPublicAuditReceipt, buildPublicProofReport } from "./dashboard/auditReceipt";
 import { demoSteps, getCurrentStepIndex, type DemoStep } from "./dashboard/demoProgress";
 import { fallbackBuildInfo, loadBuildInfo, type BuildInfo } from "./buildInfo";
@@ -516,6 +517,7 @@ export function App() {
 
         <DashboardSection id="release-operations" title={t.sections.release.title} copy={t.sections.release.copy}>
           <div className="grid sectionGrid sectionGridRelease">
+            <DemoCompletenessPanel labels={t.demoCompleteness} />
             <PresenterChecklist
               labels={t.presenter}
               status={request.status}

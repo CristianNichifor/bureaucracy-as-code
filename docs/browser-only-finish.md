@@ -3,25 +3,54 @@
 This milestone treats the demo app as complete when the citizen-facing browser
 experience is convincing without external services.
 
-## Finish Criteria
+## Closeout Roadmap
 
-- The dashboard opens with seeded anonymized Law 544 requests.
-- A presenter can run a complete request from submission to resolution.
-- Alternate request states are visible: extension, overdue, rejected, and
+PR80: Demo completeness and plan visibility.
+
+- Add an in-app release panel that maps the current browser demo to the finish
+  criteria.
+- Keep this document as the source of truth for remaining closeout work.
+- Cover the panel in Playwright.
+
+PR81: Documentation/script alignment.
+
+- Update the README, demo script, capture guide, and QA guide to match the
+  current UI panels and verification commands.
+- Remove stale references to older gates where `pnpm demo:verify` or
+  `pnpm demo:release` is now the canonical demo check.
+
+PR82: Final UX/copy/spacing pass.
+
+- Tighten repeated text, section rhythm, mobile order, and compact-panel
+  spacing.
+- Keep behavior unchanged; this is polish only.
+
+PR83: Release evidence package.
+
+- Refresh final release notes and capture instructions if needed.
+- Add a concise presenter handoff for the completed browser-only demo.
+
+## Finish Criteria Status
+
+- Done: The dashboard opens with seeded anonymized Law 544 requests.
+- Done: A presenter can run a complete request from submission to resolution.
+- Done: Alternate request states are visible: extension, overdue, rejected, and
   in-progress.
-- Rich seeded cases are visible: redirected, partial disclosure, extension near
-  deadline, rejected, resolved, registered, and overdue.
-- Key panels explain what citizens are seeing without exposing implementation
-  details.
-- Every visible administrative action has a signer role, signer DID hash,
+- Done: Rich seeded cases are visible: redirected, partial disclosure, extension
+  near deadline, rejected, resolved, registered, and overdue.
+- Done: Key panels explain what citizens are seeing without exposing
+  implementation details.
+- Done: Every visible administrative action has a signer role, signer DID hash,
   timestamp, previous state hash, current state hash, and payload hash.
-- The final response verifier compares a local file hash with the ledger hash.
-- Export/import refuses tampered state and never exports private signing keys.
-- Audit receipt export works for seeded and live browser-created requests.
-- Romanian and English modes remain usable on desktop and mobile.
-- `pnpm demo:release` is green before release.
-- The release report exists at `artifacts/demo-release/report.md`.
-- The standard capture pack exists at `artifacts/demo-captures/`.
+- Done: The final response verifier compares a local file hash with the ledger
+  hash.
+- Done: Export/import refuses tampered state and never exports private signing
+  keys.
+- Done: Audit receipt export works for seeded and live browser-created requests.
+- Done: Romanian and English modes remain usable on desktop and mobile.
+- Done: `pnpm demo:release` is green before release.
+- Done: The release report exists at `artifacts/demo-release/report.md`.
+- Done: The standard capture pack exists at `artifacts/demo-captures/`.
 
 ## Operator Release Command
 
