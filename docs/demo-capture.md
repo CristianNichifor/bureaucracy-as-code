@@ -3,6 +3,32 @@
 Use this guide when recording a short walkthrough, README GIF, or screenshots
 for the public demo.
 
+## Automated Capture Pack
+
+Generate the standard screenshot pack from a production build:
+
+```bash
+pnpm demo:capture
+```
+
+The command builds the app, starts a local Vite preview server, opens Chromium,
+captures the demo frames, and writes PNGs to `artifacts/demo-captures/`.
+
+Generated frames:
+
+- `01-public-explorer-desktop.png`: initial public dashboard with seeded cases.
+- `02-resolved-request-desktop.png`: guided Law 544 request after resolution.
+- `03-proof-report-ready-desktop.png`: public proof report export control ready.
+- `04-romanian-mobile.png`: Romanian presentation mode on a narrow viewport.
+- `05-ultrawide-centered-layout.png`: centered 1920px layout on an ultrawide
+  viewport.
+
+To capture an already-running deployment or preview, set:
+
+```bash
+CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://digital.cristian-nichifor.com/bureaucracy-as-code/ pnpm demo:capture
+```
+
 ## Recommended Storyboard
 
 1. Start on the public explorer and show that multiple anonymized Law 544
@@ -28,8 +54,8 @@ for the public demo.
 
 ## Suggested Assets
 
-- `01-public-explorer.png`: seeded feed with filters visible.
-- `02-machinery-graph.png`: selected overdue request and graph visible.
-- `03-audit-trail.png`: resolved request with signed events.
-- `04-receipt-json.png`: exported receipt opened in a text viewer.
-- `05-ro-mobile.png`: Romanian mode on a narrow viewport.
+- `01-public-explorer-desktop.png`: seeded feed with filters visible.
+- `02-resolved-request-desktop.png`: resolved request with signed events.
+- `03-proof-report-ready-desktop.png`: proof report export path visible.
+- `04-romanian-mobile.png`: Romanian mode on a narrow viewport.
+- `05-ultrawide-centered-layout.png`: large-screen layout bound to 1920px.

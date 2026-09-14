@@ -82,6 +82,15 @@ Browser smoke checks:
 pnpm verify:e2e
 ```
 
+Demo capture pack:
+
+```bash
+pnpm demo:capture
+```
+
+This writes the standard README/presentation screenshots to
+`artifacts/demo-captures/`. See [docs/demo-capture.md](docs/demo-capture.md).
+
 Offline demo mode:
 
 - production builds register a service worker
