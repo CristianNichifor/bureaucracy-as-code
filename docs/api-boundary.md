@@ -1,9 +1,9 @@
 # API Boundary
 
-The Phase 6 boundary is a small ingestion service around the existing identity,
-Law 544, and ledger interfaces. It is intentionally framework-neutral so it can
-run today in local tests and later be wrapped by Cloudflare Pages Functions or a
-Worker route.
+The API boundary is a small ingestion service around the existing identity, Law
+544, and ledger interfaces. It is intentionally framework-neutral so it can run
+today in local tests and be wrapped by optional Cloudflare Pages Functions or a
+Worker route later.
 
 ## Ingestion Contract
 
@@ -29,7 +29,7 @@ and outside this boundary; only hashes pass through the API.
 
 ## Cloudflare Pages Functions Shape
 
-The Phase 12 scaffold wraps the same service with Cloudflare Pages Functions:
+The optional Pages Functions scaffold wraps the same service:
 
 - `GET /api/health` returns a small deployment probe.
 - `POST /api/transitions` accepts an `IngestTransitionCommand`, verifies it
@@ -40,15 +40,14 @@ The Phase 12 scaffold wraps the same service with Cloudflare Pages Functions:
 - `GET /api/requests/:requestId` returns one request, its public audit trail,
   integrity verification, and a request-scoped head anchor.
 
-The scaffold uses module-level in-memory state inside the Pages isolate. That is
-intentional for this PR-sized phase: it proves the HTTP/runtime boundary without
-requiring credentials or a production ledger dependency.
+The scaffold uses module-level in-memory state inside the Pages isolate. That
+keeps the HTTP/runtime boundary demonstrable without requiring credentials or a
+production ledger dependency.
 
-Phase 18 adds Cloudflare-ready persistence adapters for D1 request projections,
+Cloudflare-ready persistence adapters exist for D1 request projections,
 KV-backed demo/indexed ledger events, and R2 encrypted document envelopes. Those
-adapters can replace `functions/_shared/runtime.ts` in a later composition phase
-without changing the public route contract or the framework-neutral ingestion
-service.
+adapters can replace `functions/_shared/runtime.ts` later without changing the
+public route contract or the framework-neutral ingestion service.
 
 ## Security Notes
 

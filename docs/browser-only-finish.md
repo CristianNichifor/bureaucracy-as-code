@@ -21,7 +21,7 @@ experience is convincing without external services.
 
 - ROeID integration.
 - Real identity-service integration.
-- Real Cloudflare resource creation.
+- Durable Cloudflare data resource creation.
 - Legal, DPIA, procurement, or institutional sign-off.
 - Production retention, appeal, or incident-response operations.
 
