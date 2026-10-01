@@ -8,12 +8,14 @@ on:
     - cron: "27 4 * * 1"
 
 permissions:
-  actions: read
   contents: read
-  security-events: write
 
 jobs:
   analyze:
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     name: CodeQL / analyze
     runs-on: ubuntu-24.04
     steps:
