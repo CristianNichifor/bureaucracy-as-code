@@ -49,3 +49,7 @@ Never add real citizen records, production keys, or live administration data.
 
 The CI `verify` job requires both existing unit/privacy/build checks and Playwright.
 Production publishing is separate and maintainer-operated.
+
+For bounded implementation work, use the [Scoped contribution task form](.github/ISSUE_TEMPLATE/task.yml)
+to record the problem, scope, observable acceptance criteria and verification evidence.
+Existing issue forms remain available for their specific purposes.
