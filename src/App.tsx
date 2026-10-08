@@ -97,6 +97,9 @@ export function App() {
   }, [runtime]);
 
   useEffect(() => {
+    // resetDemo awaits runtime.reset() before it touches any state, so nothing is set
+    // during this render pass. The rule cannot see across the await and flags the call.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void resetDemo(dictionaries.en.app.startMessage, "idle");
   }, [resetDemo]);
 
@@ -336,18 +339,15 @@ export function App() {
     void runAction(nextStep.id);
   }, [context, events.length, runAction]);
 
+  // The end of the run is detected in runNextStep, not here: stopping from the effect body
+  // means setting state during the render pass that scheduled it. The auto-run flag therefore
+  // clears one tick (700 ms) after the last step instead of the instant the queue empties.
   useEffect(() => {
     if (!isAutoRunning || !context) return;
 
-    const nextStep = demoSteps[getCurrentStepIndex(context.request.status, events.length)];
-    if (!nextStep) {
-      setIsAutoRunning(false);
-      return;
-    }
-
     const timer = window.setTimeout(() => runNextStep(), 700);
     return () => window.clearTimeout(timer);
-  }, [context, events.length, isAutoRunning, runNextStep]);
+  }, [context, isAutoRunning, runNextStep]);
 
   if (!context) {
     return (
