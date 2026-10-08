@@ -26,7 +26,7 @@ Generated frames:
 To capture an already-running deployment or preview, set:
 
 ```bash
-CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://digital.cristian-nichifor.com/bureaucracy-as-code/ pnpm demo:capture
+CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://projects.cristian-nichifor.com/bureaucracy-as-code/ pnpm demo:capture
 ```
 
 ## Recommended Storyboard

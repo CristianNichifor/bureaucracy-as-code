@@ -1,39 +1,30 @@
 # Cloudflare Pages
 
-This repo is a static Vite app intended to live under:
+This repo is a static Vite app served, mounted into the projects hub, at:
 
 ```txt
-https://digital.cristian-nichifor.com/bureaucracy-as-code
+https://projects.cristian-nichifor.com/bureaucracy-as-code/
 ```
 
 ## Deployment model
 
-Cloudflare Pages custom domains attach at the hostname level, not to a
-subpath of an existing hostname. The final v3 target therefore needs one of
-these shapes:
-
-- preferred: the future `apps/digital` Pages app mounts this static build at
-  `/bureaucracy-as-code`
-- temporary: this standalone repo deploys to its own Pages preview URL or
-  temporary hostname until workspace intake
-
-The app already sets the Vite public base to `/bureaucracy-as-code/` in
-`vite.config.ts`, so copied assets resolve correctly once the build output is
-served from that path.
-
-This repository is deployable in two modes:
+The hub (`digital-public-administration-lab`) copies this repo's build into its
+own output at `/bureaucracy-as-code/` at build time; Cloudflare custom domains
+attach at the hostname level, so the path belongs to the hub. This repo also
+deploys its own Pages project, which the deploy smoke test and previews use.
 
 | Mode | URL shape | Build base | Owner |
 | --- | --- | --- | --- |
-| Standalone preview/production | `https://bureaucracy-as-code.pages.dev/` | `/` | this repo |
-| Mounted digital workspace | `https://digital.cristian-nichifor.com/bureaucracy-as-code/` | `/bureaucracy-as-code/` | future `apps/digital` host |
+| Standalone production and previews | `https://bureaucracy-as-code-<random>.pages.dev/` | `/` | this repo |
+| Mounted in the hub | `https://projects.cristian-nichifor.com/bureaucracy-as-code/` | `/bureaucracy-as-code/` | `digital-public-administration-lab` |
+
+The app sets the Vite public base to `/bureaucracy-as-code/` in `vite.config.ts`, so copied assets
+resolve once the build is served from that path.
 
 ## Standalone Pages project
 
-The project lives on the **CN Webify** Cloudflare account, `432316a05c0d6000c6e196fe32e47dd7`.
-That is not an arbitrary choice: the `cristian-nichifor.com` zone is managed there, and a Pages
-project can only attach a custom domain from a zone in its own account. Deploying anywhere else
-would mean the eventual `digital.cristian-nichifor.com` mount could never point here.
+The project lives on the **CN Webify Customers** Cloudflare account,
+`5d5a0c8a05e5d8292065cd0c0cf60291`, with the `cristian-nichifor.com` zone and the hub.
 
 Create it once, from a shell that has the token (see below):
 
@@ -48,9 +39,10 @@ name = "bureaucracy-as-code"
 pages_build_output_dir = "dist"
 ```
 
-Until `apps/digital` exists, the site answers on `bureaucracy-as-code.pages.dev`, and the
-repository `homepage` should point there. No custom domain is attached at this stage, so no DNS
-record and no zone change is involved.
+The plain `bureaucracy-as-code.pages.dev` name belongs to the old project in the CN Webify Core
+account until that is deleted, so the new project gets a suffixed `pages.dev` host. Nobody links to
+it; set it as the `DEPLOY_SMOKE_URL` repository variable so the deploy can smoke-test it. No custom
+domain is attached to this project, so no DNS record and no zone change is involved.
 
 The standalone deploy builds with `VITE_APP_BASE=/`. The default base is `/bureaucracy-as-code/`,
 which is correct for the mounted build and wrong here — served from the root of a `pages.dev`
@@ -62,13 +54,12 @@ host it would ask for `/bureaucracy-as-code/assets/...` and get a 404 for every 
 /* /index.html 200
 ```
 
-It also documents the future mounted fallback, but that rule only takes effect
-when it is copied into the root `_redirects` file of the `apps/digital` Pages
-project.
+It also documents the mounted fallback, but that rule only takes effect when it
+is copied into the hub's root `_redirects` file.
 
 ## Credentials
 
-The API token lives in 1Password under the CN Webify account. It needs one scope:
+The API token is a CN Webify Customers account token, kept in 1Password. It needs one scope:
 
 ```txt
 Account · Cloudflare Pages · Edit
@@ -82,13 +73,16 @@ used only by CI:
 
 ```txt
 CLOUDFLARE_API_TOKEN     the scoped token
-CLOUDFLARE_ACCOUNT_ID    432316a05c0d6000c6e196fe32e47dd7
+CLOUDFLARE_ACCOUNT_ID    5d5a0c8a05e5d8292065cd0c0cf60291
 ```
 
 ```bash
 gh secret set CLOUDFLARE_API_TOKEN --repo CristianNichifor/bureaucracy-as-code
 gh secret set CLOUDFLARE_ACCOUNT_ID --repo CristianNichifor/bureaucracy-as-code
+gh variable set DEPLOY_SMOKE_URL --repo CristianNichifor/bureaucracy-as-code --body https://bureaucracy-as-code-<random>.pages.dev/
 ```
+
+Without `DEPLOY_SMOKE_URL` the workflow still deploys and warns that it did not smoke-test.
 
 ## Deploy workflow
 
@@ -124,19 +118,18 @@ Public read endpoints:
 - `GET /api/ledger/anchor?requestId=<id>`
 - `GET /api/metrics`
 
-## Digital host integration
+## Hub integration
 
-When `apps/digital` exists, its build should copy this app's production output
-under the digital app's Pages output directory:
+The hub's build copies this app's production output under its Pages output directory:
 
 ```txt
-<digital-output>/
+<hub-output>/
   bureaucracy-as-code/
     index.html
     assets/
 ```
 
-The digital app should then handle SPA fallback for the route:
+The hub then handles SPA fallback for the route:
 
 ```txt
 /bureaucracy-as-code/* -> /bureaucracy-as-code/index.html
@@ -145,14 +138,14 @@ The digital app should then handle SPA fallback for the route:
 Required parent-host checklist:
 
 - build this repo without overriding `VITE_APP_BASE`
-- copy `dist/*` into `<digital-output>/bureaucracy-as-code/`
+- copy `dist/*` into `<hub-output>/bureaucracy-as-code/`
 - add `/bureaucracy-as-code/* /bureaucracy-as-code/index.html 200` to the parent root `_redirects`
 - keep the headers in `public/_headers`, or merge equivalent rules into the parent root `_headers`
 - smoke-test `/bureaucracy-as-code/`, `/bureaucracy-as-code/assets/*`, and one deep SPA path
 
-Do not attach `digital.cristian-nichifor.com/bureaucracy-as-code` as a custom
+Do not attach `projects.cristian-nichifor.com/bureaucracy-as-code` as a custom
 domain to this standalone Pages project. Cloudflare custom domains are
-hostname-level bindings; the path belongs to the digital host.
+hostname-level bindings; the path belongs to the hub.
 
 ## Local verification
 

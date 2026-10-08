@@ -40,9 +40,8 @@ jobs:
 
       - name: Build
         env:
-          # This project serves the app at the root of bureaucracy-as-code.pages.dev. The default
-          # base, /bureaucracy-as-code/, is for the future apps/digital mount and would 404 every
-          # asset here.
+          # This project serves the app at the root of its own pages.dev host. The default base,
+          # /bureaucracy-as-code/, is for the hub mount and would 404 every asset here.
           VITE_APP_BASE: "/"
         run: pnpm build
 
@@ -56,11 +55,18 @@ jobs:
           # to a preview URL named after its branch; main deploys to production.
           command: pages deploy --branch=${{ github.event_name == 'push' && 'main' || github.head_ref }}
 
+      # The production host is <name>-<random>.pages.dev, known only once the project exists, so
+      # it is a repository variable rather than a value here.
       - name: Smoke production deploy
-        if: env.HAS_CREDENTIALS == 'true' && github.event_name == 'push'
+        if: env.HAS_CREDENTIALS == 'true' && github.event_name == 'push' && vars.DEPLOY_SMOKE_URL != ''
         env:
-          DEPLOY_SMOKE_URL: https://bureaucracy-as-code.pages.dev/
+          DEPLOY_SMOKE_URL: ${{ vars.DEPLOY_SMOKE_URL }}
         run: pnpm deploy:smoke
+
+      - name: Say why the deploy was not smoke-tested
+        if: env.HAS_CREDENTIALS == 'true' && github.event_name == 'push' && vars.DEPLOY_SMOKE_URL == ''
+        run: |
+          echo "::warning::Deployed, but not smoke-tested; set the DEPLOY_SMOKE_URL repository variable to the project's pages.dev URL. See docs/cloudflare-pages.md."
 
       - name: Say why nothing was deployed
         if: env.HAS_CREDENTIALS != 'true'

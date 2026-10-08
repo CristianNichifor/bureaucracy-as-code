@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 import type { BuildInfo } from "../buildInfo";
 import type { Dictionary } from "../i18n";
 
-const STANDALONE_URL = "https://bureaucracy-as-code.pages.dev/";
-const DIGITAL_URL = "https://digital.cristian-nichifor.com/bureaucracy-as-code";
+const HUB_URL = "https://projects.cristian-nichifor.com/bureaucracy-as-code/";
 
 export function ReleaseReadiness({
   buildInfo,
@@ -32,8 +31,7 @@ export function ReleaseReadiness({
         </ReadinessGroup>
 
         <ReadinessGroup title={labels.deployTargets}>
-          <ReadinessLink label={labels.standalone} href={STANDALONE_URL} />
-          <ReadinessLink label={labels.digital} href={DIGITAL_URL} />
+          <ReadinessLink label={labels.hub} href={HUB_URL} />
         </ReadinessGroup>
 
         <ReadinessGroup title={labels.privacyBoundary}>

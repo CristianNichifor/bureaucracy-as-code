@@ -1,9 +1,8 @@
 import { ApiBoundaryError } from "../../src/api/types";
 
-const DEFAULT_ALLOWED_ORIGINS = [
-  "https://bureaucracy-as-code.pages.dev",
-  "https://digital.cristian-nichifor.com",
-] as const;
+// The app's public origin is the hub. Its own pages.dev host carries a random
+// suffix nobody links to, and same-origin calls there need no CORS.
+const DEFAULT_ALLOWED_ORIGINS = ["https://projects.cristian-nichifor.com"] as const;
 
 const sharedCorsHeaders = {
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
