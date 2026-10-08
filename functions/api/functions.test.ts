@@ -209,7 +209,7 @@ describe("Cloudflare Pages Functions API", () => {
     const allowed = await health.onRequestOptions({
       request: new Request("https://example.test/api/health", {
         method: "OPTIONS",
-        headers: { Origin: "https://bureaucracy-as-code.pages.dev" },
+        headers: { Origin: "https://projects.cristian-nichifor.com" },
       }),
       params: {},
     });
@@ -221,7 +221,7 @@ describe("Cloudflare Pages Functions API", () => {
       params: {},
     });
 
-    expect(allowed.headers.get("Access-Control-Allow-Origin")).toBe("https://bureaucracy-as-code.pages.dev");
+    expect(allowed.headers.get("Access-Control-Allow-Origin")).toBe("https://projects.cristian-nichifor.com");
     expect(allowed.headers.get("Vary")).toBe("Origin");
     expect(denied.headers.get("Access-Control-Allow-Origin")).toBeNull();
   });
