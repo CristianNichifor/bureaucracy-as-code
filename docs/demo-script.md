@@ -17,8 +17,7 @@ The app starts with browser-local demo state only.
 
 Presenter note:
 
-- standalone URL: `https://bureaucracy-as-code.pages.dev/`
-- target digital URL: `https://digital.cristian-nichifor.com/bureaucracy-as-code/`
+- URL: `https://projects.cristian-nichifor.com/bureaucracy-as-code/`
 - all identities, credentials, documents, and ledger events are local demo data
 - open the deployed demo once while online to warm the offline presentation cache
 

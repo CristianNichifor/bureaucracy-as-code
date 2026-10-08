@@ -66,7 +66,7 @@ pnpm demo:capture
 Capture a running deployment instead of local preview:
 
 ```bash
-CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://digital.cristian-nichifor.com/bureaucracy-as-code/ pnpm demo:capture
+CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://projects.cristian-nichifor.com/bureaucracy-as-code/ pnpm demo:capture
 ```
 
 ## Deployment smoke
@@ -74,7 +74,7 @@ CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://digital.cristian-nichifor.com/bu
 After Cloudflare Pages deploys, open:
 
 ```txt
-https://digital.cristian-nichifor.com/bureaucracy-as-code/
+https://projects.cristian-nichifor.com/bureaucracy-as-code/
 ```
 
 Confirm:
