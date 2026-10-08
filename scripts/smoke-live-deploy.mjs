@@ -1,4 +1,9 @@
-const targetUrl = process.argv[2] ?? process.env.DEPLOY_SMOKE_URL ?? "https://bureaucracy-as-code.pages.dev/";
+const targetUrl = process.argv[2] ?? process.env.DEPLOY_SMOKE_URL;
+
+if (!targetUrl) {
+  console.error("Usage: pnpm deploy:smoke <url>, or set DEPLOY_SMOKE_URL.");
+  process.exit(2);
+}
 const timeoutMs = Number(process.env.DEPLOY_SMOKE_TIMEOUT_MS ?? 20_000);
 
 const controller = new AbortController();
