@@ -56,6 +56,5 @@ These files are generated locally and ignored by git.
 
 ## URLs
 
-- Standalone Pages: `https://bureaucracy-as-code.pages.dev/`
-- Digital mount: `https://digital.cristian-nichifor.com/bureaucracy-as-code/`
+- Projects hub: `https://projects.cristian-nichifor.com/bureaucracy-as-code/`
 

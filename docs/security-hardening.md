@@ -62,8 +62,7 @@ remembering the nonce.
 
 Functions now reflect only configured allowed origins:
 
-- `https://bureaucracy-as-code.pages.dev`
-- `https://digital.cristian-nichifor.com`
+- `https://projects.cristian-nichifor.com`
 
 Unknown origins receive no `Access-Control-Allow-Origin`. The helper also sets
 `Vary: Origin` so shared caches do not reuse an allowed-origin response for a

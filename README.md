@@ -5,7 +5,7 @@ Browser-only demo for a Romanian public administration transparency system.
 The demo models Law 544/2001 requests as signed, trackable state transitions. It uses a local append-only hash-chain ledger rather than a production blockchain, so it can run as a static site under:
 
 ```txt
-https://digital.cristian-nichifor.com/bureaucracy-as-code
+https://projects.cristian-nichifor.com/bureaucracy-as-code/
 ```
 
 ## What it demonstrates
@@ -153,8 +153,7 @@ Offline demo mode:
 
 Deployment:
 
-- standalone demo: `https://bureaucracy-as-code.pages.dev/`
-- intended digital mount: `https://digital.cristian-nichifor.com/bureaucracy-as-code`
+- mounted in the projects hub: `https://projects.cristian-nichifor.com/bureaucracy-as-code/`
 - Cloudflare Pages notes: [docs/cloudflare-pages.md](docs/cloudflare-pages.md)
 
 ## Documentation

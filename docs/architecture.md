@@ -55,13 +55,13 @@ The app presents:
 - export/import of demo state
 - document hash verification
 
-## Digital Host
+## Projects hub
 
-The final intended route is:
+The app is mounted into the projects hub at:
 
 ```txt
-https://digital.cristian-nichifor.com/bureaucracy-as-code
+https://projects.cristian-nichifor.com/bureaucracy-as-code/
 ```
 
-Until the future `apps/digital` workspace exists, this repo can deploy as a
-standalone Cloudflare Pages project. See [Cloudflare Pages](cloudflare-pages.md).
+This repo also deploys a standalone Cloudflare Pages project for previews and
+the deploy smoke test. See [Cloudflare Pages](cloudflare-pages.md).

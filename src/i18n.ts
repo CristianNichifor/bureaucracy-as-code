@@ -386,8 +386,7 @@ export type Dictionary = {
     environment: string;
     builtAt: string;
     deployTargets: string;
-    standalone: string;
-    digital: string;
+    hub: string;
     privacyBoundary: string;
     noRoeid: string;
     noDurableCloudflare: string;
@@ -918,8 +917,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Environment",
       builtAt: "Built",
       deployTargets: "Deploy targets",
-      standalone: "Standalone Pages",
-      digital: "Digital mount",
+      hub: "Projects hub",
       privacyBoundary: "Privacy boundary",
       noRoeid: "No ROeID integration",
       noDurableCloudflare: "No durable Cloudflare data resources required",
@@ -1484,8 +1482,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Mediu",
       builtAt: "Construita",
       deployTargets: "Tintele de publicare",
-      standalone: "Pages standalone",
-      digital: "Montare digital",
+      hub: "Hub de proiecte",
       privacyBoundary: "Limita de confidentialitate",
       noRoeid: "Fara integrare ROeID",
       noDurableCloudflare: "Nu necesita resurse Cloudflare durabile",

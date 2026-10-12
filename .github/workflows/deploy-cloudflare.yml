@@ -1,0 +1,94 @@
+name: Deploy
+
+# The CN Webify token broker accepts this exact file, on main, for these two events only.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # the broker reads this job's GitHub OIDC token
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PAGES_PROJECT: bureaucracy-as-code
+  WRANGLER_VERSION: 4.149.0
+
+jobs:
+  pages:
+    name: Deploy / Cloudflare Pages
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        env:
+          # This project serves the app at the root of its own pages.dev host. The default base,
+          # /bureaucracy-as-code/, is for the hub mount and would 404 every asset here.
+          VITE_APP_BASE: "/"
+        run: pnpm build
+
+      - name: Cloudflare token from the CN Webify broker
+        run: |
+          set -euo pipefail
+          jwt=$(curl -sf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://tokens.cnwebify.com" | jq -r .value)
+          reply=$(curl -sf -X POST -H "Authorization: Bearer $jwt" https://tokens.cnwebify.com/token)
+          token=$(jq -r .token <<<"$reply"); echo "::add-mask::$token"
+          echo "CLOUDFLARE_API_TOKEN=$token" >> "$GITHUB_ENV"
+          echo "CLOUDFLARE_ACCOUNT_ID=5d5a0c8a05e5d8292065cd0c0cf60291" >> "$GITHUB_ENV"
+
+      # Creating the project is idempotent here: a second run gets "already exists" and moves on.
+      - name: Create the Pages project if missing
+        run: |
+          set -uo pipefail
+          if ! out=$(npx --yes "wrangler@$WRANGLER_VERSION" pages project create "$PAGES_PROJECT" \
+            --production-branch main 2>&1); then
+            grep -qi "already exists" <<<"$out" || { echo "$out"; exit 1; }
+            echo "Pages project $PAGES_PROJECT already exists."
+          fi
+
+      # Project name and output directory come from wrangler.toml.
+      - name: Deploy
+        run: npx --yes "wrangler@$WRANGLER_VERSION" pages deploy --branch=main
+
+      # The plain pages.dev name is held by the old project in CN Webify Core, so this one gets
+      # <name>-<random>.pages.dev, known only once the project exists.
+      - name: Find the pages.dev host
+        id: host
+        run: |
+          set -euo pipefail
+          subdomain=$(curl -sf -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PAGES_PROJECT" \
+            | jq -r .result.subdomain)
+          echo "url=https://$subdomain/" >> "$GITHUB_OUTPUT"
+          echo "Pages project \`$PAGES_PROJECT\` serves at **https://$subdomain/**" >> "$GITHUB_STEP_SUMMARY"
+
+      # A newly created pages.dev host can take a few minutes to answer, so retry before failing.
+      - name: Smoke production deploy
+        env:
+          DEPLOY_SMOKE_URL: ${{ steps.host.outputs.url }}
+        run: |
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            pnpm deploy:smoke && exit 0
+            echo "Attempt $attempt failed; retrying in 30s."
+            sleep 30
+          done
+          exit 1
