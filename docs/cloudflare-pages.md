@@ -26,13 +26,9 @@ resolve once the build is served from that path.
 The project lives on the **CN Webify Customers** Cloudflare account,
 `5d5a0c8a05e5d8292065cd0c0cf60291`, with the `cristian-nichifor.com` zone and the hub.
 
-Create it once, from a shell that has the token (see below):
-
-```bash
-wrangler pages project create bureaucracy-as-code --production-branch main
-```
-
-Name and build output directory come from `wrangler.toml`, so the deploy command needs neither:
+The deploy workflow creates it on its first run (`wrangler pages project create bureaucracy-as-code
+--production-branch main`) and treats "already exists" as success afterwards. Name and build output
+directory come from `wrangler.toml`, so the deploy command needs neither:
 
 ```toml
 name = "bureaucracy-as-code"
@@ -40,9 +36,10 @@ pages_build_output_dir = "dist"
 ```
 
 The plain `bureaucracy-as-code.pages.dev` name belongs to the old project in the CN Webify Core
-account until that is deleted, so the new project gets a suffixed `pages.dev` host. Nobody links to
-it; set it as the `DEPLOY_SMOKE_URL` repository variable so the deploy can smoke-test it. No custom
-domain is attached to this project, so no DNS record and no zone change is involved.
+account until that is deleted, so the new project gets a suffixed `bureaucracy-as-code-<random>.pages.dev`
+host. Nobody links to it; the workflow reads it from the Cloudflare API, prints it in the job
+summary and smoke-tests it. No custom domain is attached to this project, so no DNS record and no
+zone change is involved: CN Webify mounts the hub on `projects.cristian-nichifor.com` with Terraform.
 
 The standalone deploy builds with `VITE_APP_BASE=/`. The default base is `/bureaucracy-as-code/`,
 which is correct for the mounted build and wrong here — served from the root of a `pages.dev`
@@ -59,37 +56,20 @@ is copied into the hub's root `_redirects` file.
 
 ## Credentials
 
-The API token is a CN Webify Customers account token, kept in 1Password. It needs one scope:
+No Cloudflare secret is stored in this repository. The deploy job asks the CN Webify token broker
+(`https://tokens.cnwebify.com`) for a one-hour Customers account token, proving who it is with the
+job's GitHub OIDC token (`id-token: write`). The broker issues one only to
+`.github/workflows/deploy-cloudflare.yml`, running on `main`, for a push or `workflow_dispatch`,
+and scopes it to Cloudflare Pages.
 
-```txt
-Account · Cloudflare Pages · Edit
-```
-
-`wrangler login`'s OAuth scope is not enough for project creation, and the Cloudflare MCP
-connection is read-only.
-
-The token is never pasted into a shell for routine work. It is stored as repository secrets and
-used only by CI:
-
-```txt
-CLOUDFLARE_API_TOKEN     the scoped token
-CLOUDFLARE_ACCOUNT_ID    5d5a0c8a05e5d8292065cd0c0cf60291
-```
-
-```bash
-gh secret set CLOUDFLARE_API_TOKEN --repo CristianNichifor/bureaucracy-as-code
-gh secret set CLOUDFLARE_ACCOUNT_ID --repo CristianNichifor/bureaucracy-as-code
-gh variable set DEPLOY_SMOKE_URL --repo CristianNichifor/bureaucracy-as-code --body https://bureaucracy-as-code-<random>.pages.dev/
-```
-
-Without `DEPLOY_SMOKE_URL` the workflow still deploys and warns that it did not smoke-test.
+The token is masked in the log and lives only in the job environment. It never goes into a
+repository secret, a file or a shell history.
 
 ## Deploy workflow
 
-`.github/workflows/deploy.yml` builds and deploys on every push to `main`, and deploys a preview
-for each pull request raised from this repository. Pull requests from forks are skipped rather
-than failed: secrets are not available to them, so the deploy step could not succeed. They still
-get the full CI workflow.
+`.github/workflows/deploy-cloudflare.yml` builds and deploys on every push to `main`, and on demand
+(`workflow_dispatch`, from `main`). Pull requests get no preview deploy, because the broker does
+not issue tokens to them; they still get the full CI workflow.
 
 Deployment is wired in the repository, not clicked together in the dashboard — the same rule the
 rest of this fleet's infrastructure follows. Cloudflare's Pages Git integration is deliberately
