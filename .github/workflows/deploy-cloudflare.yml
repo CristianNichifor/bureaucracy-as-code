@@ -1,27 +1,27 @@
 name: Deploy
 
+# The CN Webify token broker accepts this exact file, on main, for these two events only.
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
+  id-token: write # the broker reads this job's GitHub OIDC token
 
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  PAGES_PROJECT: bureaucracy-as-code
+  WRANGLER_VERSION: 4.149.0
+
 jobs:
   pages:
     name: Deploy / Cloudflare Pages
-    # Secrets are not available to pull requests opened from forks, so the job would fail
-    # rather than skip. Fork PRs still get the full CI workflow; they just get no preview.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
-    env:
-      # Job-level env can read secrets; a job-level `if` cannot. This lets the deploy step skip
-      # cleanly before the credentials exist, instead of failing every run until they do.
-      HAS_CREDENTIALS: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -45,30 +45,50 @@ jobs:
           VITE_APP_BASE: "/"
         run: pnpm build
 
+      - name: Cloudflare token from the CN Webify broker
+        run: |
+          set -euo pipefail
+          jwt=$(curl -sf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://tokens.cnwebify.com" | jq -r .value)
+          reply=$(curl -sf -X POST -H "Authorization: Bearer $jwt" https://tokens.cnwebify.com/token)
+          token=$(jq -r .token <<<"$reply"); echo "::add-mask::$token"
+          echo "CLOUDFLARE_API_TOKEN=$token" >> "$GITHUB_ENV"
+          echo "CLOUDFLARE_ACCOUNT_ID=5d5a0c8a05e5d8292065cd0c0cf60291" >> "$GITHUB_ENV"
+
+      # Creating the project is idempotent here: a second run gets "already exists" and moves on.
+      - name: Create the Pages project if missing
+        run: |
+          set -uo pipefail
+          if ! out=$(npx --yes "wrangler@$WRANGLER_VERSION" pages project create "$PAGES_PROJECT" \
+            --production-branch main 2>&1); then
+            grep -qi "already exists" <<<"$out" || { echo "$out"; exit 1; }
+            echo "Pages project $PAGES_PROJECT already exists."
+          fi
+
+      # Project name and output directory come from wrangler.toml.
       - name: Deploy
-        if: env.HAS_CREDENTIALS == 'true'
-        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Project name and output directory come from wrangler.toml. A pull request deploys
-          # to a preview URL named after its branch; main deploys to production.
-          command: pages deploy --branch=${{ github.event_name == 'push' && 'main' || github.head_ref }}
+        run: npx --yes "wrangler@$WRANGLER_VERSION" pages deploy --branch=main
 
-      # The production host is <name>-<random>.pages.dev, known only once the project exists, so
-      # it is a repository variable rather than a value here.
+      # The plain pages.dev name is held by the old project in CN Webify Core, so this one gets
+      # <name>-<random>.pages.dev, known only once the project exists.
+      - name: Find the pages.dev host
+        id: host
+        run: |
+          set -euo pipefail
+          subdomain=$(curl -sf -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PAGES_PROJECT" \
+            | jq -r .result.subdomain)
+          echo "url=https://$subdomain/" >> "$GITHUB_OUTPUT"
+          echo "Pages project \`$PAGES_PROJECT\` serves at **https://$subdomain/**" >> "$GITHUB_STEP_SUMMARY"
+
+      # A newly created pages.dev host can take a few minutes to answer, so retry before failing.
       - name: Smoke production deploy
-        if: env.HAS_CREDENTIALS == 'true' && github.event_name == 'push' && vars.DEPLOY_SMOKE_URL != ''
         env:
-          DEPLOY_SMOKE_URL: ${{ vars.DEPLOY_SMOKE_URL }}
-        run: pnpm deploy:smoke
-
-      - name: Say why the deploy was not smoke-tested
-        if: env.HAS_CREDENTIALS == 'true' && github.event_name == 'push' && vars.DEPLOY_SMOKE_URL == ''
+          DEPLOY_SMOKE_URL: ${{ steps.host.outputs.url }}
         run: |
-          echo "::warning::Deployed, but not smoke-tested; set the DEPLOY_SMOKE_URL repository variable to the project's pages.dev URL. See docs/cloudflare-pages.md."
-
-      - name: Say why nothing was deployed
-        if: env.HAS_CREDENTIALS != 'true'
-        run: |
-          echo "::notice::Built, but did not deploy: CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are not set on this repository. See docs/cloudflare-pages.md."
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            pnpm deploy:smoke && exit 0
+            echo "Attempt $attempt failed; retrying in 30s."
+            sleep 30
+          done
+          exit 1
