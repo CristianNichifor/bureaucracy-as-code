@@ -26,7 +26,7 @@ pnpm verify:e2e
 
 ## Pull requests
 
-Target `dev`; agents never merge PRs or deploy. Use signed Conventional Commits.
+Target `dev`; agents may squash-merge into `dev` once every required check is green, but never merge into `main` or deploy. Use signed Conventional Commits.
 Describe acceptance criteria and attach verification results. For workflow changes,
 include rejected roles/actions and the relevant transition or deadline fixture.
 
