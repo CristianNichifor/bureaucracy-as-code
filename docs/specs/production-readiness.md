@@ -162,7 +162,7 @@ Tests: `tests/e2e/ux.pw.ts`, updated `tests/e2e/demo.pw.ts`.
 
 ## Theme E — Demo flow
 
-### BAC-13 Romanian demo data — `in progress` (Romanian names and subjects: needs human review)
+### BAC-13 Romanian demo data — `done` (Romanian names and subjects: needs human review)
 
 - Given Romanian is selected
   When the explorer, request detail, machinery graph or operations panel show
