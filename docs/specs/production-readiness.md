@@ -212,6 +212,18 @@ Tests: documentation only; the mapped tests are `tests/e2e/ux.pw.ts`,
 `src/demo/demoText.test.ts`, `src/locale.test.ts`. Backlog UXG-1…UXG-9 is
 untested and waits for BAC-14 to land.
 
+### BAC-15 Motion and forced-colour preferences (UXG-4) — `done`
+
+- Given the system asks for reduced motion
+  Then transitions, animations and smooth scrolling are off, including the
+  scroll to the request after "Start the request".
+- Given Windows forced colours (high contrast)
+  Then controls, panels and statuses keep a visible border, pressed toggles and
+  the selected request use the system highlight, and focus shows a Highlight
+  outline.
+
+Tests: `src/a11y/motion.test.ts`.
+
 ## Needs human (out of scope here)
 
 - BAC-7 hub CSP parity — lives in the hub repository.
