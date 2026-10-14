@@ -196,6 +196,22 @@ English demo strings in Romanian mode).
 Tests: `tests/e2e/ux.pw.ts`, `tests/e2e/demo.pw.ts`,
 `tests/e2e/accessibility.pw.ts`.
 
+### BAC-15 UX/UI guideline — `done` (Romanian example strings: needs human review)
+
+- Given `docs/ux-guidelines.md`
+  Then it covers users and the first-screen job, page anatomy, content rules,
+  data-viz rules, states, mobile and accessibility, status vocabulary, a
+  conformance checklist mapped to tests, and a known-deviations backlog.
+- Given a rule in the conformance checklist
+  Then it names an existing test, or is listed as untested with a backlog ID.
+- Given the fleet guideline in civic-ui `docs/ux-guidelines.md`
+  Then this guideline refines it and does not contradict it.
+
+Tests: documentation only; the mapped tests are `tests/e2e/ux.pw.ts`,
+`tests/e2e/accessibility.pw.ts`, `tests/e2e/demo.pw.ts` (`@ui`),
+`src/demo/demoText.test.ts`, `src/locale.test.ts`. Backlog UXG-1…UXG-9 is
+untested and waits for BAC-14 to land.
+
 ## Needs human (out of scope here)
 
 - BAC-7 hub CSP parity — lives in the hub repository.
