@@ -177,7 +177,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
     expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
 
-    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .transferSafetyGrid article, .demoCompletenessGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
+    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .transferSafetyGrid article, .demoCompletenessGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li, .siteFooter").evaluateAll((nodes) =>
       nodes.map((node) => {
         const rect = node.getBoundingClientRect();
         return {
@@ -195,7 +195,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
       expect(box.right, `${viewport.name} element leaks right`).toBeLessThanOrEqual(box.viewport + 1);
     }
 
-    const shell = await page.locator(".appShell").evaluate((node) => {
+    const shell = await page.locator("main.appShell").evaluate((node) => {
       const rect = node.getBoundingClientRect();
       return {
         left: rect.left,

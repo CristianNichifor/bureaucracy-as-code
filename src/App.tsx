@@ -22,6 +22,7 @@ import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
 import { EvidenceBrief } from "./dashboard/EvidenceBrief";
 import { BuildMetadata } from "./dashboard/BuildMetadata";
+import { PrivacyNotice } from "./dashboard/PrivacyNotice";
 import { ReleaseReadiness } from "./dashboard/ReleaseReadiness";
 import { PresenterChecklist } from "./dashboard/PresenterChecklist";
 import { DemoCompletenessPanel } from "./dashboard/DemoCompletenessPanel";
@@ -394,6 +395,7 @@ export function App() {
   const selectedSource = selectedItem?.source ?? "active";
 
   return (
+    <>
     <main className="appShell" id="main-content">
       <a className="skipLink" href="#request-explorer">
         Skip to public request explorer
@@ -549,8 +551,12 @@ export function App() {
           </div>
         </DashboardSection>
       </div>
-      <BuildMetadata buildInfo={buildInfo} labels={t.build} />
     </main>
+    <footer className="appShell siteFooter">
+      <BuildMetadata buildInfo={buildInfo} labels={t.build} />
+      <PrivacyNotice labels={t.privacy} />
+    </footer>
+    </>
   );
 }
 

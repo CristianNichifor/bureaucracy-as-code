@@ -369,6 +369,16 @@ export type Dictionary = {
     builtAt: string;
     local: string;
   };
+  privacy: {
+    link: string;
+    title: string;
+    intro: string;
+    points: string[];
+    operator: string;
+    contact: string;
+    contactLink: string;
+    close: string;
+  };
   demoCompleteness: {
     title: string;
     label: string;
@@ -867,6 +877,22 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Environment",
       builtAt: "Built",
       local: "Local build",
+    },
+    privacy: {
+      link: "Privacy",
+      title: "Privacy notice",
+      intro:
+        "This demo runs entirely in your browser. What you create here is never sent to a server.",
+      points: [
+        "Demo state stays in this browser: the ledger, demo identities and your language and theme choices in localStorage, demo documents in IndexedDB, and an offline copy of the app in the service-worker cache. Clearing this site's data in your browser removes all of it.",
+        "No cookies, analytics or trackers, and no third-party scripts or fonts.",
+        "Every identity in the demo is fictional. Do not enter real personal data.",
+        "The site is hosted on Cloudflare Pages. Like any web host, Cloudflare receives the technical request data (such as your IP address) needed to serve the pages.",
+      ],
+      operator: "Operated by Cristian Nichifor.",
+      contact: "Questions and concerns go to the project's",
+      contactLink: "GitHub issues",
+      close: "Close",
     },
     demoCompleteness: {
       title: "Demo completeness",
@@ -1432,6 +1458,22 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Mediu",
       builtAt: "Construită",
       local: "Build local",
+    },
+    privacy: {
+      link: "Confidențialitate",
+      title: "Notă de confidențialitate",
+      intro:
+        "Acest demo rulează integral în browserul tău. Ce creezi aici nu este trimis niciodată către un server.",
+      points: [
+        "Starea demo rămâne în acest browser: registrul, identitățile demo și alegerile de limbă și temă în localStorage, documentele demo în IndexedDB și o copie offline a aplicației în cache-ul service worker. Ștergerea datelor acestui site din browser le elimină pe toate.",
+        "Fără cookie-uri, analiză de trafic sau trackere și fără scripturi sau fonturi de la terți.",
+        "Toate identitățile din demo sunt fictive. Nu introduce date personale reale.",
+        "Site-ul este găzduit pe Cloudflare Pages. Ca orice furnizor de găzduire, Cloudflare primește datele tehnice ale cererii (de exemplu adresa IP) necesare pentru a livra paginile.",
+      ],
+      operator: "Operat de Cristian Nichifor.",
+      contact: "Întrebările și sesizările se trimit prin",
+      contactLink: "issues pe GitHub",
+      close: "Închide",
     },
     demoCompleteness: {
       title: "Completitudine demo",

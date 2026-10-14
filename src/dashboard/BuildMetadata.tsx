@@ -4,7 +4,7 @@ import type { BuildInfo } from "../buildInfo";
 
 export function BuildMetadata({ buildInfo, labels }: { buildInfo: BuildInfo; labels: Dictionary["build"] }) {
   return (
-    <footer className="buildMetadata" aria-label={labels.title}>
+    <div className="buildMetadata" role="group" aria-label={labels.title}>
       <GitCommitHorizontal size={18} />
       <span>{labels.title}</span>
       <strong title={buildInfo.commitSha}>{buildInfo.commitShortSha}</strong>
@@ -12,7 +12,7 @@ export function BuildMetadata({ buildInfo, labels }: { buildInfo: BuildInfo; lab
       <strong>{buildInfo.environment}</strong>
       <span>{labels.builtAt}</span>
       <strong>{formatBuiltAt(buildInfo.builtAt, labels.local)}</strong>
-    </footer>
+    </div>
   );
 }
 
