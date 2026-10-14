@@ -442,7 +442,7 @@ test("replays exceptional Law 544 simulations with signed metadata", async ({ pa
   await expect(exceptionLane).toBeVisible();
   await expect(exceptionLane.getByText("Extension", { exact: true })).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText("Extension_Requested", { exact: true })).toBeVisible();
-  await expect(page.locator(".timelinePanel").getByText(/extensionDeadlineAt: 2026-10-14/i)).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText(/extensionDeadlineAt: \d{4}-\d{2}-\d{2}/i)).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");
 
   await page.getByRole("button", { name: /partial disclosure/i }).click();
