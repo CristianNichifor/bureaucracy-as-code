@@ -62,10 +62,35 @@ test("keeps release operations behind ?presenter=1", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Release readiness" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Presenter checklist" })).toHaveCount(0);
 
+  await expect(page.getByRole("banner")).not.toContainText("Presenter mode");
+  await expect(page.locator(".presenterBanner")).toHaveCount(0);
+
   await page.goto("./?presenter=1");
   await expect(page.getByRole("heading", { name: "Release readiness" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Presenter checklist" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Demo completeness" })).toBeVisible();
+
+  // BAC-19: the mode is visible, says the panels are not public, and offers a way out.
+  await expect(page.getByRole("banner").locator(".presenterBadge")).toHaveText("Presenter mode");
+  const notice = page.locator(".presenterBanner");
+  await expect(notice).toHaveAttribute("role", "status");
+  await expect(notice).toContainText("not shown to the public");
+  await expect(notice.getByRole("link", { name: "Leave presenter mode" })).toHaveAttribute("href", /^[^?]*$/);
+
+  // The presenter needs the panels before the run: checklist, readiness, completeness, then the acts.
+  const order = await page.evaluate(() => {
+    const headings = ["Presenter checklist", "Release readiness", "Demo completeness"].map((name) =>
+      [...document.querySelectorAll("h2, h3")].find((el) => el.textContent?.trim() === name),
+    );
+    const acts = document.querySelector(".actProgress");
+    const before = (a: Element | undefined, b: Element | null | undefined) =>
+      Boolean(a && b && a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return [before(headings[0], headings[1]), before(headings[1], headings[2]), before(headings[2], acts)];
+  });
+  expect(order).toEqual([true, true, true]);
+
+  await notice.getByRole("link", { name: "Leave presenter mode" }).click();
+  await expect(page.getByRole("heading", { name: "Presenter checklist" })).toHaveCount(0);
 });
 
 test("shows no English and Romanian dates in Romanian mode", async ({ page }, testInfo) => {
