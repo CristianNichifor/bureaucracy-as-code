@@ -275,6 +275,28 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByText("Ciclul normal al cererii, cu dovadă și hash pentru răspunsul final.")).toBeVisible();
   await expect(page.getByText("Status termen")).toBeVisible();
   await expect(page.getByRole("region", { name: "Acțiuni demo" }).getByRole("button", { name: "Exportă dovada" })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+
+  await page.getByLabel("Limbă").getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+});
+
+test.describe("with a Romanian browser", () => {
+  test.use({ locale: "ro-RO" });
+
+  test("defaults to Romanian on the first visit", async ({ page }) => {
+    await page.goto("./");
+
+    await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+  });
 });
 
 test("switches and persists light and dark themes", async ({ page }) => {
