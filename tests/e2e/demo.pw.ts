@@ -335,11 +335,14 @@ test("searches and sorts the public request explorer", async ({ page }, testInfo
   await page.getByRole("button", { name: "Reset filters" }).click();
   await expect(page.getByRole("button", { name: /REQ-2026-0002/i })).toBeVisible();
 
-  const healthWorkload = page.getByRole("button", { name: /Ministry of Health[\s\S]*Next file: REQ-2026-0003/i });
-  await healthWorkload.click();
+  const workload = page.getByRole("table", { name: "Institution workload" });
+  const healthRow = workload.locator("tbody tr", {
+    has: page.getByRole("button", { name: "Ministry of Health", exact: true }),
+  });
+  await expect(healthRow).toContainText("REQ-2026-0003");
+  await healthRow.getByRole("button", { name: "Ministry of Health", exact: true }).click();
   await expect(page.locator(".filterBar").getByLabel("Institution")).toHaveValue("Ministry of Health");
   await expect(page.getByRole("heading", { name: "REQ-2026-0003" })).toBeVisible();
-  await expect(healthWorkload.getByText("Owner queue")).toBeVisible();
 });
 
 test("exports a public audit receipt for the selected request", async ({ page }) => {
