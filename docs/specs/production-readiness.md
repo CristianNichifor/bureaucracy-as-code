@@ -212,6 +212,77 @@ Tests: documentation only; the mapped tests are `tests/e2e/ux.pw.ts`,
 `src/demo/demoText.test.ts`, `src/locale.test.ts`. Backlog UXG-1…UXG-9 is
 untested and waits for BAC-14 to land.
 
+## Theme F — Design screens (target state)
+
+Static mockups in `docs/design/screens/`, indexed in `docs/design/README.md`.
+Each item below is one screen; the acceptance criteria are what an
+implementation session turns into tests. Romanian copy in the mockups was
+written by an agent: needs human review.
+
+### BAC-16 First screen, three acts — `done` (design) / `todo` (implementation)
+
+- Given the app loads in Romanian
+  When the first screen renders at 1440 and 390 px
+  Then, in order: family bar (hub link "Proiecte civice", tool name
+  "Birocrație ca program", badge "Date demonstrative", language switch), one
+  H1 "Birocrație ca program", one purpose line, the provenance line
+  "Date: demo sintetice, generate în browser", then one primary button
+  "Începe cererea" with the 10-day and 30-day terms beside it, then the act
+  bar (Cererea · Mecanismul · Dovada) with "pasul n/6".
+- Given the local registry takes more than 2 s to create
+  Then the loading screen shows three staged lines (identități → credențiale
+  → lanț) with a progress bar, not one sentence.
+- Given local storage fails
+  Then an alert names the failure in plain words and offers "Reîncearcă".
+- Test: `tests/e2e/ux.pw.ts` (first-screen order, provenance line, family
+  bar), `tests/e2e/demo.pw.ts` `@ui` (no overflow at 390).
+
+### BAC-17 Request detail with proof — `design done` / `todo` (implementation)
+
+- Given a request is selected (seeded `REQ-2026-0002` or the live one)
+  Then one header shows id, status badge with a symbol and a word, source
+  badge, subject, institution, registry number, submitted date, legal deadline
+  and deadline status in words ("Închisă", "3 zile rămase", "36 de zile
+  întârziere").
+- Given the machinery graph
+  Then the handoff lane and the signed trail table are its text alternative,
+  reachable by keyboard, with "Copiază" on each state hash.
+- Given the response hash verifier
+  Then it has three designed states: waiting, match (`role="status"`),
+  mismatch (`role="alert"` with "Alege alt fișier").
+- Given the tamper test runs
+  Then the integrity panel reads "Verificarea a eșuat" with the reason and a
+  way back to the verified state; never an icon alone.
+- Test: `tests/e2e/demo.pw.ts` (trail table, hash verifier states),
+  `tests/e2e/accessibility.pw.ts`.
+
+### BAC-18 Public explorer — `design done` / `todo` (implementation)
+
+- Given the explorer view
+  Then it shows four count tiles (instituții, deschise, întârziate,
+  finalizate), the filter toolbar (search, status, institution, sort,
+  "Resetează filtrele"), a `role="status"` count line and the request table
+  with status as symbol + word and the deadline as date + words.
+- Given no request matches the filters
+  Then the empty state names the active filters and offers one
+  "Resetează filtrele" button (UXG-9).
+- Given 390 px
+  Then rows become cards with the same fields in the same order and no
+  horizontal page scroll.
+- Test: `tests/e2e/ux.pw.ts` (empty state + reset), `tests/e2e/demo.pw.ts`
+  `@ui`.
+
+### BAC-19 Presenter mode — `design done` / `todo` (implementation)
+
+- Given `?presenter=1`
+  Then the family bar adds the "Mod prezentare" badge, a `role="status"`
+  banner says the panels are not public and links out of presenter mode, and
+  the checklist, release readiness, operator commands and completeness table
+  render before the three acts.
+- Given no `?presenter=1`
+  Then none of those panels or strings are in the DOM.
+- Test: `tests/e2e/ux.pw.ts` "keeps release operations behind ?presenter=1".
+
 ## Needs human (out of scope here)
 
 - BAC-7 hub CSP parity — lives in the hub repository.
