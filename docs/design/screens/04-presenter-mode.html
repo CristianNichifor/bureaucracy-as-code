@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mod prezentare · Birocrație ca program</title>
+<style>
+/* Civic UI 0.8 token values copied from civic-ui src/foundations.css and themes/neutral.css (dev). No external requests. */
+:root{--civic-font-sans:system-ui,-apple-system,"Segoe UI",sans-serif;--civic-space-1:.25rem;--civic-space-2:.5rem;--civic-space-3:.75rem;--civic-space-4:1rem;--civic-space-5:1.5rem;--civic-space-6:2rem;--civic-space-7:3rem;--civic-space-8:4rem;--civic-text-xs:.8125rem;--civic-text-sm:.875rem;--civic-text-md:1rem;--civic-text-lg:1.125rem;--civic-text-xl:1.25rem;--civic-text-2xl:1.5rem;--civic-text-3xl:1.875rem;--civic-radius:6px;
+--civic-bg:#f4f6f6;--civic-surface:#fff;--civic-raised:#e7eeee;--civic-text:#182b2c;--civic-muted:#475d60;--civic-border:#718588;--civic-action:#006b60;--civic-action-hover:#00564d;--civic-on-action:#fff;--civic-focus:#006b60;--civic-accent:#006b60;--civic-danger:#a31b34;--civic-on-danger:#fff;--civic-success:#146c2e;--civic-on-success:#fff;--civic-warning:#f2b300;--civic-on-warning:#241a00;--civic-info:#1f5fa8;--civic-on-info:#fff;
+--civic-viz-1:#2a78d6;--civic-viz-2:#eb6834;--civic-viz-3:#1baf7a;--civic-viz-4:#eda100;--civic-viz-5:#e87ba4;--civic-viz-6:#008300;--civic-viz-7:#4a3aa7;--civic-viz-8:#e34948;--civic-viz-seq-1:#cde2fb;--civic-viz-seq-4:#3987e5;--civic-viz-seq-7:#0d366b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--civic-bg:#142323;--civic-surface:#203332;--civic-raised:#304845;--civic-text:#f0f6f5;--civic-muted:#c0d3cf;--civic-border:#8ca8a1;--civic-action:#b5e8dc;--civic-action-hover:#d2f5eb;--civic-on-action:#142323;--civic-focus:#b5e8dc;--civic-accent:#b5e8dc;--civic-danger:#ffb9c5;--civic-on-danger:#2a0a10;--civic-success:#7fd69a;--civic-on-success:#10241a;--civic-warning:#f5c451;--civic-on-warning:#241a00;--civic-info:#9cc7f5;--civic-on-info:#0e2238;--civic-viz-1:#3987e5;--civic-viz-2:#d95926;--civic-viz-3:#199e70;--civic-viz-4:#c98500;--civic-viz-7:#9085e9;--civic-viz-8:#e66767}}
+:root[data-theme="dark"]{--civic-bg:#142323;--civic-surface:#203332;--civic-raised:#304845;--civic-text:#f0f6f5;--civic-muted:#c0d3cf;--civic-border:#8ca8a1;--civic-action:#b5e8dc;--civic-action-hover:#d2f5eb;--civic-on-action:#142323;--civic-focus:#b5e8dc;--civic-accent:#b5e8dc;--civic-danger:#ffb9c5;--civic-on-danger:#2a0a10;--civic-success:#7fd69a;--civic-on-success:#10241a;--civic-info:#9cc7f5;--civic-on-info:#0e2238}
+*{box-sizing:border-box}html{font-family:var(--civic-font-sans);color:var(--civic-text);background:var(--civic-bg);line-height:1.5;font-size:16px}
+body{margin:0;background:var(--civic-bg)}
+a{color:var(--civic-action)}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--civic-focus);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 var(--civic-space-4)}
+/* 1. family bar */
+.familyBar{background:var(--civic-surface);border-bottom:1px solid var(--civic-border)}
+.familyBar .wrap{display:flex;align-items:center;gap:var(--civic-space-4);min-height:48px;flex-wrap:wrap;padding-top:var(--civic-space-2);padding-bottom:var(--civic-space-2)}
+.familyBar .home{font-weight:600;text-decoration:none;display:inline-flex;align-items:center;min-height:24px;gap:var(--civic-space-2)}
+.familyBar .tool{color:var(--civic-muted)}.familyBar .spacer{flex:1}
+.langs{display:flex;gap:var(--civic-space-1)}.langs a{min-height:24px;padding:0 var(--civic-space-2);text-decoration:none;border-radius:var(--civic-radius)}.langs a[aria-current]{background:var(--civic-raised);font-weight:600;text-decoration:underline}
+.badge{display:inline-flex;align-items:center;gap:var(--civic-space-1);border-radius:999px;padding:2px var(--civic-space-3);font-size:var(--civic-text-xs);font-weight:600;border:1px solid transparent;min-height:24px}
+.badge-warning{background:var(--civic-warning);color:var(--civic-on-warning)}.badge-success{background:var(--civic-success);color:var(--civic-on-success)}.badge-neutral{background:var(--civic-raised);color:var(--civic-text);border-color:var(--civic-border)}.badge-danger{background:var(--civic-danger);color:var(--civic-on-danger)}.badge-info{background:var(--civic-info);color:var(--civic-on-info)}
+/* 2-3. H1, purpose, provenance */
+h1{font-size:var(--civic-text-3xl);line-height:1.15;margin:var(--civic-space-5) 0 var(--civic-space-2)}
+h2{font-size:var(--civic-text-xl);margin:0 0 var(--civic-space-2)}h3{font-size:var(--civic-text-md);margin:0 0 var(--civic-space-2)}
+.purpose{font-size:var(--civic-text-lg);margin:0 0 var(--civic-space-3);max-width:70ch}
+.provenance{font-size:var(--civic-text-sm);color:var(--civic-muted);margin:0 0 var(--civic-space-5);display:flex;flex-wrap:wrap;gap:var(--civic-space-2) var(--civic-space-3);align-items:center}
+.provenance time{font-variant-numeric:tabular-nums}
+/* panels, grids */
+.panel{background:var(--civic-surface);border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-4)}
+.grid{display:grid;gap:var(--civic-space-4)}.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+.stack{display:grid;gap:var(--civic-space-3)}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:var(--civic-space-1) var(--civic-space-4);font-size:var(--civic-text-sm);margin:0}
+.kv dt{color:var(--civic-muted)}.kv dd{margin:0;overflow-wrap:anywhere}
+code,.hash{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:var(--civic-text-xs);overflow-wrap:anywhere}
+.muted{color:var(--civic-muted)}.small{font-size:var(--civic-text-sm)}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--civic-space-2);min-height:44px;padding:0 var(--civic-space-5);border-radius:var(--civic-radius);border:1px solid var(--civic-action);background:var(--civic-action);color:var(--civic-on-action);font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--civic-action-hover)}.btn-secondary{background:var(--civic-surface);color:var(--civic-action)}.btn-sm{min-height:32px;padding:0 var(--civic-space-3);font-weight:500}
+.btn[aria-disabled="true"]{opacity:.55;cursor:default}
+/* status message */
+.status{display:flex;gap:var(--civic-space-3);align-items:flex-start;border-radius:var(--civic-radius);padding:var(--civic-space-3) var(--civic-space-4);border:1px solid var(--civic-border);background:var(--civic-surface);border-left-width:6px}
+.status-error{border-left-color:var(--civic-danger)}.status-success{border-left-color:var(--civic-success)}.status-info{border-left-color:var(--civic-info)}.status-warning{border-left-color:var(--civic-warning)}
+.status .icon{font-weight:700;flex:none;width:24px;text-align:center}.status p{margin:0}.status .actions{margin-top:var(--civic-space-2)}
+/* act progress */
+.acts{display:flex;gap:var(--civic-space-2);list-style:none;padding:0;margin:0 0 var(--civic-space-4);counter-reset:act}
+.acts li{flex:1;border-top:4px solid var(--civic-border);padding-top:var(--civic-space-2);font-size:var(--civic-text-sm);min-height:44px}
+.acts li a{display:block;text-decoration:none;color:inherit}.acts li[aria-current] {border-top-color:var(--civic-action);font-weight:600}.acts li.done{border-top-color:var(--civic-success)}
+/* steps list (act 1) */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:var(--civic-space-2)}
+.steps li{display:grid;grid-template-columns:28px 1fr auto;gap:var(--civic-space-3);align-items:center;padding:var(--civic-space-2) var(--civic-space-3);border:1px solid var(--civic-border);border-radius:var(--civic-radius);min-height:44px}
+.steps .n{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--civic-text-sm);border:2px solid var(--civic-border)}
+.steps li.done .n{background:var(--civic-success);color:var(--civic-on-success);border-color:var(--civic-success)}
+.steps li.current{border-color:var(--civic-action);border-width:2px}.steps li.current .n{border-color:var(--civic-action);color:var(--civic-action)}
+.steps .actor{color:var(--civic-muted);font-size:var(--civic-text-sm);display:block}
+/* handoff lane (act 2) */
+.lane{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--civic-space-2);list-style:none;padding:0;margin:0}
+.lane li{border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-2) var(--civic-space-3);font-size:var(--civic-text-sm);min-height:72px;background:var(--civic-surface)}
+.lane li strong{display:block}.lane li.done{border-left:6px solid var(--civic-viz-1)}.lane li.current{border:2px solid var(--civic-viz-2);background:var(--civic-raised)}.lane li.waiting{border-style:dashed;color:var(--civic-muted)}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:var(--civic-text-sm)}th,td{text-align:left;padding:var(--civic-space-2);border-bottom:1px solid var(--civic-border);vertical-align:top}th{color:var(--civic-muted);font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.tableScroll{overflow-x:auto}
+/* forms */
+label{font-size:var(--civic-text-sm);font-weight:600;display:block;margin-bottom:var(--civic-space-1)}
+input,select{font:inherit;min-height:44px;padding:0 var(--civic-space-3);border:1px solid var(--civic-border);border-radius:var(--civic-radius);background:var(--civic-surface);color:var(--civic-text);width:100%}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:var(--civic-space-3);align-items:end}
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--civic-space-3);list-style:none;padding:0;margin:0}
+.stats li{background:var(--civic-surface);border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-3) var(--civic-space-4)}
+.stats .v{font-size:var(--civic-text-2xl);font-weight:700;font-variant-numeric:tabular-nums;display:block}.stats .l{font-size:var(--civic-text-sm);color:var(--civic-muted)}
+/* progress (loading) */
+.progress{height:8px;background:var(--civic-raised);border-radius:999px;overflow:hidden;border:1px solid var(--civic-border)}.progress span{display:block;height:100%;background:var(--civic-action)}
+/* footer */
+footer{margin-top:var(--civic-space-7);border-top:1px solid var(--civic-border);background:var(--civic-surface);font-size:var(--civic-text-sm)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--civic-space-3) var(--civic-space-5);padding-top:var(--civic-space-4);padding-bottom:var(--civic-space-4)}footer a{min-height:24px;display:inline-flex;align-items:center}
+/* mockup chrome */
+.note{background:var(--civic-raised);border:1px dashed var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-2) var(--civic-space-3);font-size:var(--civic-text-xs);color:var(--civic-muted);margin:var(--civic-space-5) 0 var(--civic-space-3)}
+.note strong{color:var(--civic-text)}
+section.screen{margin-top:var(--civic-space-5)}
+.skip{position:absolute;left:-999px}.skip:focus{left:var(--civic-space-4);top:var(--civic-space-2);background:var(--civic-surface);padding:var(--civic-space-2);z-index:2}
+@media (max-width:640px){.grid-2,.grid-3,.grid-4,.filters{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.lane{grid-template-columns:1fr}.acts{flex-direction:column}.acts li{border-top:none;border-left:4px solid var(--civic-border);padding:var(--civic-space-1) var(--civic-space-3)}.acts li[aria-current]{border-left-color:var(--civic-action)}.acts li.done{border-left-color:var(--civic-success)}h1{font-size:var(--civic-text-2xl)}.kv{grid-template-columns:1fr}.kv dt{margin-top:var(--civic-space-2)}.steps li{grid-template-columns:28px 1fr}.steps li .btn{grid-column:2}.btn-block-m{width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (forced-colors:active){.badge,.btn,.panel,.steps li,.lane li{border:1px solid CanvasText}.acts li[aria-current]{text-decoration:underline}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Sari la conținut</a>
+<header class="familyBar" role="banner"><div class="wrap">
+<a class="home" href="https://projects.cristian-nichifor.com/">← Proiecte civice</a>
+<span class="tool">Birocrație ca program</span>
+<span class="badge badge-warning">Date demonstrative</span> <span class="badge badge-neutral">Mod prezentare</span>
+<span class="spacer"></span>
+<nav class="langs" aria-label="Limbă"><a href="#" aria-current="page" lang="ro">Română</a><a href="#" lang="en">English</a></nav>
+<button class="btn btn-secondary btn-sm" type="button" aria-pressed="false">Temă: luminos</button>
+</div></header>
+<main id="main" class="wrap">
+<h1>Birocrație ca program</h1>
+<p class="purpose">Vezi ce se întâmplă cu o cerere depusă în baza Legii 544/2001, pas cu pas, și până când trebuie să răspundă instituția.</p>
+<p class="provenance"><span><strong>Date:</strong> demo sintetice, generate în browser</span><span>·</span><span>Nimic nu părăsește browserul</span><span>·</span><a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/architecture.md">Metodă</a></p>
+<p class="status status-warning" role="status"><span class="icon" aria-hidden="true">i</span><span><strong>Mod prezentare activ</strong> (<code>?presenter=1</code>). Panourile de mai jos nu apar publicului. <a href="#">Ieși din modul prezentare</a></span></p>
+<div class="grid grid-2" style="margin-top:var(--civic-space-4)">
+  <section class="panel" aria-labelledby="h-cue">
+    <h2 id="h-cue">Checklist prezentare <span class="muted small">(flux demo live, 5 minute)</span></h2>
+    <ol class="steps">
+      <li class="done"><span class="n">✓</span><span><strong>Start</strong> · Arată explorerul public<span class="actor">Indică cererile Legea 544/2001 anonimizate și statusurile curente.</span></span><a class="btn btn-secondary btn-sm" href="#explorer">Deschide</a></li>
+      <li class="current"><span class="n">2</span><span><strong>Următor</strong> · Rulează fluxul semnat<span class="actor">Avansează cererea și arată fiecare schimbare de stare înregistrată. Pasul 1/6.</span></span><a class="btn btn-sm" href="#act-1">Deschide</a></li>
+      <li><span class="n">3</span><span><strong>Acum</strong> · Deschide vederea mecanismului<span class="actor">Responsabilul, transferul, rolul semnatar și graful.</span></span><a class="btn btn-secondary btn-sm" href="#act-2">Deschide</a></li>
+      <li><span class="n">4</span><span><strong>Verifică</strong> · Previzualizează și verifică dovezi<span class="actor">Compară exporturile și hash-urile răspunsurilor fără documente brute.</span></span><a class="btn btn-secondary btn-sm" href="#act-3">Deschide</a></li>
+      <li><span class="n">5</span><span><strong>Final</strong> · Schimbă limba și arată verificările release<span class="actor">Încheie în limba română, cu pregătirea release.</span></span><a class="btn btn-secondary btn-sm" href="#release">Deschide</a></li>
+    </ol>
+    <p class="small muted" style="margin-bottom:0">Cererea selectată: <code>REQ-2026-········</code> · status Ciornă · 0 evenimente. Checklist-ul urmărește starea reală a demo-ului.</p>
+  </section>
+  <div class="stack">
+    <section class="panel" aria-labelledby="h-rel" id="release">
+      <h2 id="h-rel">Pregătire release</h2>
+      <p class="status status-success" role="status"><span class="icon" aria-hidden="true">✓</span><span>Demo-ul din browser este pregătit.</span></p>
+      <dl class="kv"><dt>Commit</dt><dd><code>—</code> <span class="muted">(din build-info.json)</span></dd><dt>Ramură</dt><dd><code>—</code></dd><dt>Mediu</dt><dd>—</dd><dt>Construită</dt><dd><time datetime="—">—</time></dd><dt>Hub de proiecte</dt><dd><a href="https://projects.cristian-nichifor.com/">projects.cristian-nichifor.com</a></dd></dl>
+      <h3 style="margin-top:var(--civic-space-3)">Verificări</h3>
+      <ul class="small" style="margin:0;padding-left:1.2rem;columns:2"><li>pnpm verify</li><li>pnpm demo:verify</li><li>E2E / Playwright</li><li>CodeQL</li><li>Secret Scan / gitleaks</li><li>dependency-review</li></ul>
+      <h3 style="margin-top:var(--civic-space-3)">Limita de confidențialitate</h3>
+      <ul class="small" style="margin:0;padding-left:1.2rem"><li>Fără integrare ROeID</li><li>Nu necesită resurse Cloudflare durabile</li><li>Fără date personale sau documente brute în registru</li><li>Cheile de semnare rămân în acest browser</li></ul>
+    </section>
+    <section class="panel" aria-labelledby="h-cmd">
+      <h2 id="h-cmd">Comenzi operator</h2>
+      <dl class="kv"><dt>Release</dt><dd><code>pnpm demo:release</code></dd><dt>Captură</dt><dd><code>pnpm demo:capture</code></dd></dl>
+    </section>
+  </div>
+</div>
+<section class="panel" aria-labelledby="h-cmp" style="margin-top:var(--civic-space-4)">
+  <h2 id="h-cmp">Completitudine demo <span class="badge badge-success">100 % scop demo</span></h2>
+  <div class="tableScroll"><table>
+    <thead><tr><th>Categorie</th><th>Criteriu</th><th>Acoperire</th></tr></thead>
+    <tbody>
+      <tr><td>Explorer public</td><td>Feed Legea 544/2001 anonimizat</td><td>cereri preîncărcate și live, filtre de status, încărcarea instituțiilor, comparație scenarii</td></tr>
+      <tr><td>Flux semnat</td><td>Ciclu complet al cererii</td><td>depunere, registratură, rutare, procesare, atașare dovezi, răspuns</td></tr>
+      <tr><td>Rute alternative</td><td>Excepțiile rămân vizibile</td><td>prelungire, întârziere, refuz, redirecționare, divulgare parțială</td></tr>
+      <tr><td>Dovezi publice</td><td>Dovezi și verificare hash</td><td>dovadă de audit, raport, verificarea hash-ului răspunsului, respingerea modificărilor</td></tr>
+      <tr><td>Limita de confidențialitate</td><td>Fără documente brute sau chei private</td><td>dovada rămâne publică și minimă; cheile rămân locale</td></tr>
+      <tr><td>Prezentare</td><td>Walkthrough responsive EN/RO</td><td>Civic UI, teme, limba română, indicii, verificări release</td></tr>
+    </tbody></table></div>
+</section>
+<p class="note"><strong>Rest of the page:</strong> the three acts and the explorer render exactly as in screens 01–03 below this block; presenter panels sit first because the presenter needs them before the run.</p>
+</main>
+<footer role="contentinfo"><div class="wrap">
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/architecture.md">Metodă</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/law-544-legal-caveat.md">Despre Legea 544/2001</a>
+<a href="#privacy">Confidențialitate</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code">Sursa</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/issues">Contact</a>
+<span class="muted">Versiune publicată: <code>—</code> · construită <time datetime="—">—</time></span>
+</div></footer>
+</body>
+</html>
