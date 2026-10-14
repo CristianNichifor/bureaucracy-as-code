@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { dictionaries } from "../i18n";
-import { detailDeadline } from "./RequestDetail";
+import { detailDeadline } from "./deadlineSummary";
 
 // BAC-17: the request header says the deadline status in words, with the explorer's wording.
 const now = new Date("2026-09-13T09:00:00.000Z");

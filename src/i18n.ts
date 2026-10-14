@@ -234,6 +234,7 @@ export type Dictionary = {
     evidence: string;
     deadlineStatus: string;
     deadlineClosed: string;
+    deadlineUnset: string;
     deadlineOverdue: string;
     deadlineDueSoon: string;
     deadlineOnTrack: string;
@@ -782,11 +783,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       evidence: "Evidence",
       deadlineStatus: "Deadline status",
       deadlineClosed: "Closed",
+      deadlineUnset: "Set on submission",
       deadlineOverdue: "Overdue",
       deadlineDueSoon: "Due soon",
       deadlineOnTrack: "On track",
-      daysRemaining: "{days} days remaining",
-      daysOverdue: "{days} days overdue",
+      daysRemaining: "{days} remaining",
+      daysOverdue: "{days} overdue",
       handoffTitle: "Accountability handoff",
       registryStep: "Registry",
       directorStep: "Director routing",
@@ -1407,11 +1409,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       evidence: "Dovadă",
       deadlineStatus: "Status termen",
       deadlineClosed: "Închisă",
+      deadlineUnset: "Se calculează la depunere",
       deadlineOverdue: "Întârziată",
       deadlineDueSoon: "Termen apropiat",
       deadlineOnTrack: "În grafic",
-      daysRemaining: "{days} zile rămase",
-      daysOverdue: "{days} zile întârziere",
+      daysRemaining: "{days} rămase",
+      daysOverdue: "{days} întârziere",
       handoffTitle: "Predare responsabilitate",
       registryStep: "Registratură",
       directorStep: "Rutare director",

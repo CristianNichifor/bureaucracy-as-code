@@ -1,4 +1,4 @@
-import type { Language } from "../i18n";
+import type { Dictionary, Language } from "../i18n";
 import type { Law544Request, Law544Status } from "../law544/types";
 
 export type DeadlineTone = "closed" | "danger" | "warning" | "ok" | "unset";
@@ -49,3 +49,26 @@ export const statusSymbols: Record<Law544Status, string> = {
   Rejected: "✕",
   Overdue: "⚠",
 };
+
+/**
+ * The deadline in words for the request header (BAC-17), with the explorer's wording and
+ * plurals: a closed request says "Închisă" and no day count; a draft has no deadline yet.
+ */
+export function detailDeadline(
+  request: Pick<Law544Request, "status" | "deadlineAt">,
+  labels: Dictionary["detail"],
+  language: Language,
+  now = new Date(),
+): { label: string; copy: string; tone: DeadlineTone } {
+  const { tone, days } = summarizeDeadline(request, now);
+  const label = {
+    closed: labels.deadlineClosed,
+    danger: labels.deadlineOverdue,
+    warning: labels.deadlineDueSoon,
+    ok: labels.deadlineOnTrack,
+    unset: labels.deadlineUnset,
+  }[tone];
+  if (tone === "closed" || tone === "unset") return { label, copy: "", tone };
+  const template = tone === "danger" ? labels.daysOverdue : labels.daysRemaining;
+  return { label, copy: template.replace("{days}", formatDays(days, language)), tone };
+}
