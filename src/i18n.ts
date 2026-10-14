@@ -378,6 +378,10 @@ export type Dictionary = {
     builtAt: string;
     local: string;
   };
+  familyLinks: {
+    hub: string;
+    source: string;
+  };
   privacy: {
     link: string;
     title: string;
@@ -896,6 +900,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Environment",
       builtAt: "Built",
       local: "Local build",
+    },
+    familyLinks: {
+      hub: "All civic projects",
+      source: "Source code",
     },
     privacy: {
       link: "Privacy",
@@ -1487,6 +1495,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       environment: "Mediu",
       builtAt: "Construită",
       local: "Build local",
+    },
+    familyLinks: {
+      hub: "Toate proiectele civice",
+      source: "Cod sursă",
     },
     privacy: {
       link: "Confidențialitate",

@@ -283,6 +283,16 @@ written by an agent: needs human review.
   Then none of those panels or strings are in the DOM.
 - Test: `tests/e2e/ux.pw.ts` "keeps release operations behind ?presenter=1".
 
+### BAC-21 Footer links back to the hub — `done` (Romanian labels: needs human review)
+
+- Given the footer
+  Then it links to the hub home in the visitor's language
+  (`https://projects.cristian-nichifor.com/` or `/ro/`) and to the source
+  repository, next to the privacy notice.
+
+Tests: `src/dashboard/FamilyLinks.test.tsx`. Partly closes backlog UXG-1 and
+UXG-3 (a full civic-ui family bar still waits for BAC-6).
+
 ## Needs human (out of scope here)
 
 - BAC-7 hub CSP parity — lives in the hub repository.
