@@ -56,6 +56,13 @@ export function RequestTrail({
                       <strong>{formatAction(event.action, language)}</strong>
                       <span className="trailWhen">{formatDateTime(event.timestamp, language)}</span>
                       <code>{event.action}</code>
+                      {event.metadata ? (
+                        <span className="trailMeta">
+                          {Object.entries(event.metadata)
+                            .map(([key, value]) => `${key}: ${value}`)
+                            .join(", ")}
+                        </span>
+                      ) : null}
                     </td>
                     <td>
                       {formatLaw544Status(event.fromStatus, language)} &rarr; {formatLaw544Status(event.toStatus, language)}
@@ -94,16 +101,6 @@ export function RequestTrail({
                           <div>
                             <dt>{labels.signature}</dt>
                             <dd><ProofValue value={proof.signature} labels={labels} /></dd>
-                          </div>
-                          <div>
-                            <dt>{labels.metadata}</dt>
-                            <dd>
-                              {event.metadata
-                                ? Object.entries(event.metadata)
-                                    .map(([key, value]) => `${key}: ${value}`)
-                                    .join(", ")
-                                : labels.none}
-                            </dd>
                           </div>
                         </dl>
                       </details>

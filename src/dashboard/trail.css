@@ -55,3 +55,11 @@
 .trailTable tr.trailProofRow td {
   padding-top: 0;
 }
+
+.trailTable .trailMeta {
+  display: block;
+  margin-top: 2px;
+  color: var(--civic-muted);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}

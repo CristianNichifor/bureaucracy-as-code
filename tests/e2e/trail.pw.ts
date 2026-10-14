@@ -16,6 +16,7 @@ test("lists the signed trail as a table with a copyable state hash per row", asy
 
   const lastRow = rows.last();
   await expect(lastRow).toContainText("Answer sent");
-  await lastRow.locator("xpath=following-sibling::tr[1]").locator("summary", { hasText: "Event proof" }).click();
-  await expect(page.getByText("Signer DID hash").first()).toBeVisible();
+  const proofRow = lastRow.locator("xpath=following-sibling::tr[1]");
+  await proofRow.locator("summary", { hasText: "Event proof" }).click();
+  await expect(proofRow.getByText("Signer DID hash")).toBeVisible();
 });
