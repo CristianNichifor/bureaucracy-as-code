@@ -46,8 +46,8 @@ test("starts the request from the primary action", async ({ page }) => {
 
   await page.getByRole("button", { name: "Start the request" }).click();
 
-  await expect(page.locator(".message")).toContainText("Citizen signed Request submitted");
-  await expect(page.getByText("Request submitted, signed by Citizen")).toBeVisible();
+  await expect(page.locator(".message")).toContainText("Request submitted, signed by Citizen");
+  await expect(page.locator(".lastRecorded")).toContainText("Request submitted, signed by Citizen");
   await expect(page.getByRole("button", { name: "Continue the request" })).toBeVisible();
 });
 
