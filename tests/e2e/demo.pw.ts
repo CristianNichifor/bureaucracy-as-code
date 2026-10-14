@@ -262,7 +262,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
 
   await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
 
-  await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
   for (const name of ["Cererea", "Mecanismul", "Dovada"]) {
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   }
@@ -287,7 +287,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Comparație scenarii" })).toBeVisible();
 
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "ro");
 
   await page.getByLabel("Limbă").getByRole("button", { name: "EN", exact: true }).click();
@@ -303,7 +303,7 @@ test.describe("with a Romanian browser", () => {
   test("defaults to Romanian on the first visit", async ({ page }) => {
     await page.goto("./");
 
-    await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", "ro");
   });
 });

@@ -217,3 +217,12 @@ async function apply(
 
   return { ...context, request: result.request };
 }
+
+describe("DemoRuntime.reset", () => {
+  it("reports each preparation stage in order", async () => {
+    const runtime = await createMemoryDemoRuntime({ ledger: new TestMemoryLedgerProvider() });
+    const stages: number[] = [];
+    await runtime.reset((stage) => stages.push(stage));
+    expect(stages).toEqual([0, 1]);
+  });
+});
