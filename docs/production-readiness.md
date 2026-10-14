@@ -8,6 +8,28 @@ public anchor reads, and basic operational metrics.
 Before handling real requests or personal data, the following items still need
 institutional, legal, or account-level decisions outside this repository.
 
+## Open Items: Owner And Review Date
+
+Every item below blocks real use, not the public demo. The owner decides or
+commissions the work; the review date is when the item is next looked at, not a
+delivery promise. Owners and dates were set on 2026-10-14 and need the
+maintainer's confirmation.
+
+| ID | Area | Open item | Owner | Review by | Blocks |
+|---|---|---|---|---|---|
+| PR-L1 | Legal | Formal Law 544/2001 workflow validation by Romanian public-law counsel ([caveat](law-544-legal-caveat.md)) | Cristian Nichifor (maintainer), to commission counsel | 2027-01-15 | Any use with real requests |
+| PR-L2 | Legal | Record retention schedule, appeal and correction procedures | Cristian Nichifor (maintainer), with the onboarding institution | 2027-01-15 | Any use with real requests |
+| PR-L3 | Legal | Institution onboarding agreement | Cristian Nichifor (maintainer) | 2027-01-15 | Any institutional pilot |
+| PR-I1 | Identity | Real issuer governance for citizen, public-servant, director, registry-bot and institution credentials ([adapter](identity-adapter.md)) | Cristian Nichifor (maintainer), with the issuing institution | 2027-01-15 | Signatures with legal weight |
+| PR-I2 | Identity | Custom DID/VC identity repository integration, revocation, key rotation and recovery | Cristian Nichifor (maintainer) | 2027-01-15 | Signatures with legal weight |
+| PR-D1 | DPIA | Completed DPIA with sign-off ([notes](dpia-notes.md)) | Cristian Nichifor (maintainer), with a data protection officer | 2027-01-15 | Processing any personal data |
+| PR-D2 | DPIA | Incident response and breach notification ownership | Cristian Nichifor (maintainer) | 2027-01-15 | Processing any personal data |
+| PR-O1 | Operations | Durable Cloudflare data resources and binding IDs in the owner account | Cristian Nichifor (maintainer) | 2027-01-15 | Server-side persistence |
+
+The browser-only demo needs none of these: it keeps everything in the reader's
+browser and handles no real personal data (see the in-app privacy notice and
+[privacy model](privacy-model.md)).
+
 ## Identity And Authorization
 
 - Institution-controlled issuer model.
@@ -62,7 +84,7 @@ These cannot honestly be completed inside the repo alone:
 - Uptime and backup plan.
 - Disaster recovery testing.
 - Observability for failed submissions and overdue cases.
-- Accessibility testing.
+- Accessibility testing (automated axe checks, including colour contrast in both themes, run in CI; a manual screen-reader pass is still open).
 - Cross-browser testing.
 - Change management and public changelog.
 
