@@ -1,3 +1,4 @@
+import { formatDate, formatRole, useLanguage } from "../locale";
 import { isOverdue } from "../law544/deadlines";
 import type { DemoRole } from "../identity/types";
 import type { Dictionary } from "../i18n";
@@ -45,6 +46,7 @@ function RequestFeedRow({
 }) {
   const { request, events, source } = item;
   const latestRole = getRequestLatestRole(events);
+  const language = useLanguage();
 
   return (
     <button
@@ -64,11 +66,11 @@ function RequestFeedRow({
       </div>
       <div>
         <span className="cellLabel">{labels.status}</span>
-        <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status)}</span>
+        <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.latestRole}</span>
-        <span>{latestRole ?? labels.noSigner}</span>
+        <span>{latestRole ? formatRole(latestRole, language) : labels.noSigner}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.trail}</span>
@@ -76,7 +78,7 @@ function RequestFeedRow({
       </div>
       <div className={isOverdue(request.deadlineAt) ? "danger" : ""}>
         <span className="cellLabel">{labels.deadline}</span>
-        <span>{new Date(request.deadlineAt).toLocaleDateString()}</span>
+        <span>{formatDate(request.deadlineAt, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.source}</span>
@@ -103,6 +105,7 @@ export function RequestFeed({
   onSelectRequest: (requestId: string) => void;
   labels: Dictionary["feed"];
 }) {
+  const language = useLanguage();
   const filteredItems = filterRequestExplorerItems(items, filters);
   const institutions = getInstitutionOptions(items);
   const statusSummaries = getStatusSummaries(items);
@@ -138,13 +141,13 @@ export function RequestFeed({
             onClick={() => onFiltersChange({ ...filters, status })}
             type="button"
           >
-            <span>{formatLaw544Status(status)}</span>
+            <span>{formatLaw544Status(status, language)}</span>
             <strong>{count}</strong>
           </button>
         ))}
       </div>
 
-      <div className="filterBar" aria-label="Request filters">
+      <div className="filterBar" aria-label={labels.filters}>
         <label>
           <span>{labels.search}</span>
           <input
@@ -164,7 +167,7 @@ export function RequestFeed({
           >
             {statusOptions.map((status) => (
               <option key={status} value={status}>
-                {formatLaw544Status(status)}
+                {formatLaw544Status(status, language)}
               </option>
             ))}
           </select>
@@ -193,7 +196,7 @@ export function RequestFeed({
           >
             {roleOptions.map((role) => (
               <option key={role} value={role}>
-                {role}
+                {formatRole(role, language)}
               </option>
             ))}
           </select>
@@ -223,7 +226,7 @@ export function RequestFeed({
 
       <div className="feedTable" role="group" aria-label={labels.title}>
         <div className="feedHeader" aria-hidden="true">
-          <span>Request</span>
+          <span>{labels.request}</span>
           <span>{labels.institution}</span>
           <span>{labels.status}</span>
           <span>{labels.latestRole}</span>

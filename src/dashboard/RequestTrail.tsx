@@ -1,3 +1,4 @@
+import { formatAction, formatDateTime, formatLaw544Status, formatRole, useLanguage } from "../locale";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import type { LedgerEvent } from "../ledger/types";
@@ -13,6 +14,8 @@ export function RequestTrail({
   requestId: string;
   labels: Dictionary["trail"];
 }) {
+  const language = useLanguage();
+
   return (
     <section className="panel timelinePanel">
       <div className="panelHeader">
@@ -31,19 +34,19 @@ export function RequestTrail({
             return (
               <li key={event.stateHash}>
                 <div className="timelineTop">
-                  <strong>{event.action}</strong>
-                  <span>{new Date(event.timestamp).toLocaleString()}</span>
+                  <strong>{formatAction(event.action, language)}</strong>
+                  <span>{formatDateTime(event.timestamp, language)}</span>
                 </div>
                 <dl>
                   <div>
                     <dt>{labels.state}</dt>
                     <dd>
-                      {event.fromStatus} &rarr; {event.toStatus}
+                      {formatLaw544Status(event.fromStatus, language)} &rarr; {formatLaw544Status(event.toStatus, language)}
                     </dd>
                   </div>
                   <div>
                     <dt>{labels.signerRole}</dt>
-                    <dd>{event.signerRole}</dd>
+                    <dd>{formatRole(event.signerRole, language)}</dd>
                   </div>
                   <div>
                     <dt>{labels.documentHash}</dt>
@@ -63,6 +66,10 @@ export function RequestTrail({
                 <details className="proofDetails">
                   <summary>{labels.proofTitle}</summary>
                   <dl className="proofGrid">
+                    <div>
+                      <dt>{labels.eventCode}</dt>
+                      <dd><code>{event.action}</code></dd>
+                    </div>
                     <div>
                       <dt>{labels.signerDidHash}</dt>
                       <dd><ProofValue value={proof.signerDidHash} labels={labels} /></dd>
