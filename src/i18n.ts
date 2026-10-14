@@ -442,6 +442,8 @@ export type Dictionary = {
     label: string;
     copy: string;
     modeTitle: string;
+    modeNotice: string;
+    exitMode: string;
     cues: Record<
       "explorer" | "scenario" | "machinery" | "proofs" | "localization",
       { label: string; title: string; copy: string; href: string }
@@ -1018,6 +1020,8 @@ export const dictionaries: Record<Language, Dictionary> = {
       copy:
         "Use this sequence for a five-minute public walkthrough after the release check passes.",
       modeTitle: "Presenter mode",
+      modeNotice: "Presenter mode is on (?presenter=1). The panels below are not shown to the public.",
+      exitMode: "Leave presenter mode",
       cues: {
         explorer: {
           label: "Start",
@@ -1627,6 +1631,8 @@ export const dictionaries: Record<Language, Dictionary> = {
       copy:
         "Folosește această ordine pentru o prezentare publică de cinci minute după ce release-ul este verificat.",
       modeTitle: "Mod prezentare",
+      modeNotice: "Mod prezentare activ (?presenter=1). Panourile de mai jos nu apar publicului.",
+      exitMode: "Ieși din modul prezentare",
       cues: {
         explorer: {
           label: "Start",

@@ -423,6 +423,7 @@ export function App() {
         <a className="familyBarHome" href={HUB_URL}>← {t.app.hubLabel}</a>
         <span className="familyBarTool">{t.app.title}</span>
         <span className="demoBadge">{t.app.demoBadge}</span>
+        {presenterMode && <span className="demoBadge presenterBadge">{t.presenter.modeTitle}</span>}
         <div className="segmentedControls familyBarControls">
           <div className="segmentedToggle" aria-label={t.app.languageLabel}>
             <button aria-pressed={language === "en"} onClick={() => setLanguage("en")} type="button">
@@ -533,6 +534,28 @@ export function App() {
           </div>
         </div>
       </header>
+
+      {/* Presenter panels come before the acts: the presenter needs them before the run (BAC-19). */}
+      {presenterMode && (
+        <div className="dashboardSections presenterPanels">
+          <p className="presenterBanner" role="status">
+            {t.presenter.modeNotice}{" "}
+            <a href={`${window.location.pathname}${window.location.hash}`}>{t.presenter.exitMode}</a>
+          </p>
+          <DashboardSection id="release-operations" title={t.sections.release.title} copy={t.sections.release.copy}>
+            <div className="grid sectionGrid sectionGridRelease">
+              <PresenterChecklist
+                labels={t.presenter}
+                status={request.status}
+                eventsCount={events.length}
+                selectedRequestId={selectedRequest.id}
+              />
+              <ReleaseReadiness buildInfo={buildInfo} labels={t.readiness} />
+              <DemoCompletenessPanel labels={t.demoCompleteness} />
+            </div>
+          </DashboardSection>
+        </div>
+      )}
 
       <p className="message" role="status">{message(t, language)}</p>
 
@@ -670,22 +693,6 @@ export function App() {
         </div>
       )}
 
-      {presenterMode && (
-        <div className="dashboardSections">
-          <DashboardSection id="release-operations" title={t.sections.release.title} copy={t.sections.release.copy}>
-            <div className="grid sectionGrid sectionGridRelease">
-              <DemoCompletenessPanel labels={t.demoCompleteness} />
-              <PresenterChecklist
-                labels={t.presenter}
-                status={request.status}
-                eventsCount={events.length}
-                selectedRequestId={selectedRequest.id}
-              />
-              <ReleaseReadiness buildInfo={buildInfo} labels={t.readiness} />
-            </div>
-          </DashboardSection>
-        </div>
-      )}
     </main>
     <footer className="appShell siteFooter">
       <nav className="siteFooterNav" aria-label={t.app.footerLabel}>
