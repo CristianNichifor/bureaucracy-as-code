@@ -63,3 +63,19 @@ describe("first screen shell", () => {
     expect(dictionaries.ro.app.loadingStages.length).toBeGreaterThan(1);
   });
 });
+
+describe("UXG-7 plain-language glosses (design screen 02)", () => {
+  const ro = dictionaries.ro;
+
+  it("glosses hash as amprenta in the response verifier, in the mockup's words", () => {
+    expect(ro.hash.copy).toContain("amprenta (hash)");
+    expect(ro.hash.match).toBe("Amprenta fișierului selectat este identică cu hash-ul răspunsului înregistrat.");
+    expect(ro.hash.mismatch).toBe("Amprenta calculată diferă de hash-ul înregistrat; fișierul este altul sau a fost modificat.");
+  });
+
+  it("calls the ledger a verifiable log and glosses hash where the panel first says it", () => {
+    expect(ro.integrity.title).toBe("Integritatea jurnalului");
+    expect(ro.integrity.validCopy).toContain("jurnal verificabil");
+    expect(ro.integrity.validCopy).toContain("amprenta (hash)");
+  });
+});
