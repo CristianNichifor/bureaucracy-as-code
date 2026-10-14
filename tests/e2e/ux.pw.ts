@@ -134,3 +134,16 @@ test("moves the explorer and operations to a second view", async ({ page }) => {
   await expect(page.getByRole("region", { name: "Machinery", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Public request explorer" })).toHaveCount(0);
 });
+
+test("clears the filters from the empty explorer state", async ({ page }) => {
+  await page.goto("./#explorer");
+
+  await page.getByPlaceholder("Search request, subject, institution, registry").fill("no such request");
+  const empty = page.locator(".emptyState");
+  await expect(empty).toContainText("No matching requests");
+
+  await empty.getByRole("button", { name: "Reset filters" }).click();
+  await expect(empty).toHaveCount(0);
+  await expect(page.getByPlaceholder("Search request, subject, institution, registry")).toHaveValue("");
+  await expect(page.getByRole("button", { name: /REQ-2026-0002/ })).toBeVisible();
+});
