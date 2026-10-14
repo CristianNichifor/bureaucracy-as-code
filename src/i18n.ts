@@ -306,6 +306,7 @@ export type Dictionary = {
     explainLabel: string;
     explainerCopy: string;
     proofTitle: string;
+    event: string;
     eventCode: string;
     state: string;
     signerRole: string;
@@ -822,6 +823,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       explainerCopy:
         "Each row is a signed administrative state transition with hashes that link it to the previous state.",
       proofTitle: "Event proof",
+      event: "Event",
       eventCode: "Event code",
       state: "State",
       signerRole: "Signer role",
@@ -1413,6 +1415,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       explainerCopy:
         "Fiecare rând este o tranziție administrativă semnată, legată de starea precedentă prin hash-uri.",
       proofTitle: "Dovadă eveniment",
+      event: "Eveniment",
       eventCode: "Cod eveniment",
       state: "Stare",
       signerRole: "Rol semnatar",

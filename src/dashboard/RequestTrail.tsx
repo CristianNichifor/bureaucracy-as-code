@@ -38,7 +38,7 @@ export function RequestTrail({
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">{labels.eventCode}</th>
+                <th scope="col">{labels.event}</th>
                 <th scope="col">{labels.state}</th>
                 <th scope="col">{labels.signerRole}</th>
                 <th scope="col">{labels.stateHash}</th>
@@ -55,7 +55,6 @@ export function RequestTrail({
                     <td>
                       <strong>{formatAction(event.action, language)}</strong>
                       <span className="trailWhen">{formatDateTime(event.timestamp, language)}</span>
-                      <code>{event.action}</code>
                       {event.metadata ? (
                         <span className="trailMeta">
                           {Object.entries(event.metadata)
@@ -78,6 +77,10 @@ export function RequestTrail({
                       <details className="proofDetails">
                         <summary>{labels.proofTitle}</summary>
                         <dl className="proofGrid">
+                          <div>
+                            <dt>{labels.eventCode}</dt>
+                            <dd><code>{event.action}</code></dd>
+                          </div>
                           <div>
                             <dt>{labels.signerDidHash}</dt>
                             <dd><ProofValue value={proof.signerDidHash} labels={labels} /></dd>
