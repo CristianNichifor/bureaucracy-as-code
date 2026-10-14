@@ -15,7 +15,7 @@ Browser-only bureaucracy-as-code demo for Romanian Law 544/2001 transparency wor
 ## How this repo is gated
 
 - `dev` is the default branch. Correctness CI exposes `verify`; remote required-check settings are managed separately.
-- `main` is production. Agents must never merge any PR or deploy, regardless of credential permissions.
+- `main` is production. Agents may squash-merge a PR into `dev` once verification passes and every required check is green; they never merge into `main`, promote `dev` to `main`, bypass rules or deploy, regardless of credential permissions. Promotion and public visibility stay with the owner.
 - This repo ships Cloudflare (Workers or Pages) via wrangler. That fires on a merge to `main`, which is the restricted branch — so an agent's work reaching `dev` deploys nothing.
 
 ## Working rules
@@ -36,7 +36,7 @@ See CONTRIBUTING.md for self-contained setup and acceptance evidence.
 Use Node 22 (Node 24 for the host) and the package manager in package.json.
 Local verification needs no credentials, private handbook, or 1Password.
 Credentials are only for maintainer-operated publishing; never store them in source.
-Agents must never merge pull requests (including into dev) or deploy.
+Agents may squash-merge into dev once every required check is green; never into main, never deploy.
 Open scoped Conventional Commit PRs against dev. State acceptance criteria in the
 issue/PR, explain the source or fixture behind the change, and include exact
 verification commands/results and remaining limitations.
