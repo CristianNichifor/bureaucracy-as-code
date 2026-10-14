@@ -8,6 +8,7 @@ import {
   Sun,
 } from "lucide-react";
 import { dictionaries, type Language } from "./i18n";
+import { browserStorage, resolveInitialLanguage, saveLanguage } from "./language";
 import { RequestFeed } from "./dashboard/RequestFeed";
 import { RequestTrail } from "./dashboard/RequestTrail";
 import { HashVerifier } from "./dashboard/HashVerifier";
@@ -52,7 +53,12 @@ type Theme = "light" | "dark";
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "light";
 
-  const saved = window.localStorage.getItem("bac-theme");
+  let saved: string | null | undefined;
+  try {
+    saved = browserStorage()?.getItem("bac-theme");
+  } catch {
+    saved = undefined;
+  }
   if (saved === "light" || saved === "dark") return saved;
 
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -65,11 +71,14 @@ export function App() {
   const [chainVerification, setChainVerification] = useState<ChainVerificationResult>(initialVerification);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filters, setFilters] = useState<RequestExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
-  const [language, setLanguage] = useState<Language>("en");
+  const [initialLanguage] = useState<Language>(() =>
+    resolveInitialLanguage(browserStorage(), typeof navigator === "undefined" ? undefined : navigator.language),
+  );
+  const [language, setLanguage] = useState<Language>(initialLanguage);
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
-  const [message, setMessage] = useState(dictionaries.en.app.startMessage);
+  const [message, setMessage] = useState(() => dictionaries[initialLanguage].app.startMessage);
   const [transferStatus, setTransferStatus] = useState<TransferStatus>("idle");
-  const [transferDetail, setTransferDetail] = useState(dictionaries.en.transferSafety.idleDetail);
+  const [transferDetail, setTransferDetail] = useState(() => dictionaries[initialLanguage].transferSafety.idleDetail);
   const [isRunningScenario, setIsRunningScenario] = useState(false);
   const [isAutoRunning, setIsAutoRunning] = useState(false);
   const [lastRecordedEvent, setLastRecordedEvent] = useState<LedgerEvent | undefined>();
@@ -91,25 +100,34 @@ export function App() {
     setIsAutoRunning(false);
     setLastRecordedEvent(undefined);
     setTransferStatus(nextTransferStatus);
-    setTransferDetail(nextTransferStatus === "idle" ? dictionaries.en.transferSafety.idleDetail : nextMessage);
+    setTransferDetail(nextTransferStatus === "idle" ? dictionaries[initialLanguage].transferSafety.idleDetail : nextMessage);
     setMessage(nextMessage);
-  }, []);
+  }, [initialLanguage]);
 
   const resetDemo = useCallback(async (nextMessage: string, nextTransferStatus: TransferStatus = "reset") => {
     applyReset(await runtime.reset(), nextMessage, nextTransferStatus);
   }, [runtime, applyReset]);
 
   useEffect(() => {
-    void runtime.reset().then((nextContext) => applyReset(nextContext, dictionaries.en.app.startMessage, "idle"));
-  }, [runtime, applyReset]);
+    void runtime.reset().then((nextContext) => applyReset(nextContext, dictionaries[initialLanguage].app.startMessage, "idle"));
+  }, [runtime, applyReset, initialLanguage]);
 
   useEffect(() => {
     void loadBuildInfo().then(setBuildInfo);
   }, []);
 
   useEffect(() => {
+    document.documentElement.lang = language;
+    saveLanguage(browserStorage(), language);
+  }, [language]);
+
+  useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("bac-theme", theme);
+    try {
+      browserStorage()?.setItem("bac-theme", theme);
+    } catch {
+      // Remembering the theme is a convenience only.
+    }
   }, [theme]);
 
   async function exportState() {
