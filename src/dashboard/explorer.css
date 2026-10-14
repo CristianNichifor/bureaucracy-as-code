@@ -1,0 +1,29 @@
+/* Explorer feed per docs/ux-guidelines.md §4-§5: status as symbol + word, deadline as date + words. */
+.statusSymbol {
+  margin-right: 4px;
+  font-weight: 800;
+}
+
+.feedRow .deadlineNote {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.feedRow .deadline-danger .deadlineNote {
+  color: var(--civic-danger);
+}
+
+.feedRow .deadline-warning .deadlineNote {
+  color: var(--civic-warning);
+}
+
+.feedRow .deadline-closed .deadlineNote,
+.feedRow .deadline-unset .deadlineNote {
+  color: var(--civic-muted);
+}
+
+.emptyState .activeFilters {
+  margin: 0 0 var(--civic-space-3);
+  color: var(--civic-muted);
+}

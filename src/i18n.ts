@@ -119,6 +119,10 @@ export type Dictionary = {
     noEvents: string;
     none: string;
     tamperButton: string;
+    tamperFailedTitle: string;
+    tamperFallbackReason: string;
+    tamperChainUnchanged: string;
+    backToVerified: string;
   };
   transferSafety: {
     title: string;
@@ -169,6 +173,12 @@ export type Dictionary = {
     seed: string;
     emptyTitle: string;
     empty: string;
+    emptyFilters: string;
+    visibleOf: string;
+    daysRemaining: string;
+    daysOverdue: string;
+    closed: string;
+    deadlineUnset: string;
   };
   operations: {
     title: string;
@@ -324,6 +334,7 @@ export type Dictionary = {
     explainLabel: string;
     explainerCopy: string;
     proofTitle: string;
+    event: string;
     eventCode: string;
     state: string;
     signerRole: string;
@@ -647,6 +658,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       noEvents: "No events yet",
       none: "None",
       tamperButton: "Test edited export",
+      tamperFailedTitle: "Verification failed",
+      tamperFallbackReason: "The edited export no longer matches its signed hashes.",
+      tamperChainUnchanged: "The edited copy was rejected; the stored chain is unchanged.",
+      backToVerified: "Back to the verified chain",
     },
     transferSafety: {
       title: "Transfer safety",
@@ -698,6 +713,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       seed: "seed",
       emptyTitle: "No matching requests",
       empty: "The browser ledger has requests, but none match the current filters.",
+      emptyFilters: "Active filters: {filters}.",
+      visibleOf: "{count} of {total} requests shown",
+      daysRemaining: "{days} remaining",
+      daysOverdue: "{days} overdue",
+      closed: "closed",
+      deadlineUnset: "set on submission",
     },
     operations: {
       title: "Institution workload",
@@ -860,6 +881,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       explainerCopy:
         "Each row is a signed administrative state transition with hashes that link it to the previous state.",
       proofTitle: "Event proof",
+      event: "Event",
       eventCode: "Event code",
       state: "State",
       signerRole: "Signer role",
@@ -1258,6 +1280,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       noEvents: "Niciun eveniment",
       none: "Niciunul",
       tamperButton: "Testează export modificat",
+      tamperFailedTitle: "Verificarea a eșuat",
+      tamperFallbackReason: "Exportul modificat nu mai corespunde hash-urilor semnate.",
+      tamperChainUnchanged: "Copia modificată a fost respinsă; lanțul stocat nu s-a schimbat.",
+      backToVerified: "Înapoi la lanțul verificat",
     },
     transferSafety: {
       title: "Siguranța transferului",
@@ -1309,6 +1335,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       seed: "exemplu",
       emptyTitle: "Nicio cerere găsită",
       empty: "Registrul local are cereri, dar niciuna nu corespunde filtrelor curente.",
+      emptyFilters: "Filtre active: {filters}.",
+      visibleOf: "{count} din {total} cereri vizibile",
+      daysRemaining: "{days} rămase",
+      daysOverdue: "{days} întârziere",
+      closed: "închisă",
+      deadlineUnset: "se calculează la depunere",
     },
     operations: {
       title: "Încărcare instituții",
@@ -1471,6 +1503,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       explainerCopy:
         "Fiecare rând este o tranziție administrativă semnată, legată de starea precedentă prin hash-uri.",
       proofTitle: "Dovadă eveniment",
+      event: "Eveniment",
       eventCode: "Cod eveniment",
       state: "Stare",
       signerRole: "Rol semnatar",

@@ -2301,3 +2301,20 @@ dd {
 .dashboardSection {
   scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-4));
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto;
+    transition: none;
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .segmentedToggle button[aria-pressed="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

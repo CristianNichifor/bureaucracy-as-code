@@ -252,7 +252,10 @@ written by an agent: needs human review.
   mismatch (`role="alert"` with "Alege alt fișier").
 - Given the tamper test runs
   Then the integrity panel reads "Verificarea a eșuat" with the reason and a
-  way back to the verified state; never an icon alone.
+  way back to the verified state; never an icon alone. (Done: the panel shows a
+  `role="alert"` result with the rejection reason, says the stored chain is
+  unchanged, and offers "Înapoi la lanțul verificat"; the chain pill stays valid
+  because the edited copy never enters the ledger.)
 - Test: `tests/e2e/demo.pw.ts` (trail table, hash verifier states),
   `tests/e2e/accessibility.pw.ts`.
 
@@ -284,6 +287,17 @@ written by an agent: needs human review.
 - Given `?presenter=1` and the exit link
   Then the page reloads without the query and the presenter panels are gone.
 - Test: `tests/e2e/ux.pw.ts` "keeps release operations behind ?presenter=1".
+
+### BAC-20 Reduced motion and forced colours — `done`
+
+- Given `prefers-reduced-motion: reduce`
+  Then no transition, animation or smooth scroll runs (the skip link appears
+  without sliding).
+- Given `forced-colors: active`
+  Then the pressed language/theme toggle is marked by an outline, not only
+  by its background, which forced colours drop.
+
+Tests: `src/styles.test.ts`. Closes backlog UXG-4.
 
 ## Needs human (out of scope here)
 

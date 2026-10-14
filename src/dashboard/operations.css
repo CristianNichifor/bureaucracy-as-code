@@ -1,0 +1,60 @@
+/* Institution workload as a table (docs/design/screens/03-explorer.html). */
+.operationsScroll {
+  overflow-x: auto;
+  margin-top: var(--civic-space-3);
+}
+
+.operationsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.operationsTable th,
+.operationsTable td {
+  padding: var(--civic-space-2);
+  border-bottom: 1px solid var(--civic-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.operationsTable th {
+  color: var(--civic-muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.operationsTable th.num,
+.operationsTable td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.operationsTable .operationsRow {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--civic-accent);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  min-height: 24px;
+}
+
+.operationsTable .operationsRow:hover,
+.operationsTable .operationsRow:focus-visible {
+  text-decoration: underline;
+}
+
+.operationsTable .operationsNote {
+  display: block;
+  color: var(--civic-muted);
+  font-size: 0.85rem;
+}
+
+.operationsTable tr.operationsOverdue td:first-child {
+  border-left: 4px solid var(--civic-danger);
+}
