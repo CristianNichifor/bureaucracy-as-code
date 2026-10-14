@@ -25,6 +25,7 @@ import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
 import { EvidenceBrief } from "./dashboard/EvidenceBrief";
 import { BuildMetadata } from "./dashboard/BuildMetadata";
+import { FamilyLinks } from "./dashboard/FamilyLinks";
 import { PrivacyNotice } from "./dashboard/PrivacyNotice";
 import { ReleaseReadiness } from "./dashboard/ReleaseReadiness";
 import { PresenterChecklist } from "./dashboard/PresenterChecklist";
@@ -618,6 +619,7 @@ export function App() {
     </main>
     <footer className="appShell siteFooter">
       <BuildMetadata buildInfo={buildInfo} labels={t.build} />
+      <FamilyLinks labels={t.familyLinks} language={language} />
       <PrivacyNotice labels={t.privacy} />
     </footer>
     </LanguageContext.Provider>

@@ -2301,3 +2301,15 @@ dd {
 .dashboardSection {
   scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-4));
 }
+
+.familyLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.familyLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
