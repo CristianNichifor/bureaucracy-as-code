@@ -45,6 +45,10 @@ async function freezeBrowserClock(page: import("@playwright/test").Page, iso: st
   }, iso);
 }
 
+async function openTools(page: import("@playwright/test").Page, name = "Tools") {
+  await page.locator(".toolsMenu > summary").filter({ hasText: name }).click();
+}
+
 async function runFullLaw544Scenario(page: import("@playwright/test").Page) {
   for (const name of fullScenarioSteps) {
     await page.getByRole("button", { name: new RegExp(name, "i") }).click();
@@ -60,25 +64,19 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
   await expect(page.getByText("Digital Public Administration Lab")).toBeVisible();
+  await openTools(page);
   const toolbar = page.getByRole("region", { name: "Demo actions" });
   await expect(toolbar.getByRole("button", { name: "Export state" })).toBeVisible();
   await expect(toolbar.getByRole("button", { name: "Export receipt" })).toBeVisible();
   await expect(toolbar.getByRole("button", { name: "Import" })).toBeVisible();
   await expect(toolbar.getByRole("button", { name: "Reset" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Run the request" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Request accountability" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
+  for (const name of ["Request", "Machinery", "Proof"]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  }
   await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
   await expect(page.getByText("Selected receipt")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
-  await expect(page.getByText("Operational view of open queues")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guided Law 544 run" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Demo completeness" })).toBeVisible();
-  await expect(page.getByText("100% demo scope")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Release readiness" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Presenter checklist" })).toBeVisible();
   await expect(page.getByRole("button", { name: /deadline warning/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /partial disclosure/i })).toBeVisible();
   await expect(page.getByRole("button", { name: "Redirected", exact: true })).toBeVisible();
@@ -87,13 +85,15 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Transfer safety" })).toBeVisible();
   await expect(page.getByText("No private keys exported")).toBeVisible();
   await expect(page.getByText("signed events").first()).toBeVisible();
-  await expect(page.getByPlaceholder("Search request, subject, institution, registry")).toBeVisible();
-  await expect(page.getByText("Browser demo ready")).toBeVisible();
-  await expect(page.getByText(/No ROeID integration/)).toBeVisible();
-  await expect(page.getByText("pnpm demo:verify")).toBeVisible();
   await expect(page.locator(".message")).toContainText("Ready for a live run. Submit the request to record the first signed transition.");
   await expect(page.getByText("Ledger verifies")).toBeVisible();
   await expect(page.getByLabel("Deployed build")).toBeVisible();
+
+  await page.goto("./#explorer");
+  await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
+  await expect(page.getByText("Operational view of open queues")).toBeVisible();
+  await expect(page.getByPlaceholder("Search request, subject, institution, registry")).toBeVisible();
 
   expect(pageErrors).toEqual([]);
 });
@@ -121,8 +121,7 @@ test("keeps the browser demo usable on the configured viewport", async ({ page }
 
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
-  await expect(page.getByRole("region", { name: "Demo actions" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start the request" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
@@ -139,7 +138,9 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
 
   for (const viewport of uiViewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
-    await page.goto("./");
+    await page.goto("./?presenter=1");
+    // Open the tools so their panels are part of the layout checks below.
+    await openTools(page);
     if (viewport.name.includes("desktop")) {
       await page.getByLabel("Theme").getByRole("button", { name: "Dark", exact: true }).click();
       await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -147,21 +148,18 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await page.getByRole("button", { name: /run full scenario/i }).click();
 
     await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Run the request" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Request accountability" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
+    for (const name of ["Request", "Machinery", "Proof"]) {
+      await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+    }
     await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Scenario comparison" })).toBeVisible();
-    await expect(page.getByText("Next file").first()).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
     await expect(page.getByText("Accountability handoff")).toBeVisible();
     await expect(page.getByLabel("Accountability handoff").getByText("Officer desk")).toBeVisible();
     await expect(page.getByText("Deadline status")).toBeVisible();
-    await expect(page.getByText(/days remaining|days overdue/i).first()).toBeVisible();
+    // The full scenario ends resolved: the header says so and counts no days (BAC-17).
+    await expect(page.locator(".deadlineStrip")).toContainText("Closed");
+    await expect(page.locator(".deadlineStrip")).not.toContainText(/days? (remaining|overdue)/);
     await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Signed audit trail" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
@@ -177,7 +175,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
     expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
 
-    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .transferSafetyGrid article, .demoCompletenessGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li").evaluateAll((nodes) =>
+    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .transferSafetyGrid article, .demoCompletenessGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li, .siteFooter").evaluateAll((nodes) =>
       nodes.map((node) => {
         const rect = node.getBoundingClientRect();
         return {
@@ -195,7 +193,7 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
       expect(box.right, `${viewport.name} element leaks right`).toBeLessThanOrEqual(box.viewport + 1);
     }
 
-    const shell = await page.locator(".appShell").evaluate((node) => {
+    const shell = await page.locator("main.appShell").evaluate((node) => {
       const rect = node.getBoundingClientRect();
       return {
         left: rect.left,
@@ -218,11 +216,19 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
       body: await page.screenshot({ fullPage: true }),
       contentType: "image/png",
     });
+
+    await page.goto("./?presenter=1#explorer");
+    await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Scenario comparison" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+    await expect(page.getByText("Next file").first()).toBeVisible();
+    const explorerOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(explorerOverflow, `${viewport.name} explorer horizontal overflow`).toBeLessThanOrEqual(1);
   }
 });
 
 test("compares seeded Law 544 scenario outcomes", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./#explorer");
 
   const panel = page.getByRole("region", { name: "Scenario comparison" });
   await expect(panel).toBeVisible();
@@ -254,27 +260,54 @@ test("summarizes the selected request as a public evidence brief", async ({ page
 });
 
 test("switches the public dashboard between English and Romanian", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?presenter=1");
 
   await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
 
-  await expect(page.getByRole("heading", { name: "Birocratie ca Software", level: 1 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Ruleaza cererea" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Incarcare institutii" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Comparatie scenarii" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Siguranta transferului" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
+  for (const name of ["Cererea", "Mecanismul", "Dovada"]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("navigation", { name: "Progresul cererii" })).toContainText("Pasul 0/6");
+  await openTools(page, "Instrumente");
+  await expect(page.getByRole("heading", { name: "Siguranța transferului" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Rezumat public al dovezilor" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Responsabilitate pe cerere" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Completitudine demo" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Pregatire release" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pregătire release" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Checklist prezentare" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Depune cererea/i })).toBeVisible();
-  await expect(page.getByText("Ciclul normal al cererii, cu dovada si hash pentru raspunsul final.")).toBeVisible();
+  await expect(page.getByText("Ciclul normal al cererii, cu dovadă și hash pentru răspunsul final.")).toBeVisible();
   await expect(page.getByText("Status termen")).toBeVisible();
-  await expect(page.getByRole("region", { name: "Actiuni demo" }).getByRole("button", { name: "Exporta dovada" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Acțiuni demo" }).getByRole("button", { name: "Exportă dovada" })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+
+  await page.getByRole("navigation", { name: "Vizualizări" }).getByRole("link", { name: "Explorer" }).click();
+  await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Încărcare instituții" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comparație scenarii" })).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+
+  await page.getByLabel("Limbă").getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+});
+
+test.describe("with a Romanian browser", () => {
+  test.use({ locale: "ro-RO" });
+
+  test("defaults to Romanian on the first visit", async ({ page }) => {
+    await page.goto("./");
+
+    await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+  });
 });
 
 test("switches and persists light and dark themes", async ({ page }) => {
@@ -292,7 +325,7 @@ test("switches and persists light and dark themes", async ({ page }) => {
 test("searches and sorts the public request explorer", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "Explorer control behavior is covered once on desktop.");
 
-  await page.goto("./");
+  await page.goto("./#explorer");
 
   await page.getByPlaceholder("Search request, subject, institution, registry").fill("rail");
   await expect(page.getByRole("button", { name: /REQ-2026-0008/i })).toBeVisible();
@@ -304,16 +337,20 @@ test("searches and sorts the public request explorer", async ({ page }, testInfo
   await page.getByRole("button", { name: "Reset filters" }).click();
   await expect(page.getByRole("button", { name: /REQ-2026-0002/i })).toBeVisible();
 
-  const healthWorkload = page.getByRole("button", { name: /Ministry of Health[\s\S]*Next file: REQ-2026-0003/i });
-  await healthWorkload.click();
+  const workload = page.getByRole("table", { name: "Institution workload" });
+  const healthRow = workload.locator("tbody tr", {
+    has: page.getByRole("button", { name: "Ministry of Health", exact: true }),
+  });
+  await expect(healthRow).toContainText("REQ-2026-0003");
+  await healthRow.getByRole("button", { name: "Ministry of Health", exact: true }).click();
   await expect(page.locator(".filterBar").getByLabel("Institution")).toHaveValue("Ministry of Health");
   await expect(page.getByRole("heading", { name: "REQ-2026-0003" })).toBeVisible();
-  await expect(healthWorkload.getByText("Owner queue")).toBeVisible();
 });
 
 test("exports a public audit receipt for the selected request", async ({ page }) => {
   await page.goto("./");
 
+  await openTools(page);
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export receipt" }).click();
   const download = await downloadPromise;
@@ -326,7 +363,9 @@ test("exports a public proof report for visible requests", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
   await expect(page.getByText("Visible report")).toBeVisible();
+  await openTools(page);
   await expect(page.getByText(/\d+ visible requests/).first()).toBeVisible();
+  await page.getByRole("navigation", { name: "Views" }).getByRole("link", { name: "Explorer" }).click();
   await page.getByPlaceholder("Search request, subject, institution, registry").fill("rail");
   await expect(page.getByText("1 visible requests")).toBeVisible();
   await expect(page.getByText(/\d+ signed events/).first()).toBeVisible();
@@ -382,13 +421,26 @@ test("runs the guided Law 544 flow and proves edited exports are refused", async
   await expect(page.getByText("Ledger verifies")).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
   await expect(page.getByText("Resolved").first()).toBeVisible();
-  await expect(page.locator(".timelinePanel").getByText("Request_Resolved", { exact: true })).toBeVisible();
-  await expect(page.locator(".timelinePanel").getByText("PublicServant", { exact: true }).first()).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText("Answer sent", { exact: true })).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText("Public servant", { exact: true }).first()).toBeVisible();
 
   await page.getByRole("button", { name: /test edited export/i }).click();
+
+  // BAC-17: the integrity panel itself says the edited copy failed, why, and how to go back.
+  const integrity = page.locator(".integrityPanel");
+  const tamperResult = integrity.getByRole("alert");
+  await expect(tamperResult).toContainText("Verification failed");
+  await expect(tamperResult.locator(".tamperReason")).not.toBeEmpty();
+  await expect(tamperResult).toContainText("the stored chain is unchanged");
+
+  await openTools(page);
   await expect(page.locator(".message")).toContainText(/Tamper demo worked/i);
   await expect(page.getByRole("region", { name: "Transfer safety" }).locator(".pill").filter({ hasText: "rejected" })).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
+
+  await integrity.getByRole("button", { name: "Back to the verified chain" }).click();
+  await expect(integrity.getByRole("alert")).toHaveCount(0);
+  await expect(integrity.getByText("Hash chain verifies")).toBeVisible();
 });
 
 test("supports step and auto-run timeline controls", async ({ page }, testInfo) => {
@@ -397,15 +449,15 @@ test("supports step and auto-run timeline controls", async ({ page }, testInfo) 
   await page.goto("./");
 
   await page.getByRole("button", { name: /step next/i }).click();
-  await expect(page.getByText(/Citizen signed Request_Created/i)).toBeVisible();
+  await expect(page.locator(".message")).toContainText("Request submitted, signed by Citizen. Status moved from Draft to Submitted.");
   await expect(page.getByText(/Proof hash [a-f0-9]{18}; verified ledger events: 1/i)).toBeVisible();
-  await expect(page.getByText(/Request_Created · Citizen/i)).toBeVisible();
+  await expect(page.locator(".lastRecorded")).toContainText("Request submitted, signed by Citizen");
 
   await page.getByRole("button", { name: /auto-run/i }).click();
   await expect(page.getByText("complete").first()).toBeVisible({ timeout: 6_000 });
-  await expect(page.getByText(/Public servant signed Request_Resolved/i)).toBeVisible();
+  await expect(page.locator(".message")).toContainText("Answer sent, signed by Public servant");
   await expect(page.getByText(/verified ledger events: 6/i)).toBeVisible();
-  await expect(page.getByText(/Request_Resolved · PublicServant/i)).toBeVisible();
+  await expect(page.locator(".lastRecorded")).toContainText("Answer sent, signed by Public servant");
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
 });
 
@@ -419,8 +471,8 @@ test("replays exceptional Law 544 simulations with signed metadata", async ({ pa
   const exceptionLane = page.getByLabel("Internal exception lane");
   await expect(exceptionLane).toBeVisible();
   await expect(exceptionLane.getByText("Extension", { exact: true })).toBeVisible();
-  await expect(page.locator(".timelinePanel").getByText("Extension_Requested", { exact: true })).toBeVisible();
-  await expect(page.locator(".timelinePanel").getByText(/extensionDeadlineAt: 2026-10-14/i)).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText("Deadline extended to 30 days", { exact: true })).toBeVisible();
+  await expect(page.locator(".timelinePanel").getByText(/extensionDeadlineAt: \d{4}-\d{2}-\d{2}/i)).toBeVisible();
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");
 
   await page.getByRole("button", { name: /partial disclosure/i }).click();
@@ -480,7 +532,7 @@ test("keeps the public screen free of obvious demo PII", async ({ page }) => {
 });
 
 test("shows the presenter checklist and operator commands", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?presenter=1");
 
   const panel = page.getByRole("region", { name: "Presenter checklist" });
   await expect(panel).toBeVisible();
@@ -492,4 +544,9 @@ test("shows the presenter checklist and operator commands", async ({ page }) => 
   await expect(panel.getByText("Open the explorer and point to anonymized seeded Law 544 requests.")).toBeVisible();
   await expect(panel.getByText("pnpm demo:release")).toBeVisible();
   await expect(panel.getByText("pnpm demo:capture")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Demo completeness" })).toBeVisible();
+  await expect(page.getByText("100% demo scope")).toBeVisible();
+  await expect(page.getByText("Browser demo ready")).toBeVisible();
+  await expect(page.getByText(/No ROeID integration/)).toBeVisible();
+  await expect(page.getByText("pnpm demo:verify")).toBeVisible();
 });

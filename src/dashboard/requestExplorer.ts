@@ -1,3 +1,4 @@
+import { isOverdue } from "../law544/deadlines";
 import type { DemoRole } from "../identity/types";
 import type { Law544Request, Law544Status } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
@@ -39,22 +40,7 @@ export function getRequestEventCount(events: LedgerEvent[]): number {
   return events.length;
 }
 
-export function formatLaw544Status(status: Law544Status | "All"): string {
-  const labels: Record<Law544Status | "All", string> = {
-    All: "All",
-    Draft: "Draft",
-    Created: "Created",
-    Registered: "Registered",
-    Routed: "Routed",
-    InProgress: "In progress",
-    ExtensionRequested: "Extension requested",
-    Resolved: "Resolved",
-    Rejected: "Rejected",
-    Overdue: "Overdue",
-  };
-
-  return labels[status];
-}
+export { formatLaw544Status } from "../locale";
 
 export function filterRequestExplorerItems(
   items: RequestExplorerItem[],
@@ -95,6 +81,34 @@ export function getStatusSummaries(items: RequestExplorerItem[]): StatusSummary[
   return Array.from(counts.entries())
     .map(([status, count]) => ({ status, count }))
     .sort((a, b) => a.status.localeCompare(b.status));
+}
+
+export type ExplorerCounts = {
+  institutions: number;
+  open: number;
+  overdue: number;
+  finished: number;
+};
+
+const finishedStatuses = new Set<Law544Status>(["Resolved", "Rejected"]);
+
+/**
+ * The explorer's count tiles. Open includes the live draft, as the design counts it
+ * (docs/design/README.md: 7 open with the draft); a draft has no deadline yet, so it is
+ * never overdue. Overdue includes open files past their deadline.
+ */
+export function getExplorerCounts(items: RequestExplorerItem[], now = new Date()): ExplorerCounts {
+  const requests = items.map((item) => item.request);
+  const open = requests.filter((request) => !finishedStatuses.has(request.status));
+
+  return {
+    institutions: new Set(requests.map((request) => request.institution)).size,
+    open: open.length,
+    overdue: open.filter(
+      (request) => request.status !== "Draft" && (request.status === "Overdue" || isOverdue(request.deadlineAt, now)),
+    ).length,
+    finished: requests.filter((request) => finishedStatuses.has(request.status)).length,
+  };
 }
 
 export function getSelectedExplorerItem(

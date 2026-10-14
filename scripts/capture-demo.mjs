@@ -87,13 +87,14 @@ try {
     {
       const { context, page } = await openDemoPage(browser, { width: 1440, height: 960 });
       await runFullScenario(page);
-      await page.getByText("Request_Resolved").first().waitFor({ state: "visible" });
+      await page.getByText("Answer sent").first().waitFor({ state: "visible" });
       await capture(page, "02-resolved-request-desktop.png");
       await context.close();
     }
 
     {
       const { context, page } = await openDemoPage(browser, { width: 1440, height: 960 });
+      await page.locator(".toolsMenu > summary").click();
       await page.getByRole("button", { name: /export proof report/i }).waitFor({ state: "visible" });
       await capture(page, "03-proof-report-ready-desktop.png");
       await context.close();
@@ -102,7 +103,7 @@ try {
     {
       const { context, page } = await openDemoPage(browser, { width: 390, height: 844 });
       await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
-      await page.getByRole("heading", { name: "Birocratie ca Software", level: 1 }).waitFor({ state: "visible" });
+      await page.getByRole("heading", { name: "Birocrație ca Software", level: 1 }).waitFor({ state: "visible" });
       await capture(page, "04-romanian-mobile.png");
       await context.close();
     }
@@ -110,7 +111,7 @@ try {
     {
       const { context, page } = await openDemoPage(browser, { width: 2560, height: 1080 });
       await page.getByRole("button", { name: /run full scenario/i }).click();
-      await page.getByText("Request_Resolved").first().waitFor({ state: "visible" });
+      await page.getByText("Answer sent").first().waitFor({ state: "visible" });
       await capture(page, "05-ultrawide-centered-layout.png");
       await context.close();
     }

@@ -4,6 +4,7 @@ import {
   DEFAULT_EXPLORER_FILTERS,
   filterRequestExplorerItems,
   formatLaw544Status,
+  getExplorerCounts,
   getInstitutionOptions,
   getRequestLatestRole,
   getSelectedExplorerItem,
@@ -58,13 +59,13 @@ describe("request explorer helpers", () => {
 
     expect(directorSigned.map((item) => item.request.id)).toEqual([
       "REQ-2026-0006",
-      "REQ-2026-0010",
-      "REQ-2026-0005",
       "REQ-2026-0002",
-      "REQ-2026-0009",
       "REQ-2026-0007",
       "REQ-2026-0008",
+      "REQ-2026-0010",
       "REQ-2026-0003",
+      "REQ-2026-0009",
+      "REQ-2026-0005",
     ]);
   });
 
@@ -108,5 +109,37 @@ describe("request explorer helpers", () => {
 
   it("falls back to the first request when selected id is missing", () => {
     expect(getSelectedExplorerItem(items, "missing")?.request.id).toBe("REQ-2026-0002");
+  });
+
+  it("counts institutions, open, overdue and finished requests for the explorer tiles", () => {
+    // The seeds are dated around 2026-09-13T09:00Z.
+    expect(getExplorerCounts(items, new Date("2026-09-13T09:00:00.000Z"))).toEqual({
+      institutions: 9,
+      open: 6,
+      overdue: 1,
+      finished: 3,
+    });
+  });
+
+  it("counts open requests past their deadline as overdue", () => {
+    expect(getExplorerCounts(items, new Date("2026-09-23T09:00:00.001Z")).overdue).toBe(6);
+  });
+
+  // docs/design/README.md: "the nine seeded requests plus the live draft (9 institutions,
+  // 7 open, 1 overdue, 3 closed)" - the live draft counts as open, but has no deadline yet.
+  it("counts the live draft as open but never as overdue", () => {
+    const draft: RequestExplorerItem = {
+      ...items[0],
+      request: { ...items[0].request, id: "REQ-DRAFT", status: "Draft" },
+      events: [],
+      source: "active",
+    };
+    expect(getExplorerCounts([draft], new Date("2030-01-01T00:00:00.000Z"))).toEqual({
+      institutions: 1,
+      open: 1,
+      overdue: 0,
+      finished: 0,
+    });
+    expect(getExplorerCounts([...items, draft], new Date("2026-09-13T09:00:00.000Z")).open).toBe(7);
   });
 });

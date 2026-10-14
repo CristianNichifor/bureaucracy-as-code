@@ -1,4 +1,6 @@
-import type { Dictionary } from "../i18n";
+import { localizeDemoText } from "../demo/demoText";
+import { formatLaw544Status, useLanguage } from "../locale";
+import type { Dictionary, Language } from "../i18n";
 import type { Law544Request } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
 
@@ -17,12 +19,13 @@ export function MachineryGraph({
   events: LedgerEvent[];
   labels: Dictionary["graph"];
 }) {
+  const language = useLanguage();
   const registryDone = Boolean(request.registryNumber);
   const routed = Boolean(request.assignedToDidHash);
   const resolved = request.status === "Resolved";
   const overdue = request.status === "Overdue";
   const rejected = request.status === "Rejected";
-  const exceptionSignals = getExceptionSignals(request, events, labels);
+  const exceptionSignals = getExceptionSignals(request, events, labels, language);
   const currentOwner =
     resolved ? labels.finalResponse : rejected ? labels.refusalResponse : overdue ? labels.escalationQueue : routed ? labels.publicServant : registryDone ? labels.directorQueue : labels.registryQueue;
   const nodes = [
@@ -34,7 +37,7 @@ export function MachineryGraph({
     },
     {
       label: labels.institution,
-      detail: request.institution,
+      detail: localizeDemoText(request.institution, language),
       state: labels.complete,
       tone: "complete",
     },
@@ -52,8 +55,8 @@ export function MachineryGraph({
     },
     {
       label: routed ? labels.publicServant : labels.unassigned,
-      detail: request.responseDocumentHash ? labels.hashEvidence : request.status,
-      state: resolved || overdue || rejected ? request.status : routed ? labels.current : labels.waiting,
+      detail: request.responseDocumentHash ? labels.hashEvidence : formatLaw544Status(request.status, language),
+      state: resolved || overdue || rejected ? formatLaw544Status(request.status, language) : routed ? labels.current : labels.waiting,
       tone: resolved ? "complete" : overdue || rejected ? "danger" : routed ? "current" : "waiting",
     },
   ];
@@ -108,6 +111,7 @@ function getExceptionSignals(
   request: Law544Request,
   events: LedgerEvent[],
   labels: Dictionary["graph"],
+  language: Language,
 ): ExceptionSignal[] {
   const signals: ExceptionSignal[] = [];
   const metadataEntries = events.flatMap((event) => Object.entries(event.metadata ?? {}));
@@ -133,7 +137,7 @@ function getExceptionSignals(
   if (metadataValues.has("redirected") || metadataKeys.has("targetInstitution")) {
     signals.push({
       label: labels.redirectSignal,
-      detail: getMetadataValue(events, "targetInstitution") ?? labels.signedMetadata,
+      detail: localizeDemoText(getMetadataValue(events, "targetInstitution") ?? labels.signedMetadata, language),
       tone: "complete",
     });
   }

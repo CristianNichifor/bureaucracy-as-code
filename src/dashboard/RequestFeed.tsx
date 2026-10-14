@@ -1,4 +1,7 @@
-import { isOverdue } from "../law544/deadlines";
+import { localizeDemoText } from "../demo/demoText";
+import { formatDate, formatRole, useLanguage } from "../locale";
+import { describeDeadline, statusSymbols, summarizeDeadline } from "./deadlineSummary";
+import "./explorer.css";
 import type { DemoRole } from "../identity/types";
 import type { Dictionary } from "../i18n";
 import type { Law544Status } from "../law544/types";
@@ -45,6 +48,8 @@ function RequestFeedRow({
 }) {
   const { request, events, source } = item;
   const latestRole = getRequestLatestRole(events);
+  const language = useLanguage();
+  const deadline = summarizeDeadline(request);
 
   return (
     <button
@@ -56,27 +61,31 @@ function RequestFeedRow({
       <div>
         <span className="cellLabel">{labels.request}</span>
         <strong>{request.id}</strong>
-        <span>{request.subject}</span>
+        <span>{localizeDemoText(request.subject, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.institution}</span>
-        <span>{request.institution}</span>
+        <span>{localizeDemoText(request.institution, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.status}</span>
-        <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status)}</span>
+        <span className={`status status-${request.status.toLowerCase()}`}>
+          <span aria-hidden="true" className="statusSymbol">{statusSymbols[request.status]}</span>
+          {formatLaw544Status(request.status, language)}
+        </span>
       </div>
       <div>
         <span className="cellLabel">{labels.latestRole}</span>
-        <span>{latestRole ?? labels.noSigner}</span>
+        <span>{latestRole ? formatRole(latestRole, language) : labels.noSigner}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.trail}</span>
         <span>{getRequestEventCount(events)} {labels.events}</span>
       </div>
-      <div className={isOverdue(request.deadlineAt) ? "danger" : ""}>
+      <div className={`deadline-${deadline.tone} ${deadline.tone === "danger" ? "danger" : ""}`}>
         <span className="cellLabel">{labels.deadline}</span>
-        <span>{new Date(request.deadlineAt).toLocaleDateString()}</span>
+        <span>{deadline.tone === "unset" ? "—" : formatDate(request.deadlineAt, language)}</span>
+        <span className="deadlineNote">{describeDeadline(deadline, labels, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.source}</span>
@@ -103,9 +112,16 @@ export function RequestFeed({
   onSelectRequest: (requestId: string) => void;
   labels: Dictionary["feed"];
 }) {
+  const language = useLanguage();
   const filteredItems = filterRequestExplorerItems(items, filters);
   const institutions = getInstitutionOptions(items);
   const statusSummaries = getStatusSummaries(items);
+  const activeFilterNames = [
+    filters.status !== DEFAULT_EXPLORER_FILTERS.status ? formatLaw544Status(filters.status, language) : null,
+    filters.institution !== DEFAULT_EXPLORER_FILTERS.institution ? localizeDemoText(filters.institution, language) : null,
+    filters.role !== DEFAULT_EXPLORER_FILTERS.role ? formatRole(filters.role, language) : null,
+    filters.query !== DEFAULT_EXPLORER_FILTERS.query ? `„${filters.query}”` : null,
+  ].filter((name): name is string => name !== null);
   const filtersActive =
     filters.status !== DEFAULT_EXPLORER_FILTERS.status ||
     filters.institution !== DEFAULT_EXPLORER_FILTERS.institution ||
@@ -117,7 +133,9 @@ export function RequestFeed({
     <section className="panel requestFeedPanel" id={id}>
       <div className="panelHeader">
         <h2>{labels.title}</h2>
-        <span className="pill">{filteredItems.length} {labels.visible}</span>
+        <span className="pill" role="status">
+          {labels.visibleOf.replace("{count}", String(filteredItems.length)).replace("{total}", String(items.length))}
+        </span>
       </div>
 
       <div className="statusSummary" aria-label={labels.statusSummary}>
@@ -138,13 +156,13 @@ export function RequestFeed({
             onClick={() => onFiltersChange({ ...filters, status })}
             type="button"
           >
-            <span>{formatLaw544Status(status)}</span>
+            <span>{formatLaw544Status(status, language)}</span>
             <strong>{count}</strong>
           </button>
         ))}
       </div>
 
-      <div className="filterBar" aria-label="Request filters">
+      <div className="filterBar" aria-label={labels.filters}>
         <label>
           <span>{labels.search}</span>
           <input
@@ -164,7 +182,7 @@ export function RequestFeed({
           >
             {statusOptions.map((status) => (
               <option key={status} value={status}>
-                {formatLaw544Status(status)}
+                {formatLaw544Status(status, language)}
               </option>
             ))}
           </select>
@@ -178,7 +196,7 @@ export function RequestFeed({
             <option value={DEFAULT_EXPLORER_FILTERS.institution}>{labels.all}</option>
             {institutions.map((institution) => (
               <option key={institution} value={institution}>
-                {institution}
+                {localizeDemoText(institution, language)}
               </option>
             ))}
           </select>
@@ -193,7 +211,7 @@ export function RequestFeed({
           >
             {roleOptions.map((role) => (
               <option key={role} value={role}>
-                {role}
+                {formatRole(role, language)}
               </option>
             ))}
           </select>
@@ -223,7 +241,7 @@ export function RequestFeed({
 
       <div className="feedTable" role="group" aria-label={labels.title}>
         <div className="feedHeader" aria-hidden="true">
-          <span>Request</span>
+          <span>{labels.request}</span>
           <span>{labels.institution}</span>
           <span>{labels.status}</span>
           <span>{labels.latestRole}</span>
@@ -245,6 +263,9 @@ export function RequestFeed({
           <div className="emptyState" role="status">
             <strong>{labels.emptyTitle}</strong>
             <p>{labels.empty}</p>
+            {activeFilterNames.length > 0 && (
+              <p className="activeFilters">{labels.emptyFilters.replace("{filters}", activeFilterNames.join(", "))}</p>
+            )}
             <button className="civicButton civicButtonSecondary" onClick={() => onFiltersChange(DEFAULT_EXPLORER_FILTERS)} type="button">
               {labels.resetFilters}
             </button>

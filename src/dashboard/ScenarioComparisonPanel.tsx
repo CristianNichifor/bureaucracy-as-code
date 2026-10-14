@@ -1,3 +1,5 @@
+import { localizeDemoText } from "../demo/demoText";
+import { formatDate, useLanguage } from "../locale";
 import { ArrowRight, Clock3, FileCheck2, Route, ShieldAlert } from "lucide-react";
 import type { Dictionary } from "../i18n";
 import type { Law544Status } from "../law544/types";
@@ -27,6 +29,7 @@ export function ScenarioComparisonPanel({
   onSelectRequest,
   selectedRequestId,
 }: ScenarioComparisonPanelProps) {
+  const language = useLanguage();
   const scenarios = showcasedStatuses
     .map((status) => getScenarioForStatus(items, status))
     .filter((item): item is RequestExplorerItem => Boolean(item));
@@ -53,12 +56,12 @@ export function ScenarioComparisonPanel({
               onClick={() => onSelectRequest(item.request.id)}
               type="button"
             >
-              <span className={`status status-${status.toLowerCase()}`}>{formatLaw544Status(status)}</span>
+              <span className={`status status-${status.toLowerCase()}`}>{formatLaw544Status(status, language)}</span>
               <div>
                 {getScenarioIcon(status)}
                 <strong>{labels.scenarios[status]}</strong>
               </div>
-              <p>{item.request.subject}</p>
+              <p>{localizeDemoText(item.request.subject, language)}</p>
               <dl>
                 <div>
                   <dt>{labels.events}</dt>
@@ -66,7 +69,7 @@ export function ScenarioComparisonPanel({
                 </div>
                 <div>
                   <dt>{labels.deadline}</dt>
-                  <dd>{new Date(item.request.deadlineAt).toLocaleDateString()}</dd>
+                  <dd>{formatDate(item.request.deadlineAt, language)}</dd>
                 </div>
                 <div>
                   <dt>{labels.owner}</dt>

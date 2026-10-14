@@ -1,0 +1,65 @@
+/* Signed trail as a table: the keyboard-reachable text alternative to the machinery graph. */
+.trailScroll {
+  overflow-x: auto;
+  margin-top: var(--civic-space-3);
+}
+
+.trailTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.trailTable th,
+.trailTable td {
+  padding: var(--civic-space-2);
+  border-bottom: 1px solid var(--civic-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.trailTable th {
+  color: var(--civic-muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.trailTable td.trailIndex {
+  font-variant-numeric: tabular-nums;
+  color: var(--civic-muted);
+}
+
+.trailTable .trailWhen {
+  display: block;
+  color: var(--civic-muted);
+  font-size: 0.85rem;
+}
+
+.trailTable code {
+  overflow-wrap: anywhere;
+}
+
+.trailTable .proofValue code {
+  display: inline-block;
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.trailTable .proofDetails {
+  margin: 0;
+}
+
+.trailTable tr.trailProofRow td {
+  padding-top: 0;
+}
+
+.trailTable .trailMeta {
+  display: block;
+  margin-top: 2px;
+  color: var(--civic-muted);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}

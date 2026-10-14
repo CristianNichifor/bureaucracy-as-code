@@ -1,4 +1,5 @@
 import { InMemoryRequestRepository } from "../api/InMemoryRequestRepository";
+import { calculateExtendedLaw544Deadline } from "../law544/deadlines";
 import { TransitionIngestionService, createCanonicalSigningEnvelope, transitionPurpose } from "../api/transitionIngestion";
 import type { RequestRepository } from "../api/types";
 import { BrowserIdentityProvider } from "../identity/BrowserIdentityProvider";
@@ -75,8 +76,12 @@ export class DemoRuntime {
     return this.dependencies.documents;
   }
 
-  async reset(): Promise<DemoContext> {
+  // onStage reports the preparation stage (0 = journal, 1 = identities) so the UI can show progress.
+  async reset(onStage?: (stage: number) => void): Promise<DemoContext> {
+    await Promise.resolve();
+    onStage?.(0);
     await this.ledger.reset();
+    onStage?.(1);
     const context = await createInitialDemoContext(this.identity);
     return context;
   }
@@ -216,14 +221,18 @@ function createScenarioMetadata(context: DemoContext, step: GuidedScenarioStep):
   }
 
   if (step.metadata === "extension-reason") {
-    return { reason: "large-volume-public-records", legalLimit: "30-day-extension" };
+    return {
+      reason: "large-volume-public-records",
+      legalLimit: "30-day-extension",
+      extensionDeadlineAt: calculateExtendedLaw544Deadline(context.request.createdAt).slice(0, 10),
+    };
   }
 
   if (step.metadata === "deadline-warning") {
     return {
       reason: "third-party-consultation",
       legalLimit: "30-day-extension",
-      extensionDeadlineAt: "2026-10-14",
+      extensionDeadlineAt: calculateExtendedLaw544Deadline(context.request.createdAt).slice(0, 10),
       escalation: "director-visible",
     };
   }

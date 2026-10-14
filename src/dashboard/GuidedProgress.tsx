@@ -1,3 +1,4 @@
+import { describeEvent, formatAction, useLanguage } from "../locale";
 import type { ReactNode } from "react";
 import { CheckCircle2, Circle, LockKeyhole, PauseCircle, PlayCircle, SkipForward } from "lucide-react";
 import type { Dictionary } from "../i18n";
@@ -32,6 +33,7 @@ export function GuidedProgress({
   isRunningScenario: boolean;
   labels: Dictionary["guided"];
 }) {
+  const language = useLanguage();
   const currentStepIndex = getCurrentStepIndex(status, eventsCount);
   const nextStep = demoSteps[currentStepIndex];
   const complete = !nextStep;
@@ -75,9 +77,7 @@ export function GuidedProgress({
       <div className="lastRecorded" aria-live="polite">
         <span>{labels.recordedLabel}</span>
         {lastEvent ? (
-          <strong>
-            {lastEvent.action} · {lastEvent.signerRole} · {lastEvent.stateHash.slice(0, 18)}
-          </strong>
+          <strong>{describeEvent(lastEvent, language)}</strong>
         ) : (
           <strong>{labels.noRecordedEvent}</strong>
         )}
@@ -88,14 +88,14 @@ export function GuidedProgress({
             <div className="scenarioCardHeader">
               <strong>{labels.scenarios[scenario.id]}</strong>
               <span className={`status status-${scenario.finalStatus.toLowerCase()}`}>
-                {formatLaw544Status(scenario.finalStatus)}
+                {formatLaw544Status(scenario.finalStatus, language)}
               </span>
             </div>
             <p>{labels.scenarioSummaries[scenario.id]}</p>
             <dl className="scenarioFacts">
               <div>
                 <dt>{labels.scenarioOutcome}</dt>
-                <dd>{formatLaw544Status(scenario.finalStatus)}</dd>
+                <dd>{formatLaw544Status(scenario.finalStatus, language)}</dd>
               </div>
               <div>
                 <dt>{labels.scenarioEvents}</dt>
@@ -144,7 +144,7 @@ export function GuidedProgress({
               <span>
                 <strong>{stepLabels.label}</strong>
                 <small>
-                  {stepLabels.actor} {labels.signs} {step.action}
+                  {stepLabels.actor} · {formatAction(step.action, language)}
                 </small>
               </span>
             </button>
