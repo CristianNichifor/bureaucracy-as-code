@@ -6,6 +6,7 @@ import { isOverdue } from "../law544/deadlines";
 import type { Law544Request } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
 import { formatLaw544Status, getRequestLatestRole } from "./requestExplorer";
+import { detailDeadline, statusSymbols } from "./deadlineSummary";
 
 export function RequestDetail({
   request,
@@ -22,7 +23,7 @@ export function RequestDetail({
   const latestRole = getRequestLatestRole(events);
   const latestEvent = events.at(-1);
   const responsibility = getResponsibilityLabel(request, labels);
-  const deadlineSummary = getDeadlineSummary(request, labels);
+  const deadlineSummary = detailDeadline(request, labels, language);
   const handoffSteps = getHandoffSteps(request, events, labels, language);
   const evidenceState = request.responseDocumentHash
     ? request.responseDocumentHash.slice(0, 18)
@@ -38,7 +39,10 @@ export function RequestDetail({
       </div>
       <div className="detailHero">
         <div>
-          <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status, language)}</span>
+          <span className={`status status-${request.status.toLowerCase()}`}>
+            <span aria-hidden="true" className="statusSymbol">{statusSymbols[request.status]}</span>{" "}
+            {formatLaw544Status(request.status, language)}
+          </span>
           <h3>{request.id}</h3>
           <p>{localizeDemoText(request.subject, language)}</p>
         </div>
@@ -70,7 +74,7 @@ export function RequestDetail({
           <span>{labels.deadline}</span>
           <strong>{formatDate(request.deadlineAt, language)}</strong>
         </div>
-        <p>{deadlineSummary.copy}</p>
+        {deadlineSummary.copy && <p>{deadlineSummary.copy}</p>}
       </div>
       <div className="handoffPanel" aria-label={labels.handoffTitle}>
         <div className="handoffHeader">
@@ -141,44 +145,6 @@ export function RequestDetail({
   );
 }
 
-function getDeadlineSummary(
-  request: Law544Request,
-  labels: Dictionary["detail"],
-): { label: string; copy: string; tone: "closed" | "danger" | "warning" | "ok" } {
-  const dayMs = 24 * 60 * 60 * 1000;
-  const deadlineTime = new Date(request.deadlineAt).getTime();
-  const daysUntil = Math.ceil((deadlineTime - Date.now()) / dayMs);
-
-  if (request.status === "Resolved" || request.status === "Rejected") {
-    return {
-      label: labels.deadlineClosed,
-      copy: labels.daysRemaining.replace("{days}", Math.max(daysUntil, 0).toString()),
-      tone: "closed",
-    };
-  }
-
-  if (daysUntil < 0) {
-    return {
-      label: labels.deadlineOverdue,
-      copy: labels.daysOverdue.replace("{days}", Math.abs(daysUntil).toString()),
-      tone: "danger",
-    };
-  }
-
-  if (daysUntil <= 7) {
-    return {
-      label: labels.deadlineDueSoon,
-      copy: labels.daysRemaining.replace("{days}", daysUntil.toString()),
-      tone: "warning",
-    };
-  }
-
-  return {
-    label: labels.deadlineOnTrack,
-    copy: labels.daysRemaining.replace("{days}", daysUntil.toString()),
-    tone: "ok",
-  };
-}
 
 function getHandoffSteps(
   request: Law544Request,

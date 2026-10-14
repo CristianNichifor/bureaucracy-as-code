@@ -157,7 +157,9 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await expect(page.getByText("Accountability handoff")).toBeVisible();
     await expect(page.getByLabel("Accountability handoff").getByText("Officer desk")).toBeVisible();
     await expect(page.getByText("Deadline status")).toBeVisible();
-    await expect(page.getByText(/days remaining|days overdue/i).first()).toBeVisible();
+    // The full scenario ends resolved: the header says so and counts no days (BAC-17).
+    await expect(page.locator(".deadlineStrip")).toContainText("Closed");
+    await expect(page.locator(".deadlineStrip")).not.toContainText(/days? (remaining|overdue)/);
     await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Signed audit trail" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();

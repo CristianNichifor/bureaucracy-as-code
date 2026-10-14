@@ -219,7 +219,7 @@ Each item below is one screen; the acceptance criteria are what an
 implementation session turns into tests. Romanian copy in the mockups was
 written by an agent: needs human review.
 
-### BAC-16 First screen, three acts — `done` (design) / `todo` (implementation)
+### BAC-16 First screen, three acts — `done` (#119)
 
 - Given the app loads in Romanian
   When the first screen renders at 1440 and 390 px
@@ -237,7 +237,7 @@ written by an agent: needs human review.
 - Test: `tests/e2e/ux.pw.ts` (first-screen order, provenance line, family
   bar), `tests/e2e/demo.pw.ts` `@ui` (no overflow at 390).
 
-### BAC-17 Request detail with proof — `design done` / `todo` (implementation)
+### BAC-17 Request detail with proof — `done` (header words and symbol here; trail #123, verifier #122, tamper #126)
 
 - Given a request is selected (seeded `REQ-2026-0002` or the live one)
   Then one header shows id, status badge with a symbol and a word, source
@@ -259,7 +259,7 @@ written by an agent: needs human review.
 - Test: `tests/e2e/demo.pw.ts` (trail table, hash verifier states),
   `tests/e2e/accessibility.pw.ts`.
 
-### BAC-18 Public explorer — `design done` / `todo` (implementation)
+### BAC-18 Public explorer — `needs-human` for the tiles (feed, filters, empty state done in #120, workload table #124)
 
 - Given the explorer view
   Then it shows four count tiles (instituții, deschise, întârziate,
@@ -274,6 +274,9 @@ written by an agent: needs human review.
   horizontal page scroll.
 - Test: `tests/e2e/ux.pw.ts` (empty state + reset), `tests/e2e/demo.pw.ts`
   `@ui`.
+- Open: the four tiles. The operations panel counts with `getOperationsTotals`; #118's
+  `getExplorerCounts` excludes the unsubmitted draft from "open" (6) where the design counts
+  it (7). The owner decides what "open" and "overdue" mean before the tiles switch.
 
 ### BAC-19 Presenter mode — `done`
 
