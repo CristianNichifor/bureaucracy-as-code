@@ -24,6 +24,11 @@ for (const colorScheme of ["light", "dark"] as const) {
     await expect(page.getByRole("main")).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("data-theme", colorScheme);
     await expectNoA11yViolations(page);
+
+    // The tools menu starts closed, so scan its contents too.
+    await page.locator(".toolsMenu > summary").click();
+    await expect(page.getByRole("region", { name: "Demo actions" })).toBeVisible();
+    await expectNoA11yViolations(page);
   });
 
   test(`has no automated accessibility violations in Romanian in ${colorScheme} theme @a11y`, async ({ page }, testInfo) => {
