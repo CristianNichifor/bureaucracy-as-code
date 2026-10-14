@@ -83,8 +83,7 @@ export function App() {
     setChainVerification(await runtime.verifyChain());
   }, [runtime]);
 
-  const resetDemo = useCallback(async (nextMessage: string, nextTransferStatus: TransferStatus = "reset") => {
-    const nextContext = await runtime.reset();
+  const applyReset = useCallback((nextContext: DemoContext, nextMessage: string, nextTransferStatus: TransferStatus) => {
     setContext(nextContext);
     setSelectedRequestId(nextContext.request.id);
     setEvents([]);
@@ -94,11 +93,15 @@ export function App() {
     setTransferStatus(nextTransferStatus);
     setTransferDetail(nextTransferStatus === "idle" ? dictionaries.en.transferSafety.idleDetail : nextMessage);
     setMessage(nextMessage);
-  }, [runtime]);
+  }, []);
+
+  const resetDemo = useCallback(async (nextMessage: string, nextTransferStatus: TransferStatus = "reset") => {
+    applyReset(await runtime.reset(), nextMessage, nextTransferStatus);
+  }, [runtime, applyReset]);
 
   useEffect(() => {
-    void resetDemo(dictionaries.en.app.startMessage, "idle");
-  }, [resetDemo]);
+    void runtime.reset().then((nextContext) => applyReset(nextContext, dictionaries.en.app.startMessage, "idle"));
+  }, [runtime, applyReset]);
 
   useEffect(() => {
     void loadBuildInfo().then(setBuildInfo);
@@ -336,18 +339,16 @@ export function App() {
     void runAction(nextStep.id);
   }, [context, events.length, runAction]);
 
-  useEffect(() => {
-    if (!isAutoRunning || !context) return;
+  // Auto-run ends by itself once the guided steps run out.
+  const autoRunActive = isAutoRunning && context !== null
+    && demoSteps[getCurrentStepIndex(context.request.status, events.length)] !== undefined;
 
-    const nextStep = demoSteps[getCurrentStepIndex(context.request.status, events.length)];
-    if (!nextStep) {
-      setIsAutoRunning(false);
-      return;
-    }
+  useEffect(() => {
+    if (!autoRunActive) return;
 
     const timer = window.setTimeout(() => runNextStep(), 700);
     return () => window.clearTimeout(timer);
-  }, [context, events.length, isAutoRunning, runNextStep]);
+  }, [autoRunActive, runNextStep]);
 
   if (!context) {
     return (
@@ -455,7 +456,7 @@ export function App() {
               status={request.status}
               eventsCount={events.length}
               lastEvent={lastRecordedEvent}
-              isAutoRunning={isAutoRunning}
+              isAutoRunning={autoRunActive}
               isRunningScenario={isRunningScenario}
               onRunScenario={(scenarioId) => void runGuidedScenario(scenarioId)}
               onRunStep={(stepId) => void runAction(stepId)}
