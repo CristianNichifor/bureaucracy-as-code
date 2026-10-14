@@ -4,6 +4,7 @@ import {
   DEFAULT_EXPLORER_FILTERS,
   filterRequestExplorerItems,
   formatLaw544Status,
+  getExplorerCounts,
   getInstitutionOptions,
   getRequestLatestRole,
   getSelectedExplorerItem,
@@ -108,5 +109,34 @@ describe("request explorer helpers", () => {
 
   it("falls back to the first request when selected id is missing", () => {
     expect(getSelectedExplorerItem(items, "missing")?.request.id).toBe("REQ-2026-0002");
+  });
+
+  it("counts institutions, open, overdue and finished requests for the explorer tiles", () => {
+    // The seeds are dated around 2026-09-13T09:00Z.
+    expect(getExplorerCounts(items, new Date("2026-09-13T09:00:00.000Z"))).toEqual({
+      institutions: 9,
+      open: 6,
+      overdue: 1,
+      finished: 3,
+    });
+  });
+
+  it("counts open requests past their deadline as overdue", () => {
+    expect(getExplorerCounts(items, new Date("2026-09-23T09:00:00.001Z")).overdue).toBe(6);
+  });
+
+  it("leaves an unsubmitted draft out of the open count", () => {
+    const draft: RequestExplorerItem = {
+      ...items[0],
+      request: { ...items[0].request, id: "REQ-DRAFT", status: "Draft" },
+      events: [],
+      source: "active",
+    };
+    expect(getExplorerCounts([draft], new Date("2026-09-13T09:00:00.000Z"))).toEqual({
+      institutions: 1,
+      open: 0,
+      overdue: 0,
+      finished: 0,
+    });
   });
 });
