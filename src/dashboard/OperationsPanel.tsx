@@ -3,8 +3,8 @@ import { formatDate, useLanguage } from "../locale";
 import { AlertTriangle, Building2, CheckCircle2, UsersRound } from "lucide-react";
 import type { Dictionary } from "../i18n";
 import type { RequestExplorerFilters, RequestExplorerItem } from "./requestExplorer";
-import { formatLaw544Status } from "./requestExplorer";
-import { getInstitutionWorkloads, isClosed, isRequestOverdue, type InstitutionWorkload, type QueueKey } from "./institutionWorkload";
+import { formatLaw544Status, getExplorerCounts } from "./requestExplorer";
+import { getInstitutionWorkloads, type InstitutionWorkload, type QueueKey } from "./institutionWorkload";
 import "./operations.css";
 
 /**
@@ -25,7 +25,7 @@ export function OperationsPanel({
 }) {
   const language = useLanguage();
   const workloads = getInstitutionWorkloads(items);
-  const totals = getOperationsTotals(items);
+  const counts = getExplorerCounts(items);
 
   return (
     <section className="panel operationsPanel" aria-labelledby="operations-panel-title">
@@ -37,28 +37,28 @@ export function OperationsPanel({
         <span className="pill">{labels.browserOnly}</span>
       </div>
       <div className="operationsMetrics" aria-label={labels.summary}>
+        <button onClick={() => onApplyFilters({ institution: "All", status: "All" })} type="button">
+          <Building2 size={18} />
+          <span>{labels.institutions}</span>
+          <strong>{counts.institutions}</strong>
+        </button>
         <button
           onClick={() => onApplyFilters({ institution: "All", status: "All", sort: "deadline-asc" })}
           type="button"
         >
           <UsersRound size={18} />
           <span>{labels.open}</span>
-          <strong>{totals.open}</strong>
+          <strong>{counts.open}</strong>
         </button>
         <button onClick={() => onApplyFilters({ institution: "All", status: "Overdue" })} type="button">
           <AlertTriangle size={18} />
           <span>{labels.overdue}</span>
-          <strong>{totals.overdue}</strong>
+          <strong>{counts.overdue}</strong>
         </button>
         <button onClick={() => onApplyFilters({ institution: "All", status: "Resolved" })} type="button">
           <CheckCircle2 size={18} />
           <span>{labels.finalized}</span>
-          <strong>{totals.finalized}</strong>
-        </button>
-        <button onClick={() => onApplyFilters({ institution: "All", status: "All" })} type="button">
-          <Building2 size={18} />
-          <span>{labels.institutions}</span>
-          <strong>{workloads.length}</strong>
+          <strong>{counts.finished}</strong>
         </button>
       </div>
       <div className="operationsScroll">
@@ -113,17 +113,6 @@ export function OperationsPanel({
         </table>
       </div>
     </section>
-  );
-}
-
-function getOperationsTotals(items: RequestExplorerItem[]) {
-  return items.reduce(
-    (totals, item) => ({
-      open: totals.open + (isClosed(item.request) ? 0 : 1),
-      overdue: totals.overdue + (isRequestOverdue(item.request) ? 1 : 0),
-      finalized: totals.finalized + (isClosed(item.request) ? 1 : 0),
-    }),
-    { open: 0, overdue: 0, finalized: 0 },
   );
 }
 

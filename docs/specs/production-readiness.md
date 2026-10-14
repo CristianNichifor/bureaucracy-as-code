@@ -259,7 +259,7 @@ written by an agent: needs human review.
 - Test: `tests/e2e/demo.pw.ts` (trail table, hash verifier states),
   `tests/e2e/accessibility.pw.ts`.
 
-### BAC-18 Public explorer — `needs-human` for the tiles (feed, filters, empty state done in #120, workload table #124)
+### BAC-18 Public explorer — `done` (tiles here; feed, filters, empty state #120; workload table #124)
 
 - Given the explorer view
   Then it shows four count tiles (instituții, deschise, întârziate,
@@ -274,9 +274,9 @@ written by an agent: needs human review.
   horizontal page scroll.
 - Test: `tests/e2e/ux.pw.ts` (empty state + reset), `tests/e2e/demo.pw.ts`
   `@ui`.
-- Open: the four tiles. The operations panel counts with `getOperationsTotals`; #118's
-  `getExplorerCounts` excludes the unsubmitted draft from "open" (6) where the design counts
-  it (7). The owner decides what "open" and "overdue" mean before the tiles switch.
+- Tiles: `getExplorerCounts` feeds the four buttons in the design's order. Open counts the
+  live draft, as the design's worked numbers do (7 with the draft); a draft is never
+  overdue. Test: `src/dashboard/requestExplorer.test.ts`, `tests/e2e/operations.pw.ts`.
 
 ### BAC-19 Presenter mode — `done`
 
