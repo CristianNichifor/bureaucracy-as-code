@@ -2318,3 +2318,15 @@ dd {
     outline-offset: -2px;
   }
 }
+
+.familyLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.familyLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

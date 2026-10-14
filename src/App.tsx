@@ -25,6 +25,7 @@ import { LedgerIntegrityPanel } from "./dashboard/LedgerIntegrityPanel";
 import { RequestDetail } from "./dashboard/RequestDetail";
 import { EvidenceBrief } from "./dashboard/EvidenceBrief";
 import { BuildMetadata } from "./dashboard/BuildMetadata";
+import { FamilyLinks } from "./dashboard/FamilyLinks";
 import { PrivacyNotice } from "./dashboard/PrivacyNotice";
 import { ReleaseReadiness } from "./dashboard/ReleaseReadiness";
 import { PresenterChecklist } from "./dashboard/PresenterChecklist";
@@ -713,6 +714,7 @@ export function App() {
         <a href={ISSUES_URL} rel="noreferrer" target="_blank">{t.app.contact}</a>
       </nav>
       <BuildMetadata buildInfo={buildInfo} labels={t.build} />
+      <FamilyLinks labels={t.familyLinks} language={language} />
     </footer>
     </LanguageContext.Provider>
   );
