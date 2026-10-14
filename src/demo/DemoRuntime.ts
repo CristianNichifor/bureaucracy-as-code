@@ -76,8 +76,12 @@ export class DemoRuntime {
     return this.dependencies.documents;
   }
 
-  async reset(): Promise<DemoContext> {
+  // onStage reports the preparation stage (0 = journal, 1 = identities) so the UI can show progress.
+  async reset(onStage?: (stage: number) => void): Promise<DemoContext> {
+    await Promise.resolve();
+    onStage?.(0);
     await this.ledger.reset();
+    onStage?.(1);
     const context = await createInitialDemoContext(this.identity);
     return context;
   }

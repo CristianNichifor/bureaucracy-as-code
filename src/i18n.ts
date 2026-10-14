@@ -44,6 +44,24 @@ export type Dictionary = {
     transitionRecordedMessage: string;
     transitionProofMessage: string;
     transitionFailureMessage: string;
+    hubLabel: string;
+    demoBadge: string;
+    purpose: string;
+    provenanceLabel: string;
+    provenance: string;
+    nothingLeaves: string;
+    method: string;
+    lawCaveat: string;
+    source: string;
+    contact: string;
+    footerLabel: string;
+    loadingStages: string[];
+    loadingStep: string;
+    stageDone: string;
+    stageActive: string;
+    loadErrorTitle: string;
+    loadErrorCopy: string;
+    retry: string;
   };
   views: { label: string; demo: string; explorer: string; skipToDemo: string };
   progress: { label: string; step: string };
@@ -484,6 +502,24 @@ export const dictionaries: Record<Language, Dictionary> = {
         "{event}. Status moved from {fromStatus} to {toStatus}.",
       transitionProofMessage: "Proof hash {hash}; verified ledger events: {count}.",
       transitionFailureMessage: "Could not apply transition.",
+      hubLabel: "Civic projects",
+      demoBadge: "Demo data",
+      purpose: "See what happens to a request under Law 544/2001, step by step, and when the institution must answer.",
+      provenanceLabel: "Data:",
+      provenance: "synthetic demo, generated in the browser",
+      nothingLeaves: "Nothing leaves the browser",
+      method: "Method",
+      lawCaveat: "About Law 544/2001",
+      source: "Source",
+      contact: "Contact",
+      footerLabel: "About this tool",
+      loadingStages: ["Empty verifiable journal", "Demo identities and credentials"],
+      loadingStep: "Step {current} of {total}",
+      stageDone: "done",
+      stageActive: "in progress",
+      loadErrorTitle: "The local registry could not be prepared.",
+      loadErrorCopy: "The browser refused local storage, for example in private mode.",
+      retry: "Retry",
     },
     views: { label: "Views", demo: "Demo", explorer: "Explorer", skipToDemo: "Skip to the request" },
     progress: { label: "Request progress", step: "Step {current}/{total}" },
@@ -1036,7 +1072,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       startRequest: "Începe cererea",
       continueRequest: "Continuă cererea",
       tools: "Instrumente",
-      title: "Birocrație ca Software",
+      title: "Birocrație ca program",
       intro:
         "Explorer public pentru Legea 544/2001: acțiuni administrative semnate, trasee anonimizate și verificare locală a hash-ului răspunsului.",
       ledgerOk: "Registrul se verifică",
@@ -1075,6 +1111,24 @@ export const dictionaries: Record<Language, Dictionary> = {
         "{event}. Statusul a trecut de la {fromStatus} la {toStatus}.",
       transitionProofMessage: "Hash dovadă {hash}; evenimente verificate în registru: {count}.",
       transitionFailureMessage: "Tranziția nu a putut fi aplicată.",
+      hubLabel: "Proiecte civice",
+      demoBadge: "Date demonstrative",
+      purpose: "Vezi ce se întâmplă cu o cerere depusă în baza Legii 544/2001, pas cu pas, și până când trebuie să răspundă instituția.",
+      provenanceLabel: "Date:",
+      provenance: "demo sintetice, generate în browser",
+      nothingLeaves: "Nimic nu părăsește browserul",
+      method: "Metodă",
+      lawCaveat: "Despre Legea 544/2001",
+      source: "Sursa",
+      contact: "Contact",
+      footerLabel: "Despre acest instrument",
+      loadingStages: ["Jurnal verificabil gol", "Identități și credențiale demo"],
+      loadingStep: "Pasul {current} din {total}",
+      stageDone: "gata",
+      stageActive: "în curs",
+      loadErrorTitle: "Registrul local nu a putut fi pregătit.",
+      loadErrorCopy: "Browserul a refuzat stocarea locală, de exemplu în mod privat.",
+      retry: "Reîncearcă",
     },
     views: { label: "Vizualizări", demo: "Demonstrație", explorer: "Explorer", skipToDemo: "Sari la cerere" },
     progress: { label: "Progresul cererii", step: "Pasul {current}/{total}" },

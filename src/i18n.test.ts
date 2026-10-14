@@ -48,3 +48,18 @@ describe("Romanian dictionary", () => {
     expect(shape(dictionaries.ro)).toEqual(shape(dictionaries.en));
   });
 });
+
+describe("first screen shell", () => {
+  it("names the app from the civic-ui naming registry", () => {
+    expect(dictionaries.ro.app.title).toBe("Birocrație ca program");
+    expect(dictionaries.en.app.title).toBe("Bureaucracy as Code");
+  });
+
+  it("says the data is synthetic and names the hub in both languages", () => {
+    expect(dictionaries.ro.app.provenance).toContain("demo");
+    expect(dictionaries.en.app.provenance).toContain("demo");
+    expect(dictionaries.ro.app.demoBadge).toBe("Date demonstrative");
+    expect(dictionaries.ro.app.hubLabel).toBe("Proiecte civice");
+    expect(dictionaries.ro.app.loadingStages.length).toBeGreaterThan(1);
+  });
+});

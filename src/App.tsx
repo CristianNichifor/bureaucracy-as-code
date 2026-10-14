@@ -31,6 +31,7 @@ import { PresenterChecklist } from "./dashboard/PresenterChecklist";
 import { DemoCompletenessPanel } from "./dashboard/DemoCompletenessPanel";
 import { DataFlowPanel } from "./dashboard/DataFlowPanel";
 import { buildPublicAuditReceipt, buildPublicProofReport } from "./dashboard/auditReceipt";
+import { ISSUES_URL } from "./dashboard/PrivacyNotice";
 import { demoSteps, getCurrentStepIndex, type DemoStep } from "./dashboard/demoProgress";
 import { fallbackBuildInfo, loadBuildInfo, type BuildInfo } from "./buildInfo";
 import {
@@ -46,6 +47,11 @@ import { createBrowserDemoRuntime } from "./demo/DemoRuntime";
 import type { GuidedScenarioId } from "./demo/guidedScenarios";
 import { seededRequestScenarios } from "./demo/seededRequests";
 import type { ChainVerificationResult, LedgerEvent } from "./ledger/types";
+
+const HUB_URL = "https://projects.cristian-nichifor.com/";
+const REPO_URL = "https://github.com/CristianNichifor/bureaucracy-as-code";
+const METHOD_URL = `${REPO_URL}/blob/dev/docs/architecture.md`;
+const LAW_CAVEAT_URL = `${REPO_URL}/blob/dev/docs/law-544-legal-caveat.md`;
 
 const initialVerification: ChainVerificationResult = {
   valid: true,
@@ -109,6 +115,8 @@ export function App() {
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
+  const [loadStage, setLoadStage] = useState(0);
+  const [loadError, setLoadError] = useState(false);
   const [presenterMode] = useState(
     () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("presenter") === "1",
   );
@@ -143,9 +151,24 @@ export function App() {
     applyReset(await runtime.reset(), nextMessage, nextTransferStatus);
   }, [runtime, applyReset]);
 
+  // State is only set from the promise callbacks, never synchronously inside the effect.
+  const prepare = useCallback(
+    () =>
+      runtime.reset((stage) => setLoadStage(stage)).then(
+        (nextContext) => applyReset(nextContext, startMessage, "idle"),
+        () => setLoadError(true),
+      ),
+    [runtime, applyReset],
+  );
+
   useEffect(() => {
-    void runtime.reset().then((nextContext) => applyReset(nextContext, startMessage, "idle"));
-  }, [runtime, applyReset]);
+    void prepare();
+  }, [prepare]);
+
+  const retry = useCallback(() => {
+    setLoadError(false);
+    void prepare();
+  }, [prepare]);
 
   useEffect(() => {
     void loadBuildInfo().then(setBuildInfo);
@@ -153,6 +176,7 @@ export function App() {
 
   useEffect(() => {
     document.documentElement.lang = language;
+    document.title = dictionaries[language].app.title;
     saveLanguage(browserStorage(), language);
   }, [language]);
 
@@ -393,15 +417,77 @@ export function App() {
     return () => window.clearTimeout(timer);
   }, [autoRunActive, runNextStep]);
 
+  const familyBar = (
+    <header className="familyBar">
+      <div className="familyBarInner">
+        <a className="familyBarHome" href={HUB_URL}>← {t.app.hubLabel}</a>
+        <span className="familyBarTool">{t.app.title}</span>
+        <span className="demoBadge">{t.app.demoBadge}</span>
+        <div className="segmentedControls familyBarControls">
+          <div className="segmentedToggle" aria-label={t.app.languageLabel}>
+            <button aria-pressed={language === "en"} onClick={() => setLanguage("en")} type="button">
+              {t.app.english}
+            </button>
+            <button aria-pressed={language === "ro"} onClick={() => setLanguage("ro")} type="button">
+              {t.app.romanian}
+            </button>
+          </div>
+          <div className="segmentedToggle themeToggle" aria-label={t.app.themeLabel}>
+            <button aria-pressed={theme === "light"} onClick={() => setTheme("light")} title={t.app.lightTheme} type="button">
+              <Sun size={16} />
+              <span>{t.app.lightTheme}</span>
+            </button>
+            <button aria-pressed={theme === "dark"} onClick={() => setTheme("dark")} title={t.app.darkTheme} type="button">
+              <Moon size={16} />
+              <span>{t.app.darkTheme}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+
   if (!context) {
+    const total = t.app.loadingStages.length;
     return (
-      <main className="appShell loadingShell">
-        <section className="panel">
-          <p className="eyebrow">{t.app.eyebrow}</p>
-          <h1>{t.app.loadingTitle}</h1>
-          <p>{t.app.loadingCopy}</p>
-        </section>
-      </main>
+      <LanguageContext.Provider value={language}>
+        {familyBar}
+        <main className="appShell loadingShell" id="main-content">
+          <section className="panel" role="status" aria-live="polite">
+            <p className="eyebrow">{t.app.eyebrow}</p>
+            <h1>{t.app.loadingTitle}</h1>
+            <ol className="loadingStages">
+              {t.app.loadingStages.map((stage, index) => (
+                <li
+                  key={stage}
+                  aria-current={index === loadStage ? "step" : undefined}
+                  className={index < loadStage ? "done" : index === loadStage ? "current" : undefined}
+                >
+                  {stage}
+                  {index < loadStage ? ` — ${t.app.stageDone}` : index === loadStage && !loadError ? ` — ${t.app.stageActive}` : ""}
+                </li>
+              ))}
+            </ol>
+            <div className="progressBar" aria-hidden="true">
+              <span style={{ width: `${((loadStage + 1) / total) * 100}%` }} />
+            </div>
+            <p>
+              {formatMessage(t.app.loadingStep, { current: loadStage + 1, total })}. {t.app.loadingCopy}
+            </p>
+            {loadError && (
+              <div className="loadError" role="alert">
+                <p>
+                  <strong>{t.app.loadErrorTitle}</strong> {t.app.loadErrorCopy}
+                </p>
+                <button className="civicButton civicButtonPrimary" onClick={retry} type="button">
+                  <RefreshCw size={18} />
+                  {t.app.retry}
+                </button>
+              </div>
+            )}
+          </section>
+        </main>
+      </LanguageContext.Provider>
     );
   }
 
@@ -420,6 +506,7 @@ export function App() {
 
   return (
     <LanguageContext.Provider value={language}>
+    {familyBar}
     <main className="appShell" id="main-content">
       <a className="skipLink" href={view === "demo" ? "#run-request" : "#request-explorer"}>
         {view === "demo" ? t.views.skipToDemo : t.app.skipLink}
@@ -428,7 +515,11 @@ export function App() {
         <div>
           <p className="eyebrow">{t.app.eyebrow}</p>
           <h1>{t.app.title}</h1>
-          <p>{t.app.intro}</p>
+          <p className="purpose">{t.app.purpose}</p>
+          <p className="provenance">
+            <strong>{t.app.provenanceLabel}</strong> {t.app.provenance} · {t.app.nothingLeaves} ·{" "}
+            <a href={METHOD_URL} rel="noreferrer" target="_blank">{t.app.method}</a>
+          </p>
           <p className="lawExplainer">{t.app.lawExplainer}</p>
           <button className="civicButton civicButtonPrimary heroStart" onClick={() => void startRequest()} type="button">
             <PlayCircle size={18} />
@@ -436,26 +527,6 @@ export function App() {
           </button>
         </div>
         <div className="heroActions">
-          <div className="segmentedControls">
-            <div className="segmentedToggle" aria-label={t.app.languageLabel}>
-              <button aria-pressed={language === "en"} onClick={() => setLanguage("en")} type="button">
-                {t.app.english}
-              </button>
-              <button aria-pressed={language === "ro"} onClick={() => setLanguage("ro")} type="button">
-                {t.app.romanian}
-              </button>
-            </div>
-            <div className="segmentedToggle themeToggle" aria-label={t.app.themeLabel}>
-              <button aria-pressed={theme === "light"} onClick={() => setTheme("light")} title={t.app.lightTheme} type="button">
-                <Sun size={16} />
-                <span>{t.app.lightTheme}</span>
-              </button>
-              <button aria-pressed={theme === "dark"} onClick={() => setTheme("dark")} title={t.app.darkTheme} type="button">
-                <Moon size={16} />
-                <span>{t.app.darkTheme}</span>
-              </button>
-            </div>
-          </div>
           <div className="integrity">
             <ShieldCheck size={20} />
             <span>{chainVerification.valid ? t.app.ledgerOk : t.app.ledgerFailed}</span>
@@ -617,8 +688,14 @@ export function App() {
       )}
     </main>
     <footer className="appShell siteFooter">
+      <nav className="siteFooterNav" aria-label={t.app.footerLabel}>
+        <a href={METHOD_URL} rel="noreferrer" target="_blank">{t.app.method}</a>
+        <a href={LAW_CAVEAT_URL} rel="noreferrer" target="_blank">{t.app.lawCaveat}</a>
+        <PrivacyNotice labels={t.privacy} />
+        <a href={REPO_URL} rel="noreferrer" target="_blank">{t.app.source}</a>
+        <a href={ISSUES_URL} rel="noreferrer" target="_blank">{t.app.contact}</a>
+      </nav>
       <BuildMetadata buildInfo={buildInfo} labels={t.build} />
-      <PrivacyNotice labels={t.privacy} />
     </footer>
     </LanguageContext.Provider>
   );
