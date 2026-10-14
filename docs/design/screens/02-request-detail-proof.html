@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cerere REQ-2026-0002 · Birocrație ca program</title>
+<style>
+/* Civic UI 0.8 token values copied from civic-ui src/foundations.css and themes/neutral.css (dev). No external requests. */
+:root{--civic-font-sans:system-ui,-apple-system,"Segoe UI",sans-serif;--civic-space-1:.25rem;--civic-space-2:.5rem;--civic-space-3:.75rem;--civic-space-4:1rem;--civic-space-5:1.5rem;--civic-space-6:2rem;--civic-space-7:3rem;--civic-space-8:4rem;--civic-text-xs:.8125rem;--civic-text-sm:.875rem;--civic-text-md:1rem;--civic-text-lg:1.125rem;--civic-text-xl:1.25rem;--civic-text-2xl:1.5rem;--civic-text-3xl:1.875rem;--civic-radius:6px;
+--civic-bg:#f4f6f6;--civic-surface:#fff;--civic-raised:#e7eeee;--civic-text:#182b2c;--civic-muted:#475d60;--civic-border:#718588;--civic-action:#006b60;--civic-action-hover:#00564d;--civic-on-action:#fff;--civic-focus:#006b60;--civic-accent:#006b60;--civic-danger:#a31b34;--civic-on-danger:#fff;--civic-success:#146c2e;--civic-on-success:#fff;--civic-warning:#f2b300;--civic-on-warning:#241a00;--civic-info:#1f5fa8;--civic-on-info:#fff;
+--civic-viz-1:#2a78d6;--civic-viz-2:#eb6834;--civic-viz-3:#1baf7a;--civic-viz-4:#eda100;--civic-viz-5:#e87ba4;--civic-viz-6:#008300;--civic-viz-7:#4a3aa7;--civic-viz-8:#e34948;--civic-viz-seq-1:#cde2fb;--civic-viz-seq-4:#3987e5;--civic-viz-seq-7:#0d366b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--civic-bg:#142323;--civic-surface:#203332;--civic-raised:#304845;--civic-text:#f0f6f5;--civic-muted:#c0d3cf;--civic-border:#8ca8a1;--civic-action:#b5e8dc;--civic-action-hover:#d2f5eb;--civic-on-action:#142323;--civic-focus:#b5e8dc;--civic-accent:#b5e8dc;--civic-danger:#ffb9c5;--civic-on-danger:#2a0a10;--civic-success:#7fd69a;--civic-on-success:#10241a;--civic-warning:#f5c451;--civic-on-warning:#241a00;--civic-info:#9cc7f5;--civic-on-info:#0e2238;--civic-viz-1:#3987e5;--civic-viz-2:#d95926;--civic-viz-3:#199e70;--civic-viz-4:#c98500;--civic-viz-7:#9085e9;--civic-viz-8:#e66767}}
+:root[data-theme="dark"]{--civic-bg:#142323;--civic-surface:#203332;--civic-raised:#304845;--civic-text:#f0f6f5;--civic-muted:#c0d3cf;--civic-border:#8ca8a1;--civic-action:#b5e8dc;--civic-action-hover:#d2f5eb;--civic-on-action:#142323;--civic-focus:#b5e8dc;--civic-accent:#b5e8dc;--civic-danger:#ffb9c5;--civic-on-danger:#2a0a10;--civic-success:#7fd69a;--civic-on-success:#10241a;--civic-info:#9cc7f5;--civic-on-info:#0e2238}
+*{box-sizing:border-box}html{font-family:var(--civic-font-sans);color:var(--civic-text);background:var(--civic-bg);line-height:1.5;font-size:16px}
+body{margin:0;background:var(--civic-bg)}
+a{color:var(--civic-action)}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--civic-focus);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 var(--civic-space-4)}
+/* 1. family bar */
+.familyBar{background:var(--civic-surface);border-bottom:1px solid var(--civic-border)}
+.familyBar .wrap{display:flex;align-items:center;gap:var(--civic-space-4);min-height:48px;flex-wrap:wrap;padding-top:var(--civic-space-2);padding-bottom:var(--civic-space-2)}
+.familyBar .home{font-weight:600;text-decoration:none;display:inline-flex;align-items:center;min-height:24px;gap:var(--civic-space-2)}
+.familyBar .tool{color:var(--civic-muted)}.familyBar .spacer{flex:1}
+.langs{display:flex;gap:var(--civic-space-1)}.langs a{min-height:24px;padding:0 var(--civic-space-2);text-decoration:none;border-radius:var(--civic-radius)}.langs a[aria-current]{background:var(--civic-raised);font-weight:600;text-decoration:underline}
+.badge{display:inline-flex;align-items:center;gap:var(--civic-space-1);border-radius:999px;padding:2px var(--civic-space-3);font-size:var(--civic-text-xs);font-weight:600;border:1px solid transparent;min-height:24px}
+.badge-warning{background:var(--civic-warning);color:var(--civic-on-warning)}.badge-success{background:var(--civic-success);color:var(--civic-on-success)}.badge-neutral{background:var(--civic-raised);color:var(--civic-text);border-color:var(--civic-border)}.badge-danger{background:var(--civic-danger);color:var(--civic-on-danger)}.badge-info{background:var(--civic-info);color:var(--civic-on-info)}
+/* 2-3. H1, purpose, provenance */
+h1{font-size:var(--civic-text-3xl);line-height:1.15;margin:var(--civic-space-5) 0 var(--civic-space-2)}
+h2{font-size:var(--civic-text-xl);margin:0 0 var(--civic-space-2)}h3{font-size:var(--civic-text-md);margin:0 0 var(--civic-space-2)}
+.purpose{font-size:var(--civic-text-lg);margin:0 0 var(--civic-space-3);max-width:70ch}
+.provenance{font-size:var(--civic-text-sm);color:var(--civic-muted);margin:0 0 var(--civic-space-5);display:flex;flex-wrap:wrap;gap:var(--civic-space-2) var(--civic-space-3);align-items:center}
+.provenance time{font-variant-numeric:tabular-nums}
+/* panels, grids */
+.panel{background:var(--civic-surface);border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-4)}
+.grid{display:grid;gap:var(--civic-space-4)}.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+.stack{display:grid;gap:var(--civic-space-3)}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:var(--civic-space-1) var(--civic-space-4);font-size:var(--civic-text-sm);margin:0}
+.kv dt{color:var(--civic-muted)}.kv dd{margin:0;overflow-wrap:anywhere}
+code,.hash{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:var(--civic-text-xs);overflow-wrap:anywhere}
+.muted{color:var(--civic-muted)}.small{font-size:var(--civic-text-sm)}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--civic-space-2);min-height:44px;padding:0 var(--civic-space-5);border-radius:var(--civic-radius);border:1px solid var(--civic-action);background:var(--civic-action);color:var(--civic-on-action);font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--civic-action-hover)}.btn-secondary{background:var(--civic-surface);color:var(--civic-action)}.btn-sm{min-height:32px;padding:0 var(--civic-space-3);font-weight:500}
+.btn[aria-disabled="true"]{opacity:.55;cursor:default}
+/* status message */
+.status{display:flex;gap:var(--civic-space-3);align-items:flex-start;border-radius:var(--civic-radius);padding:var(--civic-space-3) var(--civic-space-4);border:1px solid var(--civic-border);background:var(--civic-surface);border-left-width:6px}
+.status-error{border-left-color:var(--civic-danger)}.status-success{border-left-color:var(--civic-success)}.status-info{border-left-color:var(--civic-info)}.status-warning{border-left-color:var(--civic-warning)}
+.status .icon{font-weight:700;flex:none;width:24px;text-align:center}.status p{margin:0}.status .actions{margin-top:var(--civic-space-2)}
+/* act progress */
+.acts{display:flex;gap:var(--civic-space-2);list-style:none;padding:0;margin:0 0 var(--civic-space-4);counter-reset:act}
+.acts li{flex:1;border-top:4px solid var(--civic-border);padding-top:var(--civic-space-2);font-size:var(--civic-text-sm);min-height:44px}
+.acts li a{display:block;text-decoration:none;color:inherit}.acts li[aria-current] {border-top-color:var(--civic-action);font-weight:600}.acts li.done{border-top-color:var(--civic-success)}
+/* steps list (act 1) */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:var(--civic-space-2)}
+.steps li{display:grid;grid-template-columns:28px 1fr auto;gap:var(--civic-space-3);align-items:center;padding:var(--civic-space-2) var(--civic-space-3);border:1px solid var(--civic-border);border-radius:var(--civic-radius);min-height:44px}
+.steps .n{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--civic-text-sm);border:2px solid var(--civic-border)}
+.steps li.done .n{background:var(--civic-success);color:var(--civic-on-success);border-color:var(--civic-success)}
+.steps li.current{border-color:var(--civic-action);border-width:2px}.steps li.current .n{border-color:var(--civic-action);color:var(--civic-action)}
+.steps .actor{color:var(--civic-muted);font-size:var(--civic-text-sm);display:block}
+/* handoff lane (act 2) */
+.lane{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--civic-space-2);list-style:none;padding:0;margin:0}
+.lane li{border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-2) var(--civic-space-3);font-size:var(--civic-text-sm);min-height:72px;background:var(--civic-surface)}
+.lane li strong{display:block}.lane li.done{border-left:6px solid var(--civic-viz-1)}.lane li.current{border:2px solid var(--civic-viz-2);background:var(--civic-raised)}.lane li.waiting{border-style:dashed;color:var(--civic-muted)}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:var(--civic-text-sm)}th,td{text-align:left;padding:var(--civic-space-2);border-bottom:1px solid var(--civic-border);vertical-align:top}th{color:var(--civic-muted);font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.tableScroll{overflow-x:auto}
+/* forms */
+label{font-size:var(--civic-text-sm);font-weight:600;display:block;margin-bottom:var(--civic-space-1)}
+input,select{font:inherit;min-height:44px;padding:0 var(--civic-space-3);border:1px solid var(--civic-border);border-radius:var(--civic-radius);background:var(--civic-surface);color:var(--civic-text);width:100%}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:var(--civic-space-3);align-items:end}
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--civic-space-3);list-style:none;padding:0;margin:0}
+.stats li{background:var(--civic-surface);border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-3) var(--civic-space-4)}
+.stats .v{font-size:var(--civic-text-2xl);font-weight:700;font-variant-numeric:tabular-nums;display:block}.stats .l{font-size:var(--civic-text-sm);color:var(--civic-muted)}
+/* progress (loading) */
+.progress{height:8px;background:var(--civic-raised);border-radius:999px;overflow:hidden;border:1px solid var(--civic-border)}.progress span{display:block;height:100%;background:var(--civic-action)}
+/* footer */
+footer{margin-top:var(--civic-space-7);border-top:1px solid var(--civic-border);background:var(--civic-surface);font-size:var(--civic-text-sm)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--civic-space-3) var(--civic-space-5);padding-top:var(--civic-space-4);padding-bottom:var(--civic-space-4)}footer a{min-height:24px;display:inline-flex;align-items:center}
+/* mockup chrome */
+.note{background:var(--civic-raised);border:1px dashed var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-2) var(--civic-space-3);font-size:var(--civic-text-xs);color:var(--civic-muted);margin:var(--civic-space-5) 0 var(--civic-space-3)}
+.note strong{color:var(--civic-text)}
+section.screen{margin-top:var(--civic-space-5)}
+.skip{position:absolute;left:-999px}.skip:focus{left:var(--civic-space-4);top:var(--civic-space-2);background:var(--civic-surface);padding:var(--civic-space-2);z-index:2}
+@media (max-width:640px){.grid-2,.grid-3,.grid-4,.filters{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.lane{grid-template-columns:1fr}.acts{flex-direction:column}.acts li{border-top:none;border-left:4px solid var(--civic-border);padding:var(--civic-space-1) var(--civic-space-3)}.acts li[aria-current]{border-left-color:var(--civic-action)}.acts li.done{border-left-color:var(--civic-success)}h1{font-size:var(--civic-text-2xl)}.kv{grid-template-columns:1fr}.kv dt{margin-top:var(--civic-space-2)}.steps li{grid-template-columns:28px 1fr}.steps li .btn{grid-column:2}.btn-block-m{width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (forced-colors:active){.badge,.btn,.panel,.steps li,.lane li{border:1px solid CanvasText}.acts li[aria-current]{text-decoration:underline}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Sari la conținut</a>
+<header class="familyBar" role="banner"><div class="wrap">
+<a class="home" href="https://projects.cristian-nichifor.com/">← Proiecte civice</a>
+<span class="tool">Birocrație ca program</span>
+<span class="badge badge-warning">Date demonstrative</span>
+<span class="spacer"></span>
+<nav class="langs" aria-label="Limbă"><a href="#" aria-current="page" lang="ro">Română</a><a href="#" lang="en">English</a></nav>
+<button class="btn btn-secondary btn-sm" type="button" aria-pressed="false">Temă: luminos</button>
+</div></header>
+<main id="main" class="wrap">
+<h1>Birocrație ca program</h1>
+<p class="purpose">Vezi ce se întâmplă cu o cerere depusă în baza Legii 544/2001, pas cu pas, și până când trebuie să răspundă instituția.</p>
+<p class="provenance"><span><strong>Date:</strong> demo sintetice, generate în browser</span><span>·</span><span>Nimic nu părăsește browserul</span><span>·</span><a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/architecture.md">Metodă</a></p>
+<ol class="acts" aria-label="Progresul cererii">
+  <li class="done"><a href="#act-1">1 · Cererea <span class="muted small">pasul 6/6</span></a></li>
+  <li aria-current="step"><a href="#act-2">2 · Mecanismul <span class="muted small">cine a răspuns</span></a></li>
+  <li><a href="#act-3">3 · Dovada <span class="muted small">verifică local</span></a></li>
+</ol>
+<section id="act-2" aria-labelledby="h-act2">
+  <h2 id="h-act2">Mecanismul</h2>
+  <p class="muted" style="margin-top:0">Cine răspunde acum de dosar, cum a trecut responsabilitatea de la un birou la altul și ce a semnat fiecare.</p>
+  <div class="panel" style="margin-bottom:var(--civic-space-4)">
+    <div style="display:flex;flex-wrap:wrap;gap:var(--civic-space-2) var(--civic-space-4);align-items:center">
+      <h3 style="margin:0">Cerere <code style="font-size:var(--civic-text-md)">REQ-2026-0002</code></h3>
+      <span class="badge badge-success">Soluționată</span>
+      <span class="badge badge-neutral">exemplu public preîncărcat</span>
+      <span class="badge badge-warning">Date demonstrative</span>
+    </div>
+    <p style="margin:var(--civic-space-2) 0">Execuția bugetară a unui program de drumuri județene · Ministerul Finanțelor · nr. registru <code>MF-544-2026-0002</code></p>
+    <div class="grid grid-3">
+      <dl class="kv"><dt>Depusă</dt><dd><time datetime="2026-08-26">26 august 2026</time></dd><dt>Termen legal</dt><dd><time datetime="2026-09-05">5 septembrie 2026</time> (10 zile)</dd><dt>Status termen</dt><dd><span class="badge badge-success">✓ Închisă</span> răspuns comunicat pe <time datetime="2026-09-04">4 septembrie 2026</time></dd></dl>
+      <dl class="kv"><dt>Birou responsabil</dt><dd>Răspuns final (Funcționar public)</dd><dt>Ultima acțiune semnată</dt><dd>Răspuns comunicat, semnat de Funcționar public</dd><dt>Evenimente</dt><dd>5 semnate, lanț verificat</dd></dl>
+      <dl class="kv"><dt>Ce poți verifica</dt><dd>Hash răspuns disponibil: compară fișierul primit în actul 3</dd><dt>Următorul pas</dt><dd>Cetățeanul poate verifica dovada și hash-ul răspunsului.</dd></dl>
+    </div>
+  </div>
+  <h3>Predarea responsabilității <span class="muted small">(graful mecanismului; lista de mai jos este alternativa text)</span></h3>
+  <ol class="lane" aria-label="Predare responsabilitate">
+    <li class="done"><strong>Cetățean</strong>Cerere depusă<br><span class="muted">26 aug. 2026 · ✓ semnat</span></li>
+    <li class="done"><strong>Registratură</strong>Număr de registru alocat<br><span class="muted">27 aug. 2026 · ✓ semnat</span></li>
+    <li class="done"><strong>Director</strong>Repartizată unui funcționar public<br><span class="muted">28 aug. 2026 · ✓ semnat</span></li>
+    <li class="done"><strong>Funcționar public</strong>Procesare începută<br><span class="muted">29 aug. 2026 · ✓ semnat</span></li>
+    <li class="current"><strong>Răspuns final</strong>Răspuns comunicat<br><span>4 sept. 2026 · ● responsabil curent</span></li>
+  </ol>
+  <p class="small muted">Fără rută internă specială (prelungire, redirecționare, refuz, întârziere) înregistrată pentru această cerere.</p>
+  <details class="panel" open><summary style="font-weight:600;cursor:pointer;min-height:24px">Traseu de audit semnat (5 evenimente) — afișat ca tabel</summary>
+  <p class="small muted">Fiecare rând este o tranziție administrativă semnată, legată de starea precedentă prin hash-uri. Hash-urile de mai jos sunt valorile din datele demo preîncărcate.</p>
+  <div class="tableScroll"><table>
+    <thead><tr><th>#</th><th>Acțiune</th><th>Stare</th><th>Semnatar</th><th>Data</th><th>Hash stare</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>Cerere depusă</td><td>Ciornă → Depusă</td><td>Cetățean</td><td><time datetime="2026-08-26">26.08.2026</time></td><td><code>REQ-2026-00020ddd…ddd</code> <button class="btn btn-secondary btn-sm" type="button">Copiază</button></td></tr>
+      <tr><td>1</td><td>Număr de registru alocat</td><td>Depusă → Înregistrată</td><td>Registratură</td><td><time datetime="2026-08-27">27.08.2026</time></td><td><code>REQ-2026-00021ddd…ddd</code> <button class="btn btn-secondary btn-sm" type="button">Copiază</button></td></tr>
+      <tr><td>2</td><td>Repartizată unui funcționar public</td><td>Înregistrată → Repartizată</td><td>Director</td><td><time datetime="2026-08-28">28.08.2026</time></td><td><code>REQ-2026-00022ddd…ddd</code> <button class="btn btn-secondary btn-sm" type="button">Copiază</button></td></tr>
+      <tr><td>3</td><td>Procesare începută</td><td>Repartizată → În lucru</td><td>Funcționar public</td><td><time datetime="2026-08-29">29.08.2026</time></td><td><code>REQ-2026-00023ddd…ddd</code> <button class="btn btn-secondary btn-sm" type="button">Copiază</button></td></tr>
+      <tr><td>4</td><td>Răspuns comunicat</td><td>În lucru → Soluționată</td><td>Funcționar public</td><td><time datetime="2026-09-04">04.09.2026</time></td><td><code>REQ-2026-00024ddd…ddd</code> <button class="btn btn-secondary btn-sm" type="button">Copiază</button></td></tr>
+    </tbody></table></div>
+  <details style="margin-top:var(--civic-space-3)"><summary class="small" style="min-height:24px;cursor:pointer">Dovada evenimentului 4 (toate câmpurile)</summary>
+    <dl class="kv" style="margin-top:var(--civic-space-2)"><dt>Cod eveniment</dt><dd><code>Request_Resolved</code></dd><dt>Hash DID semnatar</dt><dd><code>PublicServantREQ-2026-00024bbbb…</code></dd><dt>Hash credențial</dt><dd><code>PublicServantREQ-2026-00024cccc…</code></dd><dt>Hash payload</dt><dd><code>REQ-2026-00024aaaa…</code></dd><dt>Hash stare precedentă</dt><dd><code>REQ-2026-00023dddd…</code></dd><dt>Hash stare</dt><dd><code>REQ-2026-00024ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</code></dd><dt>Hash document</dt><dd><code>finance-responseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</code></dd><dt>Semnătură</dt><dd><code>demo-signature-REQ-2026-0002-4</code></dd></dl>
+  </details>
+  </details>
+</section>
+
+<section id="act-3" aria-labelledby="h-act3" style="margin-top:var(--civic-space-6)">
+  <h2 id="h-act3">Dovada</h2>
+  <p class="muted" style="margin-top:0">Compară local fișierul primit cu amprenta (hash) înregistrată și verifică integritatea jurnalului. Niciun fișier nu părăsește browserul.</p>
+  <div class="grid grid-2">
+    <div class="panel">
+      <h3>Verifică răspunsul primit</h3>
+      <p class="small">Alege fișierul răspuns primit de la instituție. Browserul îi calculează amprenta (hash) local și o compară cu cea înregistrată pentru <code>REQ-2026-0002</code>.</p>
+      <dl class="kv"><dt>Hash în registru</dt><dd><code>finance-responseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</code></dd><dt>Hash fișier selectat</dt><dd>—</dd></dl>
+      <p><button class="btn" type="button">Alege fișier</button></p>
+      <p class="status status-info" role="status"><span class="icon" aria-hidden="true">i</span><span>În așteptarea unui fișier.</span></p>
+      <p class="note" style="margin:var(--civic-space-3) 0 0"><strong>Other states, same slot:</strong></p>
+      <p class="status status-success" role="status"><span class="icon" aria-hidden="true">✓</span><span><strong>Fișierul corespunde.</strong> Amprenta fișierului selectat este identică cu hash-ul răspunsului înregistrat.</span></p>
+      <p class="status status-error" role="alert"><span class="icon" aria-hidden="true">!</span><span><strong>Fișierul nu corespunde.</strong> Amprenta calculată diferă de hash-ul înregistrat; fișierul este altul sau a fost modificat. <br><button class="btn btn-secondary btn-sm" type="button" style="margin-top:var(--civic-space-2)">Alege alt fișier</button></span></p>
+    </div>
+    <div class="stack">
+      <div class="panel">
+        <h3>Integritatea jurnalului verificabil</h3>
+        <p class="status status-success" role="status"><span class="icon" aria-hidden="true">✓</span><span><strong>Lanțul de hash-uri se verifică.</strong> 5 evenimente verificate; capăt curent <code>REQ-2026-00024ddd…</code>.</span></p>
+        <p class="small">Fiecare eveniment trimite la hash-ul stării precedente. În producție, capătul lanțului ar fi publicat extern.</p>
+        <button class="btn btn-secondary btn-sm" type="button">Testează un export modificat</button>
+        <p class="note" style="margin:var(--civic-space-3) 0 0"><strong>Tampered state (after the test):</strong></p>
+        <p class="status status-error" role="alert"><span class="icon" aria-hidden="true">!</span><span><strong>Verificarea a eșuat.</strong> Exportul modificat a fost respins înainte să înlocuiască starea locală: semnătura evenimentului 4 nu corespunde rolului declarat. <br><button class="btn btn-secondary btn-sm" type="button" style="margin-top:var(--civic-space-2)">Revino la starea verificată</button></span></p>
+      </div>
+      <div class="panel">
+        <h3>Dovezi exportabile</h3>
+        <dl class="kv"><dt>Dovada selectată</dt><dd>5 evenimente în dovadă · <code>REQ-2026-0002-audit-receipt.json</code></dd><dt>Raport vizibil</dt><dd>10 cereri · 37 evenimente semnate <span class="muted">(valorile curente din explorer)</span></dd><dt>Limita de confidențialitate</dt><dd>Nu include documente brute, chei private sau date personale.</dd></dl>
+        <p style="margin-bottom:0"><button class="btn btn-secondary" type="button">Exportă dovada</button> <button class="btn btn-secondary" type="button">Verifică o dovadă primită</button></p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer role="contentinfo"><div class="wrap">
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/architecture.md">Metodă</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/law-544-legal-caveat.md">Despre Legea 544/2001</a>
+<a href="#privacy">Confidențialitate</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code">Sursa</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/issues">Contact</a>
+<span class="muted">Versiune publicată: <code>—</code> · construită <time datetime="—">—</time></span>
+</div></footer>
+</body>
+</html>
