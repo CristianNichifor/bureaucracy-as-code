@@ -1,20 +1,24 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Dictionary } from "../i18n";
 import { IndexedDbDocumentStore } from "../storage/IndexedDbDocumentStore";
+import { HashCheckResult } from "./HashCheckResult";
+import { getHashCheckState } from "./hashCheck";
 
 const store = new IndexedDbDocumentStore();
 
 export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; labels: Dictionary["hash"] }) {
   const [actualHash, setActualHash] = useState<string>("");
+  const fileInput = useRef<HTMLInputElement>(null);
 
   async function onFile(file?: File) {
     if (!file) return;
     setActualHash(await store.hashFile(file));
   }
 
-  const verified = Boolean(expectedHash && actualHash && expectedHash === actualHash);
-  const mismatch = Boolean(expectedHash && actualHash && expectedHash !== actualHash);
-  const status = verified ? labels.verified : mismatch ? labels.mismatch : actualHash ? labels.local : labels.waiting;
+  const state = getHashCheckState(expectedHash, actualHash);
+  const verified = state === "match";
+  const mismatch = state === "mismatch";
+  const status = verified ? labels.verified : mismatch ? labels.mismatch : state === "local" ? labels.local : labels.waiting;
 
   return (
     <section className="panel verifierPanel">
@@ -29,7 +33,7 @@ export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; 
       </div>
       <label className="civicButton civicButtonSecondary fileButton">
         {labels.chooseFile}
-        <input aria-label={labels.chooseFile} type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
+        <input ref={fileInput} aria-label={labels.chooseFile} type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
       </label>
       <dl>
         <div>
@@ -41,8 +45,7 @@ export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; 
           <dd>{actualHash || labels.chooseFileToVerify}</dd>
         </div>
       </dl>
-      {mismatch ? <p className="danger">{labels.mismatch}</p> : null}
-      {verified ? <p className="okText">{labels.match}</p> : null}
+      <HashCheckResult state={state} labels={labels} onChooseAgain={() => fileInput.current?.click()} />
     </section>
   );
 }
