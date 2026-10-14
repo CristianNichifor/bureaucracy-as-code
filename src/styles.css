@@ -2301,3 +2301,41 @@ dd {
 .dashboardSection {
   scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-4));
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .status,
+  .pill,
+  .civicButton,
+  .segmentedToggle button,
+  .panel,
+  .feedRow {
+    border: 1px solid CanvasText;
+  }
+
+  button[aria-pressed="true"],
+  .feedRow.selected {
+    forced-color-adjust: none;
+    color: HighlightText;
+    background: Highlight;
+  }
+
+  :focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .skipLink {
+    border-color: ButtonText;
+  }
+}

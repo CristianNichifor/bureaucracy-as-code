@@ -41,6 +41,7 @@ import {
   type RequestExplorerItem,
 } from "./dashboard/requestExplorer";
 import { MachineryGraph } from "./graph/MachineryGraph";
+import { scrollBehavior } from "./a11y/motion";
 import type { DemoContext } from "./demo/scenarioLaw544";
 import { createBrowserDemoRuntime } from "./demo/DemoRuntime";
 import type { GuidedScenarioId } from "./demo/guidedScenarios";
@@ -367,7 +368,7 @@ export function App() {
 
   async function startRequest() {
     if (context?.request.status === "Draft") await runAction("create");
-    document.getElementById("run-request")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("run-request")?.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
   }
 
   const runNextStep = useCallback(() => {
