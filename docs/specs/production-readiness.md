@@ -252,7 +252,10 @@ written by an agent: needs human review.
   mismatch (`role="alert"` with "Alege alt fișier").
 - Given the tamper test runs
   Then the integrity panel reads "Verificarea a eșuat" with the reason and a
-  way back to the verified state; never an icon alone.
+  way back to the verified state; never an icon alone. (Done: the panel shows a
+  `role="alert"` result with the rejection reason, says the stored chain is
+  unchanged, and offers "Înapoi la lanțul verificat"; the chain pill stays valid
+  because the edited copy never enters the ledger.)
 - Test: `tests/e2e/demo.pw.ts` (trail table, hash verifier states),
   `tests/e2e/accessibility.pw.ts`.
 

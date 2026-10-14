@@ -94,6 +94,8 @@ export function App() {
   const [context, setContext] = useState<DemoContext | null>(null);
   const [events, setEvents] = useState<LedgerEvent[]>([]);
   const [chainVerification, setChainVerification] = useState<ChainVerificationResult>(initialVerification);
+  // The last tamper test, tied to the event count it ran against: any new event or reset hides it.
+  const [tamperResult, setTamperResult] = useState<{ reason?: string; eventCount: number } | null>(null);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filters, setFilters] = useState<RequestExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
   const [language, setLanguage] = useState<Language>(() =>
@@ -293,6 +295,7 @@ export function App() {
     } catch (error) {
       await refresh();
       const reason = error instanceof Error ? error.message : undefined;
+      setTamperResult({ reason, eventCount: events.length });
       sayTransfer("rejected", (t) =>
         reason ? formatMessage(t.app.tamperWorkedMessage, { reason }) : t.app.tamperWorkedFallbackMessage,
       );
@@ -634,7 +637,14 @@ export function App() {
                 />
                 <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
                 <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
-                <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
+                <LedgerIntegrityPanel
+                  verification={chainVerification}
+                  events={events}
+                  onTamperDemo={() => void runTamperDemo()}
+                  tamperResult={tamperResult?.eventCount === events.length ? tamperResult : null}
+                  onDismissTamper={() => setTamperResult(null)}
+                  labels={t.integrity}
+                />
               </div>
             </DashboardSection>
           </div>

@@ -423,10 +423,22 @@ test("runs the guided Law 544 flow and proves edited exports are refused", async
   await expect(page.locator(".timelinePanel").getByText("Public servant", { exact: true }).first()).toBeVisible();
 
   await page.getByRole("button", { name: /test edited export/i }).click();
+
+  // BAC-17: the integrity panel itself says the edited copy failed, why, and how to go back.
+  const integrity = page.locator(".integrityPanel");
+  const tamperResult = integrity.getByRole("alert");
+  await expect(tamperResult).toContainText("Verification failed");
+  await expect(tamperResult.locator(".tamperReason")).not.toBeEmpty();
+  await expect(tamperResult).toContainText("the stored chain is unchanged");
+
   await openTools(page);
   await expect(page.locator(".message")).toContainText(/Tamper demo worked/i);
   await expect(page.getByRole("region", { name: "Transfer safety" }).locator(".pill").filter({ hasText: "rejected" })).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
+
+  await integrity.getByRole("button", { name: "Back to the verified chain" }).click();
+  await expect(integrity.getByRole("alert")).toHaveCount(0);
+  await expect(integrity.getByText("Hash chain verifies")).toBeVisible();
 });
 
 test("supports step and auto-run timeline controls", async ({ page }, testInfo) => {

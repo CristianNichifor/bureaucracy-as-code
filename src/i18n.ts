@@ -119,6 +119,10 @@ export type Dictionary = {
     noEvents: string;
     none: string;
     tamperButton: string;
+    tamperFailedTitle: string;
+    tamperFallbackReason: string;
+    tamperChainUnchanged: string;
+    backToVerified: string;
   };
   transferSafety: {
     title: string;
@@ -652,6 +656,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       noEvents: "No events yet",
       none: "None",
       tamperButton: "Test edited export",
+      tamperFailedTitle: "Verification failed",
+      tamperFallbackReason: "The edited export no longer matches its signed hashes.",
+      tamperChainUnchanged: "The edited copy was rejected; the stored chain is unchanged.",
+      backToVerified: "Back to the verified chain",
     },
     transferSafety: {
       title: "Transfer safety",
@@ -1268,6 +1276,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       noEvents: "Niciun eveniment",
       none: "Niciunul",
       tamperButton: "Testează export modificat",
+      tamperFailedTitle: "Verificarea a eșuat",
+      tamperFallbackReason: "Exportul modificat nu mai corespunde hash-urilor semnate.",
+      tamperChainUnchanged: "Copia modificată a fost respinsă; lanțul stocat nu s-a schimbat.",
+      backToVerified: "Înapoi la lanțul verificat",
     },
     transferSafety: {
       title: "Siguranța transferului",
