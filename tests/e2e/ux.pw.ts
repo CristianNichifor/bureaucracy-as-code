@@ -25,6 +25,7 @@ test("leads the first screen with one primary action and the Law 544 terms", asy
   await page.goto("./");
 
   const hero = page.locator(".hero");
+  await expect(hero).toBeVisible();
   await expect(hero).toContainText("10 days");
   await expect(hero).toContainText("30");
   await expect(hero.getByRole("button", { name: "Start the request" })).toBeVisible();
@@ -35,7 +36,7 @@ test("leads the first screen with one primary action and the Law 544 terms", asy
 
   await page.getByText("Tools", { exact: true }).click();
   const tools = page.getByRole("region", { name: "Demo actions" });
-  for (const name of ["Export state", "Export receipt", "Export report", "Import", "Reset"]) {
+  for (const name of ["Export state", "Export receipt", "Export proof report", "Import", "Reset"]) {
     await expect(tools.getByRole("button", { name })).toBeVisible();
   }
   await expect(page.getByRole("heading", { name: "Transfer safety" })).toBeVisible();
@@ -85,6 +86,7 @@ test("shows no English and Romanian dates in Romanian mode", async ({ page }, te
 
 test("writes English dates without the US numeric format", async ({ page }) => {
   await page.goto("./");
+  await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
 
   const text = await page.evaluate(() => document.body.innerText);
   expect(text).toMatch(/\b\d{1,2} [A-Z][a-z]{2,3} \d{4}\b/);

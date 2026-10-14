@@ -91,7 +91,7 @@ table in `docs/production-readiness.md`.
 
 ## Theme D — UX review follow-up
 
-### BAC-9 Law 544/2001 deadlines — `todo`
+### BAC-9 Law 544/2001 deadlines — `done`
 
 Law 544/2001 art. 7(1): the answer is due "în termen de 10 zile sau, după caz,
 în cel mult 30 de zile de la înregistrarea solicitării"; the longer term needs
@@ -115,7 +115,7 @@ text on legislatie.just.ro, 2026-10-14.)
 Tests: `src/law544/deadlines.test.ts`, `src/demo/DemoRuntime.test.ts`,
 `src/demo/seededRequests.test.ts`.
 
-### BAC-10 Dates follow the chosen language — `todo`
+### BAC-10 Dates follow the chosen language — `done`
 
 - Given Romanian is selected
   When a deadline or timestamp is shown
@@ -127,7 +127,7 @@ Tests: `src/law544/deadlines.test.ts`, `src/demo/DemoRuntime.test.ts`,
 Tests: `src/locale.test.ts`; `tests/e2e/ux.pw.ts` (an `en-US` browser in RO
 shows dd.mm.yyyy).
 
-### BAC-11 No English left in Romanian mode — `todo`
+### BAC-11 No English left in Romanian mode — `done` (new Romanian labels: needs human review)
 
 - Given Romanian is selected and the full scenario has run
   When the visible page text is read
@@ -146,7 +146,7 @@ both languages); `tests/e2e/ux.pw.ts`.
 Seeded institution names and request subjects are demo data and stay in
 English (needs human decision).
 
-### BAC-12 A first screen with one primary action — `todo`
+### BAC-12 A first screen with one primary action — `done`
 
 - Given a first visit
   When the page loads
