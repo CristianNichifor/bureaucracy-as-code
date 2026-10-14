@@ -58,13 +58,13 @@ describe("request explorer helpers", () => {
 
     expect(directorSigned.map((item) => item.request.id)).toEqual([
       "REQ-2026-0006",
-      "REQ-2026-0010",
-      "REQ-2026-0005",
       "REQ-2026-0002",
-      "REQ-2026-0009",
       "REQ-2026-0007",
       "REQ-2026-0008",
+      "REQ-2026-0010",
       "REQ-2026-0003",
+      "REQ-2026-0009",
+      "REQ-2026-0005",
     ]);
   });
 

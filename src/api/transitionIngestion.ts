@@ -1,4 +1,5 @@
 import type { IdentityProvider } from "../identity/types";
+import { calculateExtendedLaw544Deadline } from "../law544/deadlines";
 import { assertAllowedTransition } from "../law544/stateMachine";
 import type { Law544Request, TransitionRule } from "../law544/types";
 import type { LedgerProvider } from "../ledger/types";
@@ -252,6 +253,10 @@ function applyTransitionToRequest(input: {
   return {
     ...input.request,
     status: input.toStatus,
+    deadlineAt:
+      input.payload.action === "Extension_Requested"
+        ? calculateExtendedLaw544Deadline(input.request.createdAt)
+        : input.request.deadlineAt,
     registryNumber: input.payload.metadata?.registryNumber ?? input.request.registryNumber,
     assignedToDidHash: input.payload.metadata?.assignedToDidHash ?? input.request.assignedToDidHash,
     responseDocumentHash:
