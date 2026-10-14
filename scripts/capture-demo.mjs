@@ -102,7 +102,7 @@ try {
     {
       const { context, page } = await openDemoPage(browser, { width: 390, height: 844 });
       await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
-      await page.getByRole("heading", { name: "Birocratie ca Software", level: 1 }).waitFor({ state: "visible" });
+      await page.getByRole("heading", { name: "Birocrație ca Software", level: 1 }).waitFor({ state: "visible" });
       await capture(page, "04-romanian-mobile.png");
       await context.close();
     }

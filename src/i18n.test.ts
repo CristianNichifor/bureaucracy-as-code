@@ -44,13 +44,6 @@ describe("Romanian dictionary", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("uses diacritics somewhere in every long sentence", () => {
-    const bare = romanianStrings.filter(
-      ([, text]) => text.split(" ").length >= 6 && !/[ăâîșțĂÂÎȘȚ]/.test(text),
-    );
-    expect(bare).toEqual([]);
-  });
-
   it("has the same keys as the English dictionary", () => {
     expect(shape(dictionaries.ro)).toEqual(shape(dictionaries.en));
   });

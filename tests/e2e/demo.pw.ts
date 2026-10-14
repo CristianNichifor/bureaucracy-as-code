@@ -258,23 +258,23 @@ test("switches the public dashboard between English and Romanian", async ({ page
 
   await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
 
-  await expect(page.getByRole("heading", { name: "Birocratie ca Software", level: 1 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Ruleaza cererea" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Rulează cererea" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Incarcare institutii" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Comparatie scenarii" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Siguranta transferului" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Încărcare instituții" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comparație scenarii" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Siguranța transferului" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Rezumat public al dovezilor" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Responsabilitate pe cerere" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Completitudine demo" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Pregatire release" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pregătire release" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Checklist prezentare" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Depune cererea/i })).toBeVisible();
-  await expect(page.getByText("Ciclul normal al cererii, cu dovada si hash pentru raspunsul final.")).toBeVisible();
+  await expect(page.getByText("Ciclul normal al cererii, cu dovadă și hash pentru răspunsul final.")).toBeVisible();
   await expect(page.getByText("Status termen")).toBeVisible();
-  await expect(page.getByRole("region", { name: "Actiuni demo" }).getByRole("button", { name: "Exporta dovada" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Acțiuni demo" }).getByRole("button", { name: "Exportă dovada" })).toBeVisible();
 });
 
 test("switches and persists light and dark themes", async ({ page }) => {
