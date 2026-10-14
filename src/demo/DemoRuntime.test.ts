@@ -32,6 +32,16 @@ describe("DemoRuntime", () => {
     memoryLedger = new TestMemoryLedgerProvider();
   });
 
+  it("reports each loading stage in order while it resets", async () => {
+    const runtime = await createMemoryDemoRuntime({ ledger: memoryLedger });
+    const stages: string[] = [];
+
+    const context = await runtime.reset((stage) => stages.push(stage));
+
+    expect(stages).toEqual(["ledger", "identities"]);
+    expect(context.identities.citizen.did).toMatch(/^did:demo:/);
+  });
+
   it("composes identity, ingestion, repository, storage, and ledger for the demo flow", async () => {
     const runtime = await createMemoryDemoRuntime({ ledger: memoryLedger });
     let context = await runtime.reset();
