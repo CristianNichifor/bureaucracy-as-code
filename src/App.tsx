@@ -42,7 +42,7 @@ import {
 } from "./dashboard/requestExplorer";
 import { MachineryGraph } from "./graph/MachineryGraph";
 import type { DemoContext } from "./demo/scenarioLaw544";
-import { createBrowserDemoRuntime } from "./demo/DemoRuntime";
+import { createBrowserDemoRuntime, demoLoadingStages, type DemoLoadingStage } from "./demo/DemoRuntime";
 import type { GuidedScenarioId } from "./demo/guidedScenarios";
 import { seededRequestScenarios } from "./demo/seededRequests";
 import type { ChainVerificationResult, LedgerEvent } from "./ledger/types";
@@ -143,8 +143,9 @@ export function App() {
     applyReset(await runtime.reset(), nextMessage, nextTransferStatus);
   }, [runtime, applyReset]);
 
+  const [loadingStage, setLoadingStage] = useState<DemoLoadingStage>(demoLoadingStages[0]);
   useEffect(() => {
-    void runtime.reset().then((nextContext) => applyReset(nextContext, startMessage, "idle"));
+    void runtime.reset(setLoadingStage).then((nextContext) => applyReset(nextContext, startMessage, "idle"));
   }, [runtime, applyReset]);
 
   useEffect(() => {
@@ -400,6 +401,17 @@ export function App() {
           <p className="eyebrow">{t.app.eyebrow}</p>
           <h1>{t.app.loadingTitle}</h1>
           <p>{t.app.loadingCopy}</p>
+          <ol className="loadingStages" aria-label={t.app.loadingTitle}>
+            {demoLoadingStages.map((stage, index) => {
+              const current = demoLoadingStages.indexOf(loadingStage);
+              const state = index < current ? "done" : index === current ? "current" : "waiting";
+              return (
+                <li aria-current={state === "current" ? "step" : undefined} key={stage}>
+                  {t.app.loadingStages[stage]} · {t.app.loadingStageState[state]}
+                </li>
+              );
+            })}
+          </ol>
         </section>
       </main>
     );

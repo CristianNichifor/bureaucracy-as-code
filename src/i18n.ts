@@ -29,6 +29,8 @@ export type Dictionary = {
     romanian: string;
     loadingTitle: string;
     loadingCopy: string;
+    loadingStages: Record<"ledger" | "identities", string>;
+    loadingStageState: Record<"done" | "current" | "waiting", string>;
     startMessage: string;
     resetMessage: string;
     exportStateMessage: string;
@@ -467,6 +469,11 @@ export const dictionaries: Record<Language, Dictionary> = {
       romanian: "RO",
       loadingTitle: "Preparing browser ledger",
       loadingCopy: "Creating local demo identities, credentials, and an empty hash-chain ledger.",
+      loadingStages: {
+        ledger: "Empty the browser's hash-chain ledger",
+        identities: "Create demo identities and credentials",
+      },
+      loadingStageState: { done: "done", current: "in progress", waiting: "waiting" },
       startMessage: "Ready for a live run. Submit the request to record the first signed transition.",
       resetMessage: "Demo reset. The live request is empty and ready for the first citizen signature.",
       exportStateMessage: "Exported {count} events. Signing keys stay in this browser.",
@@ -1058,6 +1065,11 @@ export const dictionaries: Record<Language, Dictionary> = {
       romanian: "RO",
       loadingTitle: "Pregătim registrul local",
       loadingCopy: "Creăm identități demo, credențiale și un lanț de hash-uri gol în browser.",
+      loadingStages: {
+        ledger: "Golim registrul local de hash-uri din browser",
+        identities: "Creăm identitățile și credențialele demo",
+      },
+      loadingStageState: { done: "gata", current: "în lucru", waiting: "în așteptare" },
       startMessage: "Gata pentru rulare live. Depune cererea pentru prima tranziție semnată.",
       resetMessage: "Demo resetat. Cererea live este goală și așteaptă prima semnătură a cetățeanului.",
       exportStateMessage: "Au fost exportate {count} evenimente. Cheile de semnare rămân în browser.",

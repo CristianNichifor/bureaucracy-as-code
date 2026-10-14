@@ -17,6 +17,10 @@ import { createInitialDemoContext, type DemoContext } from "./scenarioLaw544";
 
 const textEncoder = new TextEncoder();
 
+/** What a reset is doing, in order; the loading screen shows each one. */
+export const demoLoadingStages = ["ledger", "identities"] as const;
+export type DemoLoadingStage = (typeof demoLoadingStages)[number];
+
 export type DemoRuntimeTransitionInput = {
   request: Law544Request;
   actor: DemoIdentity;
@@ -76,8 +80,10 @@ export class DemoRuntime {
     return this.dependencies.documents;
   }
 
-  async reset(): Promise<DemoContext> {
+  async reset(onStage?: (stage: DemoLoadingStage) => void): Promise<DemoContext> {
+    onStage?.("ledger");
     await this.ledger.reset();
+    onStage?.("identities");
     const context = await createInitialDemoContext(this.identity);
     return context;
   }
