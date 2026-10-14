@@ -89,6 +89,78 @@ Tests: `tests/e2e/privacy.pw.ts`. The Romanian notice text is
 Test: review only (documentation). See the "Open Items: Owner And Review Date"
 table in `docs/production-readiness.md`.
 
+## Theme D — UX review follow-up
+
+### BAC-9 Law 544/2001 deadlines — `todo`
+
+Law 544/2001 art. 7(1): the answer is due "în termen de 10 zile sau, după caz,
+în cel mult 30 de zile de la înregistrarea solicitării"; the longer term needs
+written notice to the applicant within the first 10 days. Art. 7(2): a refusal
+is reasoned and communicated within 5 days. (Checked against the consolidated
+text on legislatie.just.ro, 2026-10-14.)
+
+- Given a new request created at T
+  When its deadline is computed
+  Then it is T + 10 days.
+- Given a request in progress
+  When the public servant signs `Extension_Requested`
+  Then its deadline becomes T + 30 days and the signed metadata carries that
+  extended deadline.
+- Given the seeded public requests
+  When they are checked
+  Then each deadline is creation + 10 days (creation + 30 days when extended),
+  every extension is signed within the first 10 days, and every refusal within
+  5 days.
+
+Tests: `src/law544/deadlines.test.ts`, `src/demo/DemoRuntime.test.ts`,
+`src/demo/seededRequests.test.ts`.
+
+### BAC-10 Dates follow the chosen language — `todo`
+
+- Given Romanian is selected
+  When a deadline or timestamp is shown
+  Then it uses dd.mm.yyyy whatever the browser locale is.
+- Given English is selected
+  Then dates read "14 Oct 2026" (day, short month, year), which no reader can
+  confuse with a US or EU numeric date.
+
+Tests: `src/locale.test.ts`; `tests/e2e/ux.pw.ts` (an `en-US` browser in RO
+shows dd.mm.yyyy).
+
+### BAC-11 No English left in Romanian mode — `todo`
+
+- Given Romanian is selected and the full scenario has run
+  When the visible page text is read
+  Then it contains no request statuses, roles or event codes in English
+  ("Resolved", "PublicServant", "Registry_Assigned", …), no "Replayed …",
+  "No transfer action yet" or "Skip to public request explorer".
+- Given any language
+  When the latest event is shown
+  Then it reads as a sentence ("Registry number assigned by the registry"),
+  not as `Registry_Assigned · RegistryBot · <hash>`. Raw codes stay only inside
+  the expandable technical proof.
+
+Tests: `src/locale.test.ts` (every status, role and action has a label in
+both languages); `tests/e2e/ux.pw.ts`.
+
+Seeded institution names and request subjects are demo data and stay in
+English (needs human decision).
+
+### BAC-12 A first screen with one primary action — `todo`
+
+- Given a first visit
+  When the page loads
+  Then the top of the page shows a one-line Law 544 explainer (answer within
+  10 days, 30 if extended) and a single primary button "Start the request".
+- Given the reader opens "Tools"
+  Then export state, export receipt, export report, import, reset and the
+  transfer-safety summary are there, and not on the first screen.
+- Given the URL has no `?presenter=1`
+  Then the release operations section (completeness, presenter checklist,
+  release readiness) is hidden; with `?presenter=1` it is shown.
+
+Tests: `tests/e2e/ux.pw.ts`, updated `tests/e2e/demo.pw.ts`.
+
 ## Needs human (out of scope here)
 
 - BAC-7 hub CSP parity — lives in the hub repository.
