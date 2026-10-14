@@ -76,7 +76,7 @@ The machinery graph is the only chart-like view.
 | State | Rule |
 | --- | --- |
 | Loading | Identities and the empty chain are created in the browser. If it takes > 2 s, show staged progress (identities → credentials → chain) instead of one sentence |
-| Empty | Explorer filters with no match say so ("Nicio cerere găsită") and should offer a one-click way to clear the filters (UXG-9) |
+| Empty | Explorer filters with no match say so ("Nicio cerere găsită") and offer "Resetează filtrele" to clear them |
 | Error | Import, verification and export failures use `role="status"`/`alert` text with a retry or reset action; never only a red border |
 | Demo data | Always on: the app runs on synthetic data only, so the demo badge never disappears |
 | Tampered | The tamper demo shows a failed verification in words ("Verificarea a eșuat"), not only an icon |
@@ -129,9 +129,9 @@ and `src/styles.css`.
 | UXG-1 | No family bar or visible link back to the hub; the hub link exists only in the presenter-only release panel | `src/App.tsx` header, `ReleaseReadiness.tsx` |
 | UXG-2 | No `Date: …` provenance line and no persistent "Date demo" badge | `src/App.tsx` hero |
 | UXG-3 | Footer has build metadata and privacy only; no method, source or contact links | `src/App.tsx` footer |
-| UXG-4 | No `prefers-reduced-motion` or `forced-colors` rules | `src/styles.css` |
+| ~~UXG-4~~ | Done in BAC-20 (`src/styles.test.ts`) | `src/styles.css` |
 | UXG-5 | Loading state is a single sentence, no staged progress | `src/App.tsx` loading branch |
 | UXG-6 | Name drift: hub catalogue vs app H1 (`Birocrație ca Software`); align to the civic-ui name registry | `src/i18n.ts`, hub catalogue |
 | UXG-7 | Public copy still uses `ledger`/hash jargon without a plain-language gloss in places | `src/i18n.ts` |
 | UXG-8 | Layout CSS mostly host-owned; adopt civic-ui SiteShell/SiteFooter/StatusMessage when the package is adopted (BAC-6) | `src/styles.css` |
-| UXG-9 | Empty explorer state has no clear-filters action | `RequestFeed`/explorer |
+| ~~UXG-9~~ | Already met: the empty state has a "Resetează filtrele" button | `src/dashboard/RequestFeed.tsx` |
