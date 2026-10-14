@@ -11,19 +11,32 @@ const fullScenarioSteps = [
 ];
 
 async function expectNoA11yViolations(page: import("@playwright/test").Page) {
-  const results = await new AxeBuilder({ page })
-    .disableRules(["color-contrast"])
-    .analyze();
+  const results = await new AxeBuilder({ page }).analyze();
 
   expect(results.violations).toEqual([]);
 }
 
-test("has no automated accessibility violations on the public landing state @a11y", async ({ page }) => {
-  await page.goto("./");
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`has no automated accessibility violations on the public landing state in ${colorScheme} theme @a11y`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.goto("./");
 
-  await expect(page.getByRole("main")).toBeVisible();
-  await expectNoA11yViolations(page);
-});
+    await expect(page.getByRole("main")).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", colorScheme);
+    await expectNoA11yViolations(page);
+  });
+
+  test(`has no automated accessibility violations in Romanian in ${colorScheme} theme @a11y`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop-chromium", "Romanian copy is scanned once on desktop.");
+
+    await page.emulateMedia({ colorScheme });
+    await page.goto("./");
+    await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
+
+    await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+    await expectNoA11yViolations(page);
+  });
+}
 
 test("has no automated accessibility violations after the full guided scenario @a11y", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "Full scenario accessibility scan runs once on desktop.");
