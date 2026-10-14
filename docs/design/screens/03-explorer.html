@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorer public · Birocrație ca program</title>
+<style>
+/* Civic UI 0.8 token values copied from civic-ui src/foundations.css and themes/neutral.css (dev). No external requests. */
+:root{--civic-font-sans:system-ui,-apple-system,"Segoe UI",sans-serif;--civic-space-1:.25rem;--civic-space-2:.5rem;--civic-space-3:.75rem;--civic-space-4:1rem;--civic-space-5:1.5rem;--civic-space-6:2rem;--civic-space-7:3rem;--civic-space-8:4rem;--civic-text-xs:.8125rem;--civic-text-sm:.875rem;--civic-text-md:1rem;--civic-text-lg:1.125rem;--civic-text-xl:1.25rem;--civic-text-2xl:1.5rem;--civic-text-3xl:1.875rem;--civic-radius:6px;
+--civic-bg:#f4f6f6;--civic-surface:#fff;--civic-raised:#e7eeee;--civic-text:#182b2c;--civic-muted:#475d60;--civic-border:#718588;--civic-action:#006b60;--civic-action-hover:#00564d;--civic-on-action:#fff;--civic-focus:#006b60;--civic-accent:#006b60;--civic-danger:#a31b34;--civic-on-danger:#fff;--civic-success:#146c2e;--civic-on-success:#fff;--civic-warning:#f2b300;--civic-on-warning:#241a00;--civic-info:#1f5fa8;--civic-on-info:#fff;
+--civic-viz-1:#2a78d6;--civic-viz-2:#eb6834;--civic-viz-3:#1baf7a;--civic-viz-4:#eda100;--civic-viz-5:#e87ba4;--civic-viz-6:#008300;--civic-viz-7:#4a3aa7;--civic-viz-8:#e34948;--civic-viz-seq-1:#cde2fb;--civic-viz-seq-4:#3987e5;--civic-viz-seq-7:#0d366b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--civic-bg:#142323;--civic-surface:#203332;--civic-raised:#304845;--civic-text:#f0f6f5;--civic-muted:#c0d3cf;--civic-border:#8ca8a1;--civic-action:#b5e8dc;--civic-action-hover:#d2f5eb;--civic-on-action:#142323;--civic-focus:#b5e8dc;--civic-accent:#b5e8dc;--civic-danger:#ffb9c5;--civic-on-danger:#2a0a10;--civic-success:#7fd69a;--civic-on-success:#10241a;--civic-warning:#f5c451;--civic-on-warning:#241a00;--civic-info:#9cc7f5;--civic-on-info:#0e2238;--civic-viz-1:#3987e5;--civic-viz-2:#d95926;--civic-viz-3:#199e70;--civic-viz-4:#c98500;--civic-viz-7:#9085e9;--civic-viz-8:#e66767}}
+:root[data-theme="dark"]{--civic-bg:#142323;--civic-surface:#203332;--civic-raised:#304845;--civic-text:#f0f6f5;--civic-muted:#c0d3cf;--civic-border:#8ca8a1;--civic-action:#b5e8dc;--civic-action-hover:#d2f5eb;--civic-on-action:#142323;--civic-focus:#b5e8dc;--civic-accent:#b5e8dc;--civic-danger:#ffb9c5;--civic-on-danger:#2a0a10;--civic-success:#7fd69a;--civic-on-success:#10241a;--civic-info:#9cc7f5;--civic-on-info:#0e2238}
+*{box-sizing:border-box}html{font-family:var(--civic-font-sans);color:var(--civic-text);background:var(--civic-bg);line-height:1.5;font-size:16px}
+body{margin:0;background:var(--civic-bg)}
+a{color:var(--civic-action)}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--civic-focus);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 var(--civic-space-4)}
+/* 1. family bar */
+.familyBar{background:var(--civic-surface);border-bottom:1px solid var(--civic-border)}
+.familyBar .wrap{display:flex;align-items:center;gap:var(--civic-space-4);min-height:48px;flex-wrap:wrap;padding-top:var(--civic-space-2);padding-bottom:var(--civic-space-2)}
+.familyBar .home{font-weight:600;text-decoration:none;display:inline-flex;align-items:center;min-height:24px;gap:var(--civic-space-2)}
+.familyBar .tool{color:var(--civic-muted)}.familyBar .spacer{flex:1}
+.langs{display:flex;gap:var(--civic-space-1)}.langs a{min-height:24px;padding:0 var(--civic-space-2);text-decoration:none;border-radius:var(--civic-radius)}.langs a[aria-current]{background:var(--civic-raised);font-weight:600;text-decoration:underline}
+.badge{display:inline-flex;align-items:center;gap:var(--civic-space-1);border-radius:999px;padding:2px var(--civic-space-3);font-size:var(--civic-text-xs);font-weight:600;border:1px solid transparent;min-height:24px}
+.badge-warning{background:var(--civic-warning);color:var(--civic-on-warning)}.badge-success{background:var(--civic-success);color:var(--civic-on-success)}.badge-neutral{background:var(--civic-raised);color:var(--civic-text);border-color:var(--civic-border)}.badge-danger{background:var(--civic-danger);color:var(--civic-on-danger)}.badge-info{background:var(--civic-info);color:var(--civic-on-info)}
+/* 2-3. H1, purpose, provenance */
+h1{font-size:var(--civic-text-3xl);line-height:1.15;margin:var(--civic-space-5) 0 var(--civic-space-2)}
+h2{font-size:var(--civic-text-xl);margin:0 0 var(--civic-space-2)}h3{font-size:var(--civic-text-md);margin:0 0 var(--civic-space-2)}
+.purpose{font-size:var(--civic-text-lg);margin:0 0 var(--civic-space-3);max-width:70ch}
+.provenance{font-size:var(--civic-text-sm);color:var(--civic-muted);margin:0 0 var(--civic-space-5);display:flex;flex-wrap:wrap;gap:var(--civic-space-2) var(--civic-space-3);align-items:center}
+.provenance time{font-variant-numeric:tabular-nums}
+/* panels, grids */
+.panel{background:var(--civic-surface);border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-4)}
+.grid{display:grid;gap:var(--civic-space-4)}.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+.stack{display:grid;gap:var(--civic-space-3)}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:var(--civic-space-1) var(--civic-space-4);font-size:var(--civic-text-sm);margin:0}
+.kv dt{color:var(--civic-muted)}.kv dd{margin:0;overflow-wrap:anywhere}
+code,.hash{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:var(--civic-text-xs);overflow-wrap:anywhere}
+.muted{color:var(--civic-muted)}.small{font-size:var(--civic-text-sm)}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--civic-space-2);min-height:44px;padding:0 var(--civic-space-5);border-radius:var(--civic-radius);border:1px solid var(--civic-action);background:var(--civic-action);color:var(--civic-on-action);font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--civic-action-hover)}.btn-secondary{background:var(--civic-surface);color:var(--civic-action)}.btn-sm{min-height:32px;padding:0 var(--civic-space-3);font-weight:500}
+.btn[aria-disabled="true"]{opacity:.55;cursor:default}
+/* status message */
+.status{display:flex;gap:var(--civic-space-3);align-items:flex-start;border-radius:var(--civic-radius);padding:var(--civic-space-3) var(--civic-space-4);border:1px solid var(--civic-border);background:var(--civic-surface);border-left-width:6px}
+.status-error{border-left-color:var(--civic-danger)}.status-success{border-left-color:var(--civic-success)}.status-info{border-left-color:var(--civic-info)}.status-warning{border-left-color:var(--civic-warning)}
+.status .icon{font-weight:700;flex:none;width:24px;text-align:center}.status p{margin:0}.status .actions{margin-top:var(--civic-space-2)}
+/* act progress */
+.acts{display:flex;gap:var(--civic-space-2);list-style:none;padding:0;margin:0 0 var(--civic-space-4);counter-reset:act}
+.acts li{flex:1;border-top:4px solid var(--civic-border);padding-top:var(--civic-space-2);font-size:var(--civic-text-sm);min-height:44px}
+.acts li a{display:block;text-decoration:none;color:inherit}.acts li[aria-current] {border-top-color:var(--civic-action);font-weight:600}.acts li.done{border-top-color:var(--civic-success)}
+/* steps list (act 1) */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:var(--civic-space-2)}
+.steps li{display:grid;grid-template-columns:28px 1fr auto;gap:var(--civic-space-3);align-items:center;padding:var(--civic-space-2) var(--civic-space-3);border:1px solid var(--civic-border);border-radius:var(--civic-radius);min-height:44px}
+.steps .n{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--civic-text-sm);border:2px solid var(--civic-border)}
+.steps li.done .n{background:var(--civic-success);color:var(--civic-on-success);border-color:var(--civic-success)}
+.steps li.current{border-color:var(--civic-action);border-width:2px}.steps li.current .n{border-color:var(--civic-action);color:var(--civic-action)}
+.steps .actor{color:var(--civic-muted);font-size:var(--civic-text-sm);display:block}
+/* handoff lane (act 2) */
+.lane{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--civic-space-2);list-style:none;padding:0;margin:0}
+.lane li{border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-2) var(--civic-space-3);font-size:var(--civic-text-sm);min-height:72px;background:var(--civic-surface)}
+.lane li strong{display:block}.lane li.done{border-left:6px solid var(--civic-viz-1)}.lane li.current{border:2px solid var(--civic-viz-2);background:var(--civic-raised)}.lane li.waiting{border-style:dashed;color:var(--civic-muted)}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:var(--civic-text-sm)}th,td{text-align:left;padding:var(--civic-space-2);border-bottom:1px solid var(--civic-border);vertical-align:top}th{color:var(--civic-muted);font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.tableScroll{overflow-x:auto}
+/* forms */
+label{font-size:var(--civic-text-sm);font-weight:600;display:block;margin-bottom:var(--civic-space-1)}
+input,select{font:inherit;min-height:44px;padding:0 var(--civic-space-3);border:1px solid var(--civic-border);border-radius:var(--civic-radius);background:var(--civic-surface);color:var(--civic-text);width:100%}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:var(--civic-space-3);align-items:end}
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--civic-space-3);list-style:none;padding:0;margin:0}
+.stats li{background:var(--civic-surface);border:1px solid var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-3) var(--civic-space-4)}
+.stats .v{font-size:var(--civic-text-2xl);font-weight:700;font-variant-numeric:tabular-nums;display:block}.stats .l{font-size:var(--civic-text-sm);color:var(--civic-muted)}
+/* progress (loading) */
+.progress{height:8px;background:var(--civic-raised);border-radius:999px;overflow:hidden;border:1px solid var(--civic-border)}.progress span{display:block;height:100%;background:var(--civic-action)}
+/* footer */
+footer{margin-top:var(--civic-space-7);border-top:1px solid var(--civic-border);background:var(--civic-surface);font-size:var(--civic-text-sm)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--civic-space-3) var(--civic-space-5);padding-top:var(--civic-space-4);padding-bottom:var(--civic-space-4)}footer a{min-height:24px;display:inline-flex;align-items:center}
+/* mockup chrome */
+.note{background:var(--civic-raised);border:1px dashed var(--civic-border);border-radius:var(--civic-radius);padding:var(--civic-space-2) var(--civic-space-3);font-size:var(--civic-text-xs);color:var(--civic-muted);margin:var(--civic-space-5) 0 var(--civic-space-3)}
+.note strong{color:var(--civic-text)}
+section.screen{margin-top:var(--civic-space-5)}
+.skip{position:absolute;left:-999px}.skip:focus{left:var(--civic-space-4);top:var(--civic-space-2);background:var(--civic-surface);padding:var(--civic-space-2);z-index:2}
+@media (max-width:640px){.grid-2,.grid-3,.grid-4,.filters{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.lane{grid-template-columns:1fr}.acts{flex-direction:column}.acts li{border-top:none;border-left:4px solid var(--civic-border);padding:var(--civic-space-1) var(--civic-space-3)}.acts li[aria-current]{border-left-color:var(--civic-action)}.acts li.done{border-left-color:var(--civic-success)}h1{font-size:var(--civic-text-2xl)}.kv{grid-template-columns:1fr}.kv dt{margin-top:var(--civic-space-2)}.steps li{grid-template-columns:28px 1fr}.steps li .btn{grid-column:2}.btn-block-m{width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (forced-colors:active){.badge,.btn,.panel,.steps li,.lane li{border:1px solid CanvasText}.acts li[aria-current]{text-decoration:underline}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Sari la conținut</a>
+<header class="familyBar" role="banner"><div class="wrap">
+<a class="home" href="https://projects.cristian-nichifor.com/">← Proiecte civice</a>
+<span class="tool">Birocrație ca program</span>
+<span class="badge badge-warning">Date demonstrative</span>
+<span class="spacer"></span>
+<nav class="langs" aria-label="Limbă"><a href="#" aria-current="page" lang="ro">Română</a><a href="#" lang="en">English</a></nav>
+<button class="btn btn-secondary btn-sm" type="button" aria-pressed="false">Temă: luminos</button>
+</div></header>
+<main id="main" class="wrap">
+<h1>Birocrație ca program</h1>
+<p class="purpose">Vezi ce se întâmplă cu o cerere depusă în baza Legii 544/2001, pas cu pas, și până când trebuie să răspundă instituția.</p>
+<p class="provenance"><span><strong>Date:</strong> demo sintetice, generate în browser</span><span>·</span><span>Nimic nu părăsește browserul</span><span>·</span><a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/architecture.md">Metodă</a></p>
+<nav aria-label="Vizualizări" style="display:flex;gap:var(--civic-space-2);margin-bottom:var(--civic-space-4)"><a class="btn btn-secondary btn-sm" href="#">Demonstrație</a><a class="btn btn-sm" href="#explorer" aria-current="page">Explorer public</a></nav>
+<section id="explorer" aria-labelledby="h-exp">
+  <h2 id="h-exp">Explorer public</h2>
+  <p class="muted" style="margin-top:0">Cereri anonimizate, preîncărcate sau create local, ca într-un flux național public. <strong>Date:</strong> demo sintetice; exemplele preîncărcate sunt datate la <time datetime="2026-09-13">13 septembrie 2026</time>.</p>
+  <ul class="stats" aria-label="Rezumat">
+    <li><span class="v">9</span><span class="l">instituții</span></li>
+    <li><span class="v">7</span><span class="l">cereri deschise</span></li>
+    <li><span class="v">1</span><span class="l">cerere întârziată</span></li>
+    <li><span class="v">3</span><span class="l">cereri finalizate</span></li>
+  </ul>
+  <form class="panel" style="margin:var(--civic-space-4) 0" aria-label="Filtre cereri">
+    <div class="filters">
+      <div><label for="q">Caută</label><input id="q" type="search" placeholder="Cerere, subiect, instituție, registru"></div>
+      <div><label for="st">Status</label><select id="st"><option>Toate</option><option>Depusă</option><option>Înregistrată</option><option>Repartizată</option><option>În lucru</option><option>Termen prelungit</option><option>Soluționată</option><option>Respinsă</option><option>Întârziată</option></select></div>
+      <div><label for="in">Instituție</label><select id="in"><option>Toate</option><option>Ministerul Finanțelor</option><option>Ministerul Sănătății</option></select></div>
+      <div><label for="so">Sortare</label><select id="so"><option>Termen apropiat</option><option>Cele mai noi</option><option>Cele mai multe evenimente</option><option>Status</option></select></div>
+      <button class="btn btn-secondary" type="reset">Resetează filtrele</button>
+    </div>
+  </form>
+  <p class="small muted" role="status">10 cereri vizibile din 10 · 9 exemple preîncărcate + 1 cerere live</p>
+  <div class="tableScroll panel" style="padding:0">
+  <table>
+    <thead><tr><th>Cerere</th><th>Subiect</th><th>Instituție</th><th>Status</th><th>Termen</th><th class="num">Evenimente</th><th>Sursă</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#"><code>REQ-2026-0006</code></a></td><td>Stadiul publicării setului de date pentru actualizarea hărților cadastrale</td><td>Agenția Națională de Cadastru</td><td><span class="badge badge-danger">⚠ Întârziată</span></td><td><time datetime="2026-08-08">8 august 2026</time><br><span class="small">36 de zile întârziere</span></td><td class="num">4</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0010</code></a></td><td>Calendarul publicării deciziei de ajutor de stat</td><td>Ministerul Energiei</td><td><span class="badge badge-warning">◔ Termen prelungit</span></td><td><time datetime="2026-09-14">14 septembrie 2026</time><br><span class="small">1 zi rămasă</span></td><td class="num">5</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0003</code></a></td><td>Date de achiziții publice pentru echipamente spitalicești</td><td>Ministerul Sănătății</td><td><span class="badge badge-info">● În lucru</span></td><td><time datetime="2026-09-16">16 septembrie 2026</time><br><span class="small">3 zile rămase</span></td><td class="num">4</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0009</code></a></td><td>Grilele de punctaj pentru granturile de renovare a școlilor</td><td>Ministerul Educației</td><td><span class="badge badge-info">● În lucru</span></td><td><time datetime="2026-09-17">17 septembrie 2026</time><br><span class="small">4 zile rămase</span></td><td class="num">4</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0004</code></a></td><td>Export din registrul autorizațiilor de urbanism</td><td>Primăria Sectorului 1 București</td><td><span class="badge badge-neutral">○ Înregistrată</span></td><td><time datetime="2026-09-21">21 septembrie 2026</time><br><span class="small">8 zile rămase</span></td><td class="num">2</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0005</code></a></td><td>Evidența calibrării senzorilor de calitate a aerului</td><td>Ministerul Mediului</td><td><span class="badge badge-warning">◔ Termen prelungit</span></td><td><time datetime="2026-09-22">22 septembrie 2026</time><br><span class="small">9 zile rămase</span></td><td class="num">4</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0002</code></a></td><td>Execuția bugetară a unui program de drumuri județene</td><td>Ministerul Finanțelor</td><td><span class="badge badge-success">✓ Soluționată</span></td><td><time datetime="2026-09-05">5 septembrie 2026</time><br><span class="small">închisă</span></td><td class="num">5</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0008</code></a></td><td>Anexele contractului de modernizare feroviară, redirecționate către operator</td><td>Ministerul Transporturilor</td><td><span class="badge badge-success">✓ Soluționată</span></td><td><time datetime="2026-09-13">13 septembrie 2026</time><br><span class="small">închisă</span></td><td class="num">5</td><td>exemplu</td></tr>
+      <tr><td><a href="#"><code>REQ-2026-0007</code></a></td><td>Statistici ale controalelor la reclamații, pe județe</td><td>Autoritatea Națională pentru Protecția Consumatorilor</td><td><span class="badge badge-neutral">✕ Respinsă</span></td><td><time datetime="2026-09-10">10 septembrie 2026</time><br><span class="small">închisă</span></td><td class="num">4</td><td>exemplu</td></tr>
+      <tr style="background:var(--civic-raised)"><td><a href="#"><code>REQ-2026-········</code></a></td><td>Date despre cheltuielile publice ale unui program demonstrativ</td><td>Ministerul Finanțelor</td><td><span class="badge badge-neutral">○ Ciornă</span></td><td>—<br><span class="small">se calculează la depunere</span></td><td class="num">0</td><td>live</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">Numărul de evenimente este cel din datele demo preîncărcate. Statusul este scris în cuvinte și cu un simbol, niciodată doar prin culoare.</p>
+
+  <h3 style="margin-top:var(--civic-space-5)">Încărcarea instituțiilor <span class="muted small">(simulare în browser; alternativa text a vederii operaționale)</span></h3>
+  <div class="tableScroll panel" style="padding:0"><table>
+    <thead><tr><th>Instituție</th><th class="num">Deschise</th><th class="num">Întârziate</th><th class="num">Finalizate</th><th>Următorul termen</th><th>Coadă responsabilă</th></tr></thead>
+    <tbody>
+      <tr><td>Agenția Națională de Cadastru</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td><time datetime="2026-08-08">8 august 2026</time> (depășit)</td><td>Coadă escaladare</td></tr>
+      <tr><td>Ministerul Energiei</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td><time datetime="2026-09-14">14 septembrie 2026</time></td><td>Birou funcționar</td></tr>
+      <tr><td>Ministerul Sănătății</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td><time datetime="2026-09-16">16 septembrie 2026</time></td><td>Birou funcționar</td></tr>
+      <tr><td>Ministerul Finanțelor</td><td class="num">1</td><td class="num">0</td><td class="num">1</td><td>—</td><td>Draft cetățean</td></tr>
+      <tr><td colspan="6" class="muted small">… celelalte 5 instituții urmează aceeași structură.</td></tr>
+    </tbody></table></div>
+</section>
+
+<p class="note"><strong>STATE — empty after filtering</strong> (status „Respinsă” + instituție „Ministerul Sănătății”):</p>
+<div class="panel" style="text-align:center;padding:var(--civic-space-6)">
+  <h3>Nicio cerere găsită</h3>
+  <p class="small">Registrul local are 10 cereri, dar niciuna nu corespunde filtrelor curente (status: Respinsă, instituție: Ministerul Sănătății).</p>
+  <button class="btn" type="button">Resetează filtrele</button>
+</div>
+
+<p class="note"><strong>390 px row</strong> — the table switches to cards (one request per card, same fields, same order):</p>
+<article class="panel" style="max-width:358px;border-left:6px solid var(--civic-danger)">
+  <p style="margin:0 0 var(--civic-space-1)"><a href="#"><code>REQ-2026-0006</code></a> · <span class="badge badge-danger">⚠ Întârziată</span></p>
+  <p style="margin:0 0 var(--civic-space-2);font-weight:600">Stadiul publicării setului de date pentru actualizarea hărților cadastrale</p>
+  <dl class="kv"><dt>Instituție</dt><dd>Agenția Națională de Cadastru</dd><dt>Termen</dt><dd><time datetime="2026-08-08">8 august 2026</time> · 36 de zile întârziere</dd><dt>Evenimente</dt><dd>4 · exemplu</dd></dl>
+  <p style="margin:var(--civic-space-3) 0 0"><a class="btn btn-secondary btn-sm" href="#">Inspectează traseul</a></p>
+</article>
+</main>
+<footer role="contentinfo"><div class="wrap">
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/architecture.md">Metodă</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/blob/dev/docs/law-544-legal-caveat.md">Despre Legea 544/2001</a>
+<a href="#privacy">Confidențialitate</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code">Sursa</a>
+<a href="https://github.com/CristianNichifor/bureaucracy-as-code/issues">Contact</a>
+<span class="muted">Versiune publicată: <code>—</code> · construită <time datetime="—">—</time></span>
+</div></footer>
+</body>
+</html>
