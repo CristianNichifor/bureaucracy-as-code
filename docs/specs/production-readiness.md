@@ -178,7 +178,7 @@ Tests: `tests/e2e/ux.pw.ts`, updated `tests/e2e/demo.pw.ts`.
 Tests: `src/demo/demoText.test.ts` (parity); `tests/e2e/ux.pw.ts` (no
 English demo strings in Romanian mode).
 
-### BAC-14 Three-act layout — `todo`
+### BAC-14 Three-act layout — `done` (new Romanian labels: needs human review)
 
 - Given the main view
   Then the page reads as three sections in order: Request, Machinery, Proof,

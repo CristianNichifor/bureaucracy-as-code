@@ -53,6 +53,15 @@ const initialVerification: ChainVerificationResult = {
 };
 
 type Theme = "light" | "dark";
+type View = "demo" | "explorer";
+
+// Anchors inside the explorer view open it too, so old links keep working.
+const explorerHashes = new Set(["#explorer", "#request-explorer", "#request-explorer-section"]);
+
+function viewFromHash(): View {
+  if (typeof window === "undefined") return "demo";
+  return explorerHashes.has(window.location.hash) ? "explorer" : "demo";
+}
 
 type LocalizedText = (t: Dictionary, language: Language) => string;
 
@@ -94,6 +103,12 @@ export function App() {
   const [lastRecordedEvent, setLastRecordedEvent] = useState<LedgerEvent | undefined>();
   const [buildInfo, setBuildInfo] = useState<BuildInfo>(fallbackBuildInfo);
   const fileInput = useRef<HTMLInputElement>(null);
+  const [view, setView] = useState<View>(viewFromHash);
+  useEffect(() => {
+    const onHashChange = () => setView(viewFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
   const [presenterMode] = useState(
     () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("presenter") === "1",
   );
@@ -406,8 +421,8 @@ export function App() {
   return (
     <LanguageContext.Provider value={language}>
     <main className="appShell" id="main-content">
-      <a className="skipLink" href="#request-explorer">
-        {t.app.skipLink}
+      <a className="skipLink" href={view === "demo" ? "#run-request" : "#request-explorer"}>
+        {view === "demo" ? t.views.skipToDemo : t.app.skipLink}
       </a>
       <header className="hero">
         <div>
@@ -490,76 +505,102 @@ export function App() {
       />
       </details>
 
-      <div className="dashboardSections">
-        <DashboardSection id="run-request" title={t.sections.run.title} copy={t.sections.run.copy}>
-          <div className="grid sectionGrid sectionGridRun">
-            <GuidedProgress
-              status={request.status}
-              eventsCount={events.length}
-              lastEvent={lastRecordedEvent}
-              isAutoRunning={autoRunActive}
-              isRunningScenario={isRunningScenario}
-              onRunScenario={(scenarioId) => void runGuidedScenario(scenarioId)}
-              onRunStep={(stepId) => void runAction(stepId)}
-              onRunNext={runNextStep}
-              onAutoRun={() => setIsAutoRunning(true)}
-              onPause={() => setIsAutoRunning(false)}
-              labels={t.guided}
-            />
-            <DataFlowPanel labels={t.dataFlow} />
-            <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
-          </div>
-        </DashboardSection>
+      <nav className="viewNav" aria-label={t.views.label}>
+        <a aria-current={view === "demo" ? "page" : undefined} href="#">{t.views.demo}</a>
+        <a aria-current={view === "explorer" ? "page" : undefined} href="#explorer">{t.views.explorer}</a>
+      </nav>
 
-        <DashboardSection id="request-explorer-section" title={t.sections.explorer.title} copy={t.sections.explorer.copy}>
-          <div className="grid sectionGrid sectionGridExplorer">
-            <OperationsPanel
-              items={explorerItems}
-              labels={t.operations}
-              onApplyFilters={(nextFilters) => setFilters((currentFilters) => ({ ...currentFilters, ...nextFilters }))}
-              onSelectRequest={setSelectedRequestId}
-            />
-            <ScenarioComparisonPanel
-              items={explorerItems}
-              labels={t.scenarioComparison}
-              onSelectRequest={setSelectedRequestId}
-              selectedRequestId={selectedRequest.id}
-            />
-            <RequestFeed
-              id="request-explorer"
-              filters={filters}
-              items={explorerItems}
-              labels={t.feed}
-              onFiltersChange={setFilters}
-              onSelectRequest={setSelectedRequestId}
-              selectedRequestId={selectedRequest.id}
-            />
-          </div>
-        </DashboardSection>
+      {view === "demo" ? (
+        <>
+          <nav className="actProgress" aria-label={t.progress.label}>
+            <strong>
+              {formatMessage(t.progress.step, {
+                current: getCurrentStepIndex(request.status, events.length),
+                total: demoSteps.length,
+              })}
+            </strong>
+            <a href="#run-request">{t.sections.run.title}</a>
+            <a href="#request-accountability">{t.sections.accountability.title}</a>
+            <a href="#proof-verification">{t.sections.proof.title}</a>
+          </nav>
 
-        <DashboardSection id="request-accountability" title={t.sections.accountability.title} copy={t.sections.accountability.copy}>
-          <div className="grid sectionGrid selectedCaseWorkspace">
-            <EvidenceBrief request={selectedRequest} events={selectedEvents} labels={t.evidenceBrief} />
-            <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
-            <MachineryGraph request={selectedRequest} events={selectedEvents} labels={t.graph} />
-            <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
-          </div>
-        </DashboardSection>
+          <div className="dashboardSections">
+            <DashboardSection id="run-request" title={t.sections.run.title} copy={t.sections.run.copy}>
+              <div className="grid sectionGrid sectionGridRun">
+                <GuidedProgress
+                  status={request.status}
+                  eventsCount={events.length}
+                  lastEvent={lastRecordedEvent}
+                  isAutoRunning={autoRunActive}
+                  isRunningScenario={isRunningScenario}
+                  onRunScenario={(scenarioId) => void runGuidedScenario(scenarioId)}
+                  onRunStep={(stepId) => void runAction(stepId)}
+                  onRunNext={runNextStep}
+                  onAutoRun={() => setIsAutoRunning(true)}
+                  onPause={() => setIsAutoRunning(false)}
+                  labels={t.guided}
+                />
+                <DataFlowPanel labels={t.dataFlow} />
+              </div>
+            </DashboardSection>
 
-        <DashboardSection id="proof-verification" title={t.sections.proof.title} copy={t.sections.proof.copy}>
-          <div className="grid sectionGrid sectionGridProof">
-            <ProofPreviewPanel
-              items={filteredItems}
-              language={language}
-              selectedItem={selectedItem ?? explorerItems[0]}
-              labels={t.proofPreview}
-            />
-            <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
-            <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
-          </div>
-        </DashboardSection>
+            <DashboardSection id="request-accountability" title={t.sections.accountability.title} copy={t.sections.accountability.copy}>
+              <div className="grid sectionGrid selectedCaseWorkspace">
+                <EvidenceBrief request={selectedRequest} events={selectedEvents} labels={t.evidenceBrief} />
+                <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
+                <MachineryGraph request={selectedRequest} events={selectedEvents} labels={t.graph} />
+                <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
+              </div>
+            </DashboardSection>
 
-        {presenterMode && (
+            <DashboardSection id="proof-verification" title={t.sections.proof.title} copy={t.sections.proof.copy}>
+              <div className="grid sectionGrid sectionGridProof">
+                <ProofPreviewPanel
+                  items={filteredItems}
+                  language={language}
+                  selectedItem={selectedItem ?? explorerItems[0]}
+                  labels={t.proofPreview}
+                />
+                <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
+                <AuditReceiptVerifier item={selectedItem ?? explorerItems[0]} language={language} labels={t.receipt} />
+                <LedgerIntegrityPanel verification={chainVerification} events={events} onTamperDemo={() => void runTamperDemo()} labels={t.integrity} />
+              </div>
+            </DashboardSection>
+          </div>
+        </>
+      ) : (
+        <div className="dashboardSections">
+          <DashboardSection id="request-explorer-section" title={t.sections.explorer.title} copy={t.sections.explorer.copy}>
+            <div className="grid sectionGrid sectionGridExplorer">
+              <OperationsPanel
+                items={explorerItems}
+                labels={t.operations}
+                onApplyFilters={(nextFilters) => setFilters((currentFilters) => ({ ...currentFilters, ...nextFilters }))}
+                onSelectRequest={setSelectedRequestId}
+              />
+              <ScenarioComparisonPanel
+                items={explorerItems}
+                labels={t.scenarioComparison}
+                onSelectRequest={setSelectedRequestId}
+                selectedRequestId={selectedRequest.id}
+              />
+              <RequestFeed
+                id="request-explorer"
+                filters={filters}
+                items={explorerItems}
+                labels={t.feed}
+                onFiltersChange={setFilters}
+                onSelectRequest={setSelectedRequestId}
+                selectedRequestId={selectedRequest.id}
+              />
+              <RequestDetail request={selectedRequest} events={selectedEvents} source={selectedSource} labels={t.detail} />
+            </div>
+          </DashboardSection>
+        </div>
+      )}
+
+      {presenterMode && (
+        <div className="dashboardSections">
           <DashboardSection id="release-operations" title={t.sections.release.title} copy={t.sections.release.copy}>
             <div className="grid sectionGrid sectionGridRelease">
               <DemoCompletenessPanel labels={t.demoCompleteness} />
@@ -572,8 +613,8 @@ export function App() {
               <ReleaseReadiness buildInfo={buildInfo} labels={t.readiness} />
             </div>
           </DashboardSection>
-        )}
-      </div>
+        </div>
+      )}
     </main>
     <footer className="appShell siteFooter">
       <BuildMetadata buildInfo={buildInfo} labels={t.build} />

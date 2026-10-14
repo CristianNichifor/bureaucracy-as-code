@@ -2259,3 +2259,45 @@ dd {
 .message {
   margin: var(--civic-space-4) 0 0;
 }
+
+.viewNav,
+.actProgress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--civic-space-4);
+}
+
+.viewNav {
+  margin: var(--civic-space-4) 0;
+  border-bottom: 1px solid var(--civic-border);
+}
+
+.viewNav a,
+.actProgress a {
+  display: inline-flex;
+  min-height: var(--civic-control-height);
+  align-items: center;
+  color: var(--civic-action);
+  font-weight: 700;
+}
+
+.viewNav a[aria-current="page"] {
+  color: var(--civic-text);
+  border-bottom: 3px solid var(--civic-action);
+  text-decoration: none;
+}
+
+.actProgress {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 0 var(--civic-space-4);
+  background: var(--civic-surface);
+}
+
+.dashboardSection {
+  scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-4));
+}

@@ -70,14 +70,11 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(toolbar.getByRole("button", { name: "Export receipt" })).toBeVisible();
   await expect(toolbar.getByRole("button", { name: "Import" })).toBeVisible();
   await expect(toolbar.getByRole("button", { name: "Reset" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Run the request" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Request accountability" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
+  for (const name of ["Request", "Machinery", "Proof"]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  }
   await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
   await expect(page.getByText("Selected receipt")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
-  await expect(page.getByText("Operational view of open queues")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guided Law 544 run" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
   await expect(page.getByRole("button", { name: /deadline warning/i })).toBeVisible();
@@ -88,10 +85,15 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Transfer safety" })).toBeVisible();
   await expect(page.getByText("No private keys exported")).toBeVisible();
   await expect(page.getByText("signed events").first()).toBeVisible();
-  await expect(page.getByPlaceholder("Search request, subject, institution, registry")).toBeVisible();
   await expect(page.locator(".message")).toContainText("Ready for a live run. Submit the request to record the first signed transition.");
   await expect(page.getByText("Ledger verifies")).toBeVisible();
   await expect(page.getByLabel("Deployed build")).toBeVisible();
+
+  await page.goto("./#explorer");
+  await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
+  await expect(page.getByText("Operational view of open queues")).toBeVisible();
+  await expect(page.getByPlaceholder("Search request, subject, institution, registry")).toBeVisible();
 
   expect(pageErrors).toEqual([]);
 });
@@ -120,7 +122,6 @@ test("keeps the browser demo usable on the configured viewport", async ({ page }
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
   await expect(page.getByRole("button", { name: "Start the request" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
@@ -147,15 +148,10 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await page.getByRole("button", { name: /run full scenario/i }).click();
 
     await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Run the request" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Request accountability" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Proof and verification" })).toBeVisible();
+    for (const name of ["Request", "Machinery", "Proof"]) {
+      await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+    }
     await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Scenario comparison" })).toBeVisible();
-    await expect(page.getByText("Next file").first()).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
     await expect(page.getByText("Accountability handoff")).toBeVisible();
@@ -218,11 +214,19 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
       body: await page.screenshot({ fullPage: true }),
       contentType: "image/png",
     });
+
+    await page.goto("./?presenter=1#explorer");
+    await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Scenario comparison" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+    await expect(page.getByText("Next file").first()).toBeVisible();
+    const explorerOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(explorerOverflow, `${viewport.name} explorer horizontal overflow`).toBeLessThanOrEqual(1);
   }
 });
 
 test("compares seeded Law 544 scenario outcomes", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./#explorer");
 
   const panel = page.getByRole("region", { name: "Scenario comparison" });
   await expect(panel).toBeVisible();
@@ -259,14 +263,13 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
 
   await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Rulează cererea" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Încărcare instituții" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Comparație scenarii" })).toBeVisible();
+  for (const name of ["Cererea", "Mecanismul", "Dovada"]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("navigation", { name: "Progresul cererii" })).toContainText("Pasul 0/6");
   await openTools(page, "Instrumente");
   await expect(page.getByRole("heading", { name: "Siguranța transferului" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Rezumat public al dovezilor" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Responsabilitate pe cerere" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Completitudine demo" })).toBeVisible();
@@ -277,6 +280,11 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByText("Status termen")).toBeVisible();
   await expect(page.getByRole("region", { name: "Acțiuni demo" }).getByRole("button", { name: "Exportă dovada" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+
+  await page.getByRole("navigation", { name: "Vizualizări" }).getByRole("link", { name: "Explorer" }).click();
+  await expect(page.getByRole("heading", { name: "Explorer public", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Încărcare instituții" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comparație scenarii" })).toBeVisible();
 
   await page.reload();
   await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
@@ -315,7 +323,7 @@ test("switches and persists light and dark themes", async ({ page }) => {
 test("searches and sorts the public request explorer", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "Explorer control behavior is covered once on desktop.");
 
-  await page.goto("./");
+  await page.goto("./#explorer");
 
   await page.getByPlaceholder("Search request, subject, institution, registry").fill("rail");
   await expect(page.getByRole("button", { name: /REQ-2026-0008/i })).toBeVisible();
@@ -352,6 +360,7 @@ test("exports a public proof report for visible requests", async ({ page }) => {
   await expect(page.getByText("Visible report")).toBeVisible();
   await openTools(page);
   await expect(page.getByText(/\d+ visible requests/).first()).toBeVisible();
+  await page.getByRole("navigation", { name: "Views" }).getByRole("link", { name: "Explorer" }).click();
   await page.getByPlaceholder("Search request, subject, institution, registry").fill("rail");
   await expect(page.getByText("1 visible requests")).toBeVisible();
   await expect(page.getByText(/\d+ signed events/).first()).toBeVisible();

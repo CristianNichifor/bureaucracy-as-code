@@ -90,10 +90,47 @@ test("shows no English and Romanian dates in Romanian mode", async ({ page }, te
 });
 
 test("writes English dates without the US numeric format", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./#explorer");
   await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
 
   const text = await page.evaluate(() => document.body.innerText);
   expect(text).toMatch(/\b\d{1,2} [A-Z][a-z]{2,3} \d{4}\b/);
   expect(text).not.toMatch(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/);
+});
+
+test("reads as three acts with a sticky step indicator", async ({ page }) => {
+  await page.goto("./");
+
+  const acts = page.locator(".dashboardSections > section");
+  await expect(acts).toHaveCount(3);
+  for (const [index, name] of ["Request", "Machinery", "Proof"].entries()) {
+    await expect(page.getByRole("region", { name, exact: true })).toBeVisible();
+    await expect(acts.nth(index).locator(".sectionHeader h2")).toHaveText(name);
+  }
+  await expect(page.getByRole("heading", { name: "Public request explorer" })).toHaveCount(0);
+
+  const progress = page.getByRole("navigation", { name: "Request progress" });
+  await expect(progress).toContainText("Step 0/6");
+  await expect(progress).toHaveCSS("position", "sticky");
+
+  await page.getByRole("button", { name: "Start the request" }).click();
+  await expect(progress).toContainText("Step 1/6");
+
+  await page.getByRole("region", { name: "Proof", exact: true }).scrollIntoViewIfNeeded();
+  await expect(progress).toBeInViewport();
+});
+
+test("moves the explorer and operations to a second view", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("navigation", { name: "Views" }).getByRole("link", { name: "Explorer" }).click();
+
+  await expect(page).toHaveURL(/#explorer$/);
+  await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Institution workload" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Machinery", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Release readiness" })).toHaveCount(0);
+
+  await page.getByRole("navigation", { name: "Views" }).getByRole("link", { name: "Demo" }).click();
+  await expect(page.getByRole("region", { name: "Machinery", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Public request explorer" })).toHaveCount(0);
 });
