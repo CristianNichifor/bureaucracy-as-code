@@ -38,18 +38,21 @@ for (const colorScheme of ["light", "dark"] as const) {
   });
 }
 
-test("has no automated accessibility violations after the full guided scenario @a11y", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop-chromium", "Full scenario accessibility scan runs once on desktop.");
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`has no automated accessibility violations after the full guided scenario in ${colorScheme} theme @a11y`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop-chromium", "Full scenario accessibility scan runs once on desktop.");
 
-  await page.goto("./");
+    await page.emulateMedia({ colorScheme });
+    await page.goto("./");
 
-  for (const name of fullScenarioSteps) {
-    await page.getByRole("button", { name: new RegExp(name, "i") }).click();
-  }
+    for (const name of fullScenarioSteps) {
+      await page.getByRole("button", { name: new RegExp(name, "i") }).click();
+    }
 
-  await expect(page.getByText("Ledger verifies")).toBeVisible();
-  await expectNoA11yViolations(page);
-});
+    await expect(page.getByText("Ledger verifies")).toBeVisible();
+    await expectNoA11yViolations(page);
+  });
+}
 
 test("has no automated accessibility violations on the mobile layout @a11y", async ({ page }) => {
   await page.goto("./");
