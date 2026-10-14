@@ -1,6 +1,7 @@
 import { localizeDemoText } from "../demo/demoText";
 import { formatDate, formatRole, useLanguage } from "../locale";
-import { isOverdue } from "../law544/deadlines";
+import { describeDeadline, statusSymbols, summarizeDeadline } from "./deadlineSummary";
+import "./explorer.css";
 import type { DemoRole } from "../identity/types";
 import type { Dictionary } from "../i18n";
 import type { Law544Status } from "../law544/types";
@@ -48,6 +49,7 @@ function RequestFeedRow({
   const { request, events, source } = item;
   const latestRole = getRequestLatestRole(events);
   const language = useLanguage();
+  const deadline = summarizeDeadline(request);
 
   return (
     <button
@@ -67,7 +69,10 @@ function RequestFeedRow({
       </div>
       <div>
         <span className="cellLabel">{labels.status}</span>
-        <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status, language)}</span>
+        <span className={`status status-${request.status.toLowerCase()}`}>
+          <span aria-hidden="true" className="statusSymbol">{statusSymbols[request.status]}</span>
+          {formatLaw544Status(request.status, language)}
+        </span>
       </div>
       <div>
         <span className="cellLabel">{labels.latestRole}</span>
@@ -77,9 +82,10 @@ function RequestFeedRow({
         <span className="cellLabel">{labels.trail}</span>
         <span>{getRequestEventCount(events)} {labels.events}</span>
       </div>
-      <div className={isOverdue(request.deadlineAt) ? "danger" : ""}>
+      <div className={`deadline-${deadline.tone} ${deadline.tone === "danger" ? "danger" : ""}`}>
         <span className="cellLabel">{labels.deadline}</span>
-        <span>{formatDate(request.deadlineAt, language)}</span>
+        <span>{deadline.tone === "unset" ? "—" : formatDate(request.deadlineAt, language)}</span>
+        <span className="deadlineNote">{describeDeadline(deadline, labels, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.source}</span>
@@ -110,6 +116,12 @@ export function RequestFeed({
   const filteredItems = filterRequestExplorerItems(items, filters);
   const institutions = getInstitutionOptions(items);
   const statusSummaries = getStatusSummaries(items);
+  const activeFilterNames = [
+    filters.status !== DEFAULT_EXPLORER_FILTERS.status ? formatLaw544Status(filters.status, language) : null,
+    filters.institution !== DEFAULT_EXPLORER_FILTERS.institution ? localizeDemoText(filters.institution, language) : null,
+    filters.role !== DEFAULT_EXPLORER_FILTERS.role ? formatRole(filters.role, language) : null,
+    filters.query !== DEFAULT_EXPLORER_FILTERS.query ? `„${filters.query}”` : null,
+  ].filter((name): name is string => name !== null);
   const filtersActive =
     filters.status !== DEFAULT_EXPLORER_FILTERS.status ||
     filters.institution !== DEFAULT_EXPLORER_FILTERS.institution ||
@@ -121,7 +133,9 @@ export function RequestFeed({
     <section className="panel requestFeedPanel" id={id}>
       <div className="panelHeader">
         <h2>{labels.title}</h2>
-        <span className="pill">{filteredItems.length} {labels.visible}</span>
+        <span className="pill" role="status">
+          {labels.visibleOf.replace("{count}", String(filteredItems.length)).replace("{total}", String(items.length))}
+        </span>
       </div>
 
       <div className="statusSummary" aria-label={labels.statusSummary}>
@@ -249,6 +263,9 @@ export function RequestFeed({
           <div className="emptyState" role="status">
             <strong>{labels.emptyTitle}</strong>
             <p>{labels.empty}</p>
+            {activeFilterNames.length > 0 && (
+              <p className="activeFilters">{labels.emptyFilters.replace("{filters}", activeFilterNames.join(", "))}</p>
+            )}
             <button className="civicButton civicButtonSecondary" onClick={() => onFiltersChange(DEFAULT_EXPLORER_FILTERS)} type="button">
               {labels.resetFilters}
             </button>

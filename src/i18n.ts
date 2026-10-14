@@ -151,6 +151,12 @@ export type Dictionary = {
     seed: string;
     emptyTitle: string;
     empty: string;
+    emptyFilters: string;
+    visibleOf: string;
+    daysRemaining: string;
+    daysOverdue: string;
+    closed: string;
+    deadlineUnset: string;
   };
   operations: {
     title: string;
@@ -660,6 +666,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       seed: "seed",
       emptyTitle: "No matching requests",
       empty: "The browser ledger has requests, but none match the current filters.",
+      emptyFilters: "Active filters: {filters}.",
+      visibleOf: "{count} of {total} requests shown",
+      daysRemaining: "{days} remaining",
+      daysOverdue: "{days} overdue",
+      closed: "closed",
+      deadlineUnset: "set on submission",
     },
     operations: {
       title: "Institution workload",
@@ -1251,6 +1263,12 @@ export const dictionaries: Record<Language, Dictionary> = {
       seed: "exemplu",
       emptyTitle: "Nicio cerere găsită",
       empty: "Registrul local are cereri, dar niciuna nu corespunde filtrelor curente.",
+      emptyFilters: "Filtre active: {filters}.",
+      visibleOf: "{count} din {total} cereri vizibile",
+      daysRemaining: "{days} rămase",
+      daysOverdue: "{days} întârziere",
+      closed: "închisă",
+      deadlineUnset: "se calculează la depunere",
     },
     operations: {
       title: "Încărcare instituții",
