@@ -62,6 +62,16 @@ for (const colorScheme of ["light", "dark"] as const) {
 test("has no automated accessibility violations on the mobile layout @a11y", async ({ page }) => {
   await page.goto("./");
 
-  await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Request progress" })).toBeVisible();
   await expectNoA11yViolations(page);
 });
+
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`has no automated accessibility violations in the explorer view in ${colorScheme} theme @a11y`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.goto("./#explorer");
+
+    await expect(page.getByRole("heading", { name: "Public request explorer" })).toBeVisible();
+    await expectNoA11yViolations(page);
+  });
+}

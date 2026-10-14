@@ -45,6 +45,8 @@ export type Dictionary = {
     transitionProofMessage: string;
     transitionFailureMessage: string;
   };
+  views: { label: string; demo: string; explorer: string; skipToDemo: string };
+  progress: { label: string; step: string };
   sections: {
     run: { title: string; copy: string };
     explorer: { title: string; copy: string };
@@ -483,9 +485,11 @@ export const dictionaries: Record<Language, Dictionary> = {
       transitionProofMessage: "Proof hash {hash}; verified ledger events: {count}.",
       transitionFailureMessage: "Could not apply transition.",
     },
+    views: { label: "Views", demo: "Demo", explorer: "Explorer", skipToDemo: "Skip to the request" },
+    progress: { label: "Request progress", step: "Step {current}/{total}" },
     sections: {
       run: {
-        title: "Run the request",
+        title: "Request",
         copy: "Drive the live Law 544 flow and watch each signed transition change the dashboard.",
       },
       explorer: {
@@ -493,11 +497,11 @@ export const dictionaries: Record<Language, Dictionary> = {
         copy: "Browse anonymized seeded and live requests as a citizen-facing national feed.",
       },
       accountability: {
-        title: "Request accountability",
+        title: "Machinery",
         copy: "Inspect responsibility, current location, and the signed trail for the selected file.",
       },
       proof: {
-        title: "Proof and verification",
+        title: "Proof",
         copy: "Export receipts and compare local files against recorded hashes without uploading documents.",
       },
       release: {
@@ -1072,9 +1076,11 @@ export const dictionaries: Record<Language, Dictionary> = {
       transitionProofMessage: "Hash dovadă {hash}; evenimente verificate în registru: {count}.",
       transitionFailureMessage: "Tranziția nu a putut fi aplicată.",
     },
+    views: { label: "Vizualizări", demo: "Demonstrație", explorer: "Explorer", skipToDemo: "Sari la cerere" },
+    progress: { label: "Progresul cererii", step: "Pasul {current}/{total}" },
     sections: {
       run: {
-        title: "Rulează cererea",
+        title: "Cererea",
         copy: "Parcurge fluxul Legea 544 și urmărește fiecare tranziție semnată în dashboard.",
       },
       explorer: {
@@ -1082,11 +1088,11 @@ export const dictionaries: Record<Language, Dictionary> = {
         copy: "Consultă cereri anonimizate, preîncărcate sau create local, ca într-un flux național public.",
       },
       accountability: {
-        title: "Responsabilitate pe cerere",
+        title: "Mecanismul",
         copy: "Inspectează responsabilul curent, traseul dosarului și auditul semnat.",
       },
       proof: {
-        title: "Dovezi și verificare",
+        title: "Dovada",
         copy: "Exportă dovezi și compară local fișierele primite cu hash-urile înregistrate.",
       },
       release: {
