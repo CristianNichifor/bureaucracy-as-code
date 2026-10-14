@@ -262,7 +262,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
 
   await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
 
-  await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
   for (const name of ["Cererea", "Mecanismul", "Dovada"]) {
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   }
@@ -287,7 +287,7 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await expect(page.getByRole("heading", { name: "Comparație scenarii" })).toBeVisible();
 
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "ro");
 
   await page.getByLabel("Limbă").getByRole("button", { name: "EN", exact: true }).click();
@@ -303,7 +303,7 @@ test.describe("with a Romanian browser", () => {
   test("defaults to Romanian on the first visit", async ({ page }) => {
     await page.goto("./");
 
-    await expect(page.getByRole("heading", { name: "Birocrație ca Software", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", "ro");
   });
 });
@@ -335,11 +335,14 @@ test("searches and sorts the public request explorer", async ({ page }, testInfo
   await page.getByRole("button", { name: "Reset filters" }).click();
   await expect(page.getByRole("button", { name: /REQ-2026-0002/i })).toBeVisible();
 
-  const healthWorkload = page.getByRole("button", { name: /Ministry of Health[\s\S]*Next file: REQ-2026-0003/i });
-  await healthWorkload.click();
+  const workload = page.getByRole("table", { name: "Institution workload" });
+  const healthRow = workload.locator("tbody tr", {
+    has: page.getByRole("button", { name: "Ministry of Health", exact: true }),
+  });
+  await expect(healthRow).toContainText("REQ-2026-0003");
+  await healthRow.getByRole("button", { name: "Ministry of Health", exact: true }).click();
   await expect(page.locator(".filterBar").getByLabel("Institution")).toHaveValue("Ministry of Health");
   await expect(page.getByRole("heading", { name: "REQ-2026-0003" })).toBeVisible();
-  await expect(healthWorkload.getByText("Owner queue")).toBeVisible();
 });
 
 test("exports a public audit receipt for the selected request", async ({ page }) => {
@@ -420,10 +423,22 @@ test("runs the guided Law 544 flow and proves edited exports are refused", async
   await expect(page.locator(".timelinePanel").getByText("Public servant", { exact: true }).first()).toBeVisible();
 
   await page.getByRole("button", { name: /test edited export/i }).click();
+
+  // BAC-17: the integrity panel itself says the edited copy failed, why, and how to go back.
+  const integrity = page.locator(".integrityPanel");
+  const tamperResult = integrity.getByRole("alert");
+  await expect(tamperResult).toContainText("Verification failed");
+  await expect(tamperResult.locator(".tamperReason")).not.toBeEmpty();
+  await expect(tamperResult).toContainText("the stored chain is unchanged");
+
   await openTools(page);
   await expect(page.locator(".message")).toContainText(/Tamper demo worked/i);
   await expect(page.getByRole("region", { name: "Transfer safety" }).locator(".pill").filter({ hasText: "rejected" })).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
+
+  await integrity.getByRole("button", { name: "Back to the verified chain" }).click();
+  await expect(integrity.getByRole("alert")).toHaveCount(0);
+  await expect(integrity.getByText("Hash chain verifies")).toBeVisible();
 });
 
 test("supports step and auto-run timeline controls", async ({ page }, testInfo) => {

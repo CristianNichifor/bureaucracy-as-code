@@ -1,0 +1,31 @@
+/* Tamper test result inside the integrity panel (BAC-17): words, a reason and a way back. */
+.tamperResult {
+  display: flex;
+  gap: var(--civic-space-3);
+  align-items: flex-start;
+  margin: var(--civic-space-3) 0;
+  border: 1px solid var(--civic-border);
+  border-left: 6px solid var(--civic-danger);
+  border-radius: var(--civic-radius);
+  padding: var(--civic-space-3) var(--civic-space-4);
+  background: var(--civic-surface);
+}
+
+.tamperResult svg {
+  flex: none;
+  color: var(--civic-danger);
+}
+
+.tamperResult p {
+  margin: var(--civic-space-1) 0 var(--civic-space-2);
+}
+
+.tamperReason {
+  overflow-wrap: anywhere;
+}
+
+@media (forced-colors: active) {
+  .tamperResult {
+    border-color: CanvasText;
+  }
+}

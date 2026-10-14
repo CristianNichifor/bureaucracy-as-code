@@ -1,0 +1,141 @@
+/* Page shell per docs/ux-guidelines.md §2: family bar, provenance line, staged loading, footer. */
+.familyBar {
+  border-bottom: 1px solid var(--civic-border);
+  background: var(--civic-surface);
+}
+
+.familyBarInner {
+  width: min(100%, var(--civic-page-max));
+  min-height: 48px;
+  margin: 0 auto;
+  padding: var(--civic-space-2) var(--civic-page-gutter);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--civic-space-2) var(--civic-space-4);
+}
+
+.familyBarHome {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--civic-accent);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.familyBarHome:hover,
+.familyBarHome:focus-visible {
+  text-decoration: underline;
+}
+
+.familyBarTool {
+  color: var(--civic-muted);
+  font-weight: 700;
+}
+
+.familyBarControls {
+  margin-left: auto;
+}
+
+.demoBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--civic-warning);
+  border-radius: 999px;
+  padding: 0 var(--civic-space-3);
+  color: var(--civic-warning);
+  background: var(--civic-surface);
+  font-size: 0.8125rem;
+  font-weight: 800;
+}
+
+.hero .purpose {
+  max-width: 720px;
+  font-size: 1.125rem;
+}
+
+.hero .provenance {
+  margin-bottom: var(--civic-space-3);
+  color: var(--civic-muted);
+  font-size: 0.9rem;
+}
+
+.loadingStages {
+  margin: 0 0 var(--civic-space-3);
+  padding-left: 1.25rem;
+}
+
+.loadingStages li {
+  color: var(--civic-muted);
+}
+
+.loadingStages li.done,
+.loadingStages li.current {
+  color: var(--civic-text);
+}
+
+.loadingStages li.current {
+  font-weight: 700;
+}
+
+.progressBar {
+  height: 8px;
+  margin-bottom: var(--civic-space-3);
+  overflow: hidden;
+  border: 1px solid var(--civic-border);
+  border-radius: 999px;
+  background: var(--civic-raised-bg);
+}
+
+.progressBar span {
+  display: block;
+  height: 100%;
+  background: var(--civic-action);
+  transition: width 200ms ease;
+}
+
+.loadError {
+  margin-top: var(--civic-space-4);
+  border: 1px solid var(--civic-danger);
+  border-left-width: 6px;
+  border-radius: var(--civic-radius);
+  padding: var(--civic-space-3) var(--civic-space-4);
+  background: var(--civic-danger-bg);
+}
+
+.siteFooterNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--civic-space-2) var(--civic-space-4);
+}
+
+.siteFooterNav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--civic-accent);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .familyBarControls {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressBar span {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .demoBadge,
+  .loadError {
+    border-color: CanvasText;
+  }
+}

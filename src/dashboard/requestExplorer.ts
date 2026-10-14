@@ -1,3 +1,4 @@
+import { isOverdue } from "../law544/deadlines";
 import type { DemoRole } from "../identity/types";
 import type { Law544Request, Law544Status } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
@@ -80,6 +81,28 @@ export function getStatusSummaries(items: RequestExplorerItem[]): StatusSummary[
   return Array.from(counts.entries())
     .map(([status, count]) => ({ status, count }))
     .sort((a, b) => a.status.localeCompare(b.status));
+}
+
+export type ExplorerCounts = {
+  institutions: number;
+  open: number;
+  overdue: number;
+  finished: number;
+};
+
+const finishedStatuses = new Set<Law544Status>(["Resolved", "Rejected"]);
+
+/** The explorer's count tiles. Open excludes the unsubmitted draft; overdue includes open files past their deadline. */
+export function getExplorerCounts(items: RequestExplorerItem[], now = new Date()): ExplorerCounts {
+  const requests = items.map((item) => item.request);
+  const open = requests.filter((request) => request.status !== "Draft" && !finishedStatuses.has(request.status));
+
+  return {
+    institutions: new Set(requests.map((request) => request.institution)).size,
+    open: open.length,
+    overdue: open.filter((request) => request.status === "Overdue" || isOverdue(request.deadlineAt, now)).length,
+    finished: requests.filter((request) => finishedStatuses.has(request.status)).length,
+  };
 }
 
 export function getSelectedExplorerItem(

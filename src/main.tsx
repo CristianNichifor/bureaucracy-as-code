@@ -4,6 +4,7 @@ import { App } from "./App";
 import { registerOfflineDemo } from "./offline";
 import "./civic-ui-adapter.css";
 import "./styles.css";
+import "./shell.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
