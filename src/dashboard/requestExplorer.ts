@@ -92,15 +92,21 @@ export type ExplorerCounts = {
 
 const finishedStatuses = new Set<Law544Status>(["Resolved", "Rejected"]);
 
-/** The explorer's count tiles. Open excludes the unsubmitted draft; overdue includes open files past their deadline. */
+/**
+ * The explorer's count tiles. Open includes the live draft, as the design counts it
+ * (docs/design/README.md: 7 open with the draft); a draft has no deadline yet, so it is
+ * never overdue. Overdue includes open files past their deadline.
+ */
 export function getExplorerCounts(items: RequestExplorerItem[], now = new Date()): ExplorerCounts {
   const requests = items.map((item) => item.request);
-  const open = requests.filter((request) => request.status !== "Draft" && !finishedStatuses.has(request.status));
+  const open = requests.filter((request) => !finishedStatuses.has(request.status));
 
   return {
     institutions: new Set(requests.map((request) => request.institution)).size,
     open: open.length,
-    overdue: open.filter((request) => request.status === "Overdue" || isOverdue(request.deadlineAt, now)).length,
+    overdue: open.filter(
+      (request) => request.status !== "Draft" && (request.status === "Overdue" || isOverdue(request.deadlineAt, now)),
+    ).length,
     finished: requests.filter((request) => finishedStatuses.has(request.status)).length,
   };
 }

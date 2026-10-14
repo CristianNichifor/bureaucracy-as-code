@@ -125,18 +125,21 @@ describe("request explorer helpers", () => {
     expect(getExplorerCounts(items, new Date("2026-09-23T09:00:00.001Z")).overdue).toBe(6);
   });
 
-  it("leaves an unsubmitted draft out of the open count", () => {
+  // docs/design/README.md: "the nine seeded requests plus the live draft (9 institutions,
+  // 7 open, 1 overdue, 3 closed)" - the live draft counts as open, but has no deadline yet.
+  it("counts the live draft as open but never as overdue", () => {
     const draft: RequestExplorerItem = {
       ...items[0],
       request: { ...items[0].request, id: "REQ-DRAFT", status: "Draft" },
       events: [],
       source: "active",
     };
-    expect(getExplorerCounts([draft], new Date("2026-09-13T09:00:00.000Z"))).toEqual({
+    expect(getExplorerCounts([draft], new Date("2030-01-01T00:00:00.000Z"))).toEqual({
       institutions: 1,
-      open: 0,
+      open: 1,
       overdue: 0,
       finished: 0,
     });
+    expect(getExplorerCounts([...items, draft], new Date("2026-09-13T09:00:00.000Z")).open).toBe(7);
   });
 });
