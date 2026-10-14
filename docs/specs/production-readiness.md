@@ -283,6 +283,17 @@ written by an agent: needs human review.
   Then none of those panels or strings are in the DOM.
 - Test: `tests/e2e/ux.pw.ts` "keeps release operations behind ?presenter=1".
 
+### BAC-20 Reduced motion and forced colours — `done`
+
+- Given `prefers-reduced-motion: reduce`
+  Then no transition, animation or smooth scroll runs (the skip link appears
+  without sliding).
+- Given `forced-colors: active`
+  Then the pressed language/theme toggle is marked by an outline, not only
+  by its background, which forced colours drop.
+
+Tests: `src/styles.test.ts`. Closes backlog UXG-4.
+
 ## Needs human (out of scope here)
 
 - BAC-7 hub CSP parity — lives in the hub repository.
