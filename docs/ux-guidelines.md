@@ -134,4 +134,4 @@ and `src/styles.css`.
 | UXG-6 | Name drift: hub catalogue vs app H1 (`Birocrație ca Software`); align to the civic-ui name registry | `src/i18n.ts`, hub catalogue |
 | UXG-7 | Public copy still uses `ledger`/hash jargon without a plain-language gloss in places | `src/i18n.ts` |
 | UXG-8 | Layout CSS mostly host-owned; adopt civic-ui SiteShell/SiteFooter/StatusMessage when the package is adopted (BAC-6) | `src/styles.css` |
-| UXG-9 | Empty explorer state has no clear-filters action | `RequestFeed`/explorer |
+| UXG-9 | Done: the empty explorer state has a "Reset filters" action, covered by `tests/e2e/ux.pw.ts` | `RequestFeed`/explorer |
