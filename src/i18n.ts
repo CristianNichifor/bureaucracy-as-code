@@ -3,6 +3,11 @@ export type Language = "en" | "ro";
 export type Dictionary = {
   app: {
     eyebrow: string;
+    skipLink: string;
+    lawExplainer: string;
+    startRequest: string;
+    continueRequest: string;
+    tools: string;
     title: string;
     intro: string;
     ledgerOk: string;
@@ -119,6 +124,7 @@ export type Dictionary = {
   feed: {
     title: string;
     visible: string;
+    filters: string;
     request: string;
     status: string;
     statusSummary: string;
@@ -298,6 +304,7 @@ export type Dictionary = {
     explainLabel: string;
     explainerCopy: string;
     proofTitle: string;
+    eventCode: string;
     state: string;
     signerRole: string;
     signerDidHash: string;
@@ -430,6 +437,12 @@ export const dictionaries: Record<Language, Dictionary> = {
   en: {
     app: {
       eyebrow: "Digital Public Administration Lab",
+      skipLink: "Skip to public request explorer",
+      lawExplainer:
+        "Under Law 544/2001 a public institution must answer a request for public information within 10 days, or within 30 days if it extends the term and tells you so within the first 10.",
+      startRequest: "Start the request",
+      continueRequest: "Continue the request",
+      tools: "Tools",
       title: "Bureaucracy as Code",
       intro:
         "Public Law 544/2001 explorer for signed administrative actions, anonymized request trails, and browser-local response hash verification.",
@@ -466,7 +479,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       tamperWorkedFallbackMessage: "Tamper demo worked: the edited export was rejected.",
       scenarioReplayedMessage: "Replayed {scenario}: {count} signed state changes now verify.",
       transitionRecordedMessage:
-        "{actor} signed {action}. Status moved from {fromStatus} to {toStatus}.",
+        "{event}. Status moved from {fromStatus} to {toStatus}.",
       transitionProofMessage: "Proof hash {hash}; verified ledger events: {count}.",
       transitionFailureMessage: "Could not apply transition.",
     },
@@ -554,25 +567,25 @@ export const dictionaries: Record<Language, Dictionary> = {
           title: "Citizen submits",
           actor: "Citizen credential",
           data: "Request text stays local or off-chain; payload hash and DID hash become public evidence.",
-          proof: "Request_Created with signed payload hash",
+          proof: "“Request submitted” with a signed payload hash",
         },
         {
           title: "Registry assigns",
           actor: "Registry bot",
           data: "Internal number joins the public trail without exposing the full file.",
-          proof: "Registry_Assigned links to the previous state hash",
+          proof: "“Registry number assigned” links to the previous state hash",
         },
         {
           title: "Director routes",
           actor: "Director credential",
           data: "Responsibility moves to a public-servant DID hash.",
-          proof: "Task_Routed records signer role and assignee hash",
+          proof: "“Routed to a public servant” records the signer role and assignee hash",
         },
         {
           title: "Officer resolves",
           actor: "Public servant",
           data: "Evidence and final response remain off-chain; only document hashes are visible.",
-          proof: "Document_Attached and Request_Resolved close the chain",
+          proof: "“Evidence attached” and “Answer sent” close the chain",
         },
       ],
     },
@@ -618,6 +631,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     feed: {
       title: "Public request explorer",
       visible: "visible",
+      filters: "Request filters",
       request: "Request",
       status: "Status",
       statusSummary: "Status summary",
@@ -804,6 +818,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       explainerCopy:
         "Each row is a signed administrative state transition with hashes that link it to the previous state.",
       proofTitle: "Event proof",
+      eventCode: "Event code",
       state: "State",
       signerRole: "Signer role",
       signerDidHash: "Signer DID hash",
@@ -1011,6 +1026,12 @@ export const dictionaries: Record<Language, Dictionary> = {
   ro: {
     app: {
       eyebrow: "Laborator de Administrație Publică Digitală",
+      skipLink: "Sari la explorerul public de cereri",
+      lawExplainer:
+        "Potrivit Legii 544/2001, instituția publică răspunde la o cerere de informații de interes public în 10 zile sau în cel mult 30 de zile, dacă prelungește termenul și te anunță în primele 10 zile.",
+      startRequest: "Începe cererea",
+      continueRequest: "Continuă cererea",
+      tools: "Instrumente",
       title: "Birocrație ca Software",
       intro:
         "Explorer public pentru Legea 544/2001: acțiuni administrative semnate, trasee anonimizate și verificare locală a hash-ului răspunsului.",
@@ -1047,7 +1068,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       tamperWorkedFallbackMessage: "Testul de modificare a funcționat: exportul editat a fost respins.",
       scenarioReplayedMessage: "Scenariul {scenario} a rulat: {count} schimbări semnate se verifică.",
       transitionRecordedMessage:
-        "{actor} a semnat {action}. Statusul a trecut de la {fromStatus} la {toStatus}.",
+        "{event}. Statusul a trecut de la {fromStatus} la {toStatus}.",
       transitionProofMessage: "Hash dovadă {hash}; evenimente verificate în registru: {count}.",
       transitionFailureMessage: "Tranziția nu a putut fi aplicată.",
     },
@@ -1135,25 +1156,25 @@ export const dictionaries: Record<Language, Dictionary> = {
           title: "Cetățeanul depune",
           actor: "Credențial cetățean",
           data: "Textul cererii rămâne local sau off-chain; hash-ul payloadului și hash-ul DID devin dovezi publice.",
-          proof: "Request_Created cu hash payload semnat",
+          proof: "„Cerere depusă” cu hash payload semnat",
         },
         {
           title: "Registratura alocă",
           actor: "Robot registratură",
           data: "Numărul intern intră în traseul public fără expunerea dosarului complet.",
-          proof: "Registry_Assigned leagă noua stare de hash-ul anterior",
+          proof: "„Număr de registru alocat” leagă noua stare de hash-ul anterior",
         },
         {
           title: "Directorul repartizează",
           actor: "Credențial director",
           data: "Responsabilitatea trece către hash-ul DID al funcționarului public.",
-          proof: "Task_Routed înregistrează rolul semnatarului și hash-ul responsabilului",
+          proof: "„Repartizată unui funcționar public” înregistrează rolul semnatarului și hash-ul responsabilului",
         },
         {
           title: "Funcționarul rezolvă",
           actor: "Funcționar public",
           data: "Dovezile și răspunsul final rămân off-chain; numai hash-urile documentelor sunt vizibile.",
-          proof: "Document_Attached și Request_Resolved închid lanțul",
+          proof: "„Dovadă atașată” și „Răspuns comunicat” închid lanțul",
         },
       ],
     },
@@ -1199,6 +1220,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     feed: {
       title: "Explorer public de cereri",
       visible: "vizibile",
+      filters: "Filtre cereri",
       request: "Cerere",
       status: "Status",
       statusSummary: "Rezumat statusuri",
@@ -1385,6 +1407,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       explainerCopy:
         "Fiecare rând este o tranziție administrativă semnată, legată de starea precedentă prin hash-uri.",
       proofTitle: "Dovadă eveniment",
+      eventCode: "Cod eveniment",
       state: "Stare",
       signerRole: "Rol semnatar",
       signerDidHash: "Hash DID semnatar",

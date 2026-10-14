@@ -2214,3 +2214,48 @@ dd {
 .privacyDialog a {
   color: var(--civic-accent);
 }
+
+.hero .lawExplainer {
+  max-width: 720px;
+  margin: var(--civic-space-3) 0 var(--civic-space-4);
+  border-left: 4px solid var(--civic-accent);
+  padding: var(--civic-space-2) var(--civic-space-3);
+  background: var(--civic-info-bg);
+  color: var(--civic-text);
+  font-weight: 600;
+}
+
+.heroStart {
+  min-width: 220px;
+  font-size: 1rem;
+}
+
+.toolsMenu {
+  margin: var(--civic-space-4) 0;
+  border: 1px solid var(--civic-border);
+  border-radius: var(--civic-panel-radius);
+  padding: 0 var(--civic-space-4);
+  background: var(--civic-surface);
+}
+
+.toolsMenu > summary {
+  display: inline-flex;
+  min-height: var(--civic-control-height);
+  align-items: center;
+  gap: 8px;
+  color: var(--civic-action);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.toolsMenu[open] {
+  padding-bottom: var(--civic-space-4);
+}
+
+.toolsMenu .toolbar {
+  margin-top: 0;
+}
+
+.message {
+  margin: var(--civic-space-4) 0 0;
+}
