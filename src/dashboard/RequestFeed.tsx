@@ -1,3 +1,4 @@
+import { localizeDemoText } from "../demo/demoText";
 import { formatDate, formatRole, useLanguage } from "../locale";
 import { isOverdue } from "../law544/deadlines";
 import type { DemoRole } from "../identity/types";
@@ -58,11 +59,11 @@ function RequestFeedRow({
       <div>
         <span className="cellLabel">{labels.request}</span>
         <strong>{request.id}</strong>
-        <span>{request.subject}</span>
+        <span>{localizeDemoText(request.subject, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.institution}</span>
-        <span>{request.institution}</span>
+        <span>{localizeDemoText(request.institution, language)}</span>
       </div>
       <div>
         <span className="cellLabel">{labels.status}</span>
@@ -181,7 +182,7 @@ export function RequestFeed({
             <option value={DEFAULT_EXPLORER_FILTERS.institution}>{labels.all}</option>
             {institutions.map((institution) => (
               <option key={institution} value={institution}>
-                {institution}
+                {localizeDemoText(institution, language)}
               </option>
             ))}
           </select>

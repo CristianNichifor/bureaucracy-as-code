@@ -1,3 +1,4 @@
+import { localizeDemoText } from "../demo/demoText";
 import { formatDate, useLanguage } from "../locale";
 import { AlertTriangle, Building2, CheckCircle2, Clock3, UsersRound } from "lucide-react";
 import type { Dictionary } from "../i18n";
@@ -78,7 +79,7 @@ export function OperationsPanel({
             type="button"
           >
             <div>
-              <strong>{workload.institution}</strong>
+              <strong>{localizeDemoText(workload.institution, language)}</strong>
               <span>{workload.urgent ? `${labels.nextFile}: ${workload.urgent.id}` : labels.noOpenFiles}</span>
               <span>{workload.urgency}</span>
             </div>

@@ -143,8 +143,7 @@ shows dd.mm.yyyy).
 Tests: `src/locale.test.ts` (every status, role and action has a label in
 both languages); `tests/e2e/ux.pw.ts`.
 
-Seeded institution names and request subjects are demo data and stay in
-English (needs human decision).
+Seeded institution names and request subjects are covered by BAC-13.
 
 ### BAC-12 A first screen with one primary action — `done`
 
@@ -160,6 +159,42 @@ English (needs human decision).
   release readiness) is hidden; with `?presenter=1` it is shown.
 
 Tests: `tests/e2e/ux.pw.ts`, updated `tests/e2e/demo.pw.ts`.
+
+## Theme E — Demo flow
+
+### BAC-13 Romanian demo data — `done` (Romanian names and subjects: needs human review)
+
+- Given Romanian is selected
+  When the explorer, request detail, machinery graph or operations panel show
+  a seeded institution name or request subject
+  Then they show the Romanian version ("Ministerul Finanțelor"); English mode
+  keeps the English text.
+- Given the stored request data
+  Then it stays unchanged (English keys), so filters, identity checks,
+  receipts and exported state keep working across languages.
+- Given any institution or subject in the seeded and scripted demo data
+  Then it has a non-empty Romanian version with comma-below ș and ț.
+
+Tests: `src/demo/demoText.test.ts` (parity); `tests/e2e/ux.pw.ts` (no
+English demo strings in Romanian mode).
+
+### BAC-14 Three-act layout — `todo`
+
+- Given the main view
+  Then the page reads as three sections in order: Request, Machinery, Proof,
+  each a labelled landmark with a heading.
+- Given the reader scrolls or steps through the scenario
+  Then a sticky progress indicator shows "Step n/6" for the guided run and
+  stays visible.
+- Given the reader follows the "Explorer" link (`#explorer`)
+  Then the public request explorer and the operations panel are shown in a
+  second view, and the three acts are hidden; `#` or the "Demo" link returns.
+- Given no `?presenter=1`
+  Then presenter content stays hidden in both views.
+- axe finds no violations in either view.
+
+Tests: `tests/e2e/ux.pw.ts`, `tests/e2e/demo.pw.ts`,
+`tests/e2e/accessibility.pw.ts`.
 
 ## Needs human (out of scope here)
 

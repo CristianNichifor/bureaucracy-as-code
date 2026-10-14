@@ -1,3 +1,4 @@
+import { localizeDemoText } from "../demo/demoText";
 import { formatDate, useLanguage } from "../locale";
 import { ArrowRight, Clock3, FileCheck2, Route, ShieldAlert } from "lucide-react";
 import type { Dictionary } from "../i18n";
@@ -60,7 +61,7 @@ export function ScenarioComparisonPanel({
                 {getScenarioIcon(status)}
                 <strong>{labels.scenarios[status]}</strong>
               </div>
-              <p>{item.request.subject}</p>
+              <p>{localizeDemoText(item.request.subject, language)}</p>
               <dl>
                 <div>
                   <dt>{labels.events}</dt>

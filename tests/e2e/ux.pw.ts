@@ -19,6 +19,11 @@ const englishInRomanian = [
   /Skip to public/,
   /\bSigned by\b/,
   /\bAll\b/,
+  /\bMinistry of\b/,
+  /\bCity Hall\b/,
+  /\bNational (Agency|Authority)\b/,
+  /Public spending data/,
+  /Budget execution/,
 ];
 
 test("leads the first screen with one primary action and the Law 544 terms", async ({ page }) => {

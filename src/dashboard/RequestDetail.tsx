@@ -1,3 +1,4 @@
+import { localizeDemoText } from "../demo/demoText";
 import { formatAction, formatDate, formatRole, useLanguage } from "../locale";
 import { Clock3, FileText, Fingerprint, Landmark } from "lucide-react";
 import type { Dictionary, Language } from "../i18n";
@@ -39,7 +40,7 @@ export function RequestDetail({
         <div>
           <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status, language)}</span>
           <h3>{request.id}</h3>
-          <p>{request.subject}</p>
+          <p>{localizeDemoText(request.subject, language)}</p>
         </div>
       </div>
       <div className="caseGlance" aria-label={labels.title}>
@@ -90,7 +91,7 @@ export function RequestDetail({
         <div className="metric">
           <Landmark size={18} />
           <span>{labels.institution}</span>
-          <strong>{request.institution}</strong>
+          <strong>{localizeDemoText(request.institution, language)}</strong>
         </div>
         <div className="metric">
           <Clock3 size={18} />
