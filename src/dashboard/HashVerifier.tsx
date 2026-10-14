@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Dictionary } from "../i18n";
 import { IndexedDbDocumentStore } from "../storage/IndexedDbDocumentStore";
 
@@ -6,10 +6,17 @@ const store = new IndexedDbDocumentStore();
 
 export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; labels: Dictionary["hash"] }) {
   const [actualHash, setActualHash] = useState<string>("");
+  const input = useRef<HTMLInputElement>(null);
 
   async function onFile(file?: File) {
     if (!file) return;
     setActualHash(await store.hashFile(file));
+  }
+
+  function chooseAnother() {
+    setActualHash("");
+    if (input.current) input.current.value = "";
+    input.current?.click();
   }
 
   const verified = Boolean(expectedHash && actualHash && expectedHash === actualHash);
@@ -29,7 +36,7 @@ export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; 
       </div>
       <label className="civicButton civicButtonSecondary fileButton">
         {labels.chooseFile}
-        <input aria-label={labels.chooseFile} type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
+        <input aria-label={labels.chooseFile} ref={input} type="file" onChange={(event) => void onFile(event.target.files?.[0])} />
       </label>
       <dl>
         <div>
@@ -41,8 +48,25 @@ export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; 
           <dd>{actualHash || labels.chooseFileToVerify}</dd>
         </div>
       </dl>
-      {mismatch ? <p className="danger">{labels.mismatch}</p> : null}
-      {verified ? <p className="okText">{labels.match}</p> : null}
+      {/* The result is always written in words: one live region per state, never a colour alone. */}
+      {mismatch ? (
+        <div className="verifierResult" role="alert">
+          <p className="danger">
+            <strong>{labels.mismatchTitle}</strong> {labels.mismatch}
+          </p>
+          <button className="civicButton civicButtonSecondary" onClick={chooseAnother} type="button">
+            {labels.chooseAnother}
+          </button>
+        </div>
+      ) : verified ? (
+        <p className="okText" role="status">
+          <strong>{labels.matchTitle}</strong> {labels.match}
+        </p>
+      ) : (
+        <p className="panelCopy verifierWaiting" role="status">
+          {actualHash && !expectedHash ? labels.noExpectedHash : labels.waiting}
+        </p>
+      )}
     </section>
   );
 }

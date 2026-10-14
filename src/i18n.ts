@@ -336,6 +336,10 @@ export type Dictionary = {
     mismatch: string;
     match: string;
     waiting: string;
+    mismatchTitle: string;
+    matchTitle: string;
+    chooseAnother: string;
+    noExpectedHash: string;
   };
   proofPreview: {
     title: string;
@@ -853,6 +857,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       mismatch: "The selected file does not match the recorded hash.",
       match: "The selected file matches the recorded response hash.",
       waiting: "Waiting for a file",
+      mismatchTitle: "The file does not match.",
+      matchTitle: "The file matches.",
+      chooseAnother: "Choose another file",
+      noExpectedHash: "The selected request has no recorded response hash yet, so there is nothing to compare.",
     },
     proofPreview: {
       title: "Proof export preview",
@@ -1444,6 +1452,10 @@ export const dictionaries: Record<Language, Dictionary> = {
       mismatch: "Fișierul selectat nu corespunde hash-ului înregistrat.",
       match: "Fișierul selectat corespunde hash-ului răspunsului înregistrat.",
       waiting: "În așteptarea unui fișier",
+      mismatchTitle: "Fișierul nu corespunde.",
+      matchTitle: "Fișierul corespunde.",
+      chooseAnother: "Alege alt fișier",
+      noExpectedHash: "Cererea selectată nu are încă un hash de răspuns înregistrat, deci nu există termen de comparație.",
     },
     proofPreview: {
       title: "Previzualizare dovezi",
