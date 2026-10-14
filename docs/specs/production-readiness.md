@@ -272,7 +272,7 @@ written by an agent: needs human review.
 - Test: `tests/e2e/ux.pw.ts` (empty state + reset), `tests/e2e/demo.pw.ts`
   `@ui`.
 
-### BAC-19 Presenter mode — `design done` / `todo` (implementation)
+### BAC-19 Presenter mode — `done`
 
 - Given `?presenter=1`
   Then the family bar adds the "Mod prezentare" badge, a `role="status"`
@@ -281,6 +281,8 @@ written by an agent: needs human review.
   render before the three acts.
 - Given no `?presenter=1`
   Then none of those panels or strings are in the DOM.
+- Given `?presenter=1` and the exit link
+  Then the page reloads without the query and the presenter panels are gone.
 - Test: `tests/e2e/ux.pw.ts` "keeps release operations behind ?presenter=1".
 
 ## Needs human (out of scope here)
