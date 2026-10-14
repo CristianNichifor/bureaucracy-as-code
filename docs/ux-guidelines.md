@@ -132,6 +132,6 @@ and `src/styles.css`.
 | ~~UXG-4~~ | Done in BAC-20 (`src/styles.test.ts`) | `src/styles.css` |
 | UXG-5 | Loading state is a single sentence, no staged progress | `src/App.tsx` loading branch |
 | UXG-6 | Name drift: hub catalogue vs app H1 (`Birocrație ca Software`); align to the civic-ui name registry | `src/i18n.ts`, hub catalogue |
-| UXG-7 | Public copy still uses `ledger`/hash jargon without a plain-language gloss in places | `src/i18n.ts` |
+| ~~UXG-7~~ | Fixed: Romanian copy glosses „jurnal verificabil” and „amprenta (hash)” in the verifier and integrity panel, in design screen 02's words | `src/i18n.ts` |
 | UXG-8 | Layout CSS mostly host-owned; adopt civic-ui SiteShell/SiteFooter/StatusMessage when the package is adopted (BAC-6) | `src/styles.css` |
 | ~~UXG-9~~ | Already met: the empty state has a "Resetează filtrele" button | `src/dashboard/RequestFeed.tsx` |
