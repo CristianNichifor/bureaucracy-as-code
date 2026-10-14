@@ -1,3 +1,4 @@
+import { formatAction, formatRole, useLanguage } from "../locale";
 import { BadgeCheck, Fingerprint, ShieldCheck, UserRoundCheck } from "lucide-react";
 import type { Dictionary } from "../i18n";
 import type { Law544Request, Law544Status } from "../law544/types";
@@ -13,6 +14,7 @@ export function EvidenceBrief({
   events: LedgerEvent[];
   labels: Dictionary["evidenceBrief"];
 }) {
+  const language = useLanguage();
   const latestEvent = events.at(-1);
   const latestHash = latestEvent?.stateHash.slice(0, 18) ?? labels.noProof;
   const documentProof = request.responseDocumentHash ?? latestEvent?.documentHash;
@@ -25,7 +27,7 @@ export function EvidenceBrief({
           <p className="eyebrow">{labels.label}</p>
           <h2 id="evidence-brief-title">{labels.title}</h2>
         </div>
-        <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status)}</span>
+        <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status, language)}</span>
       </div>
       <p className="panelCopy">{getStatusCopy(request.status, labels)}</p>
       <div className="evidenceBriefGrid">
@@ -38,8 +40,8 @@ export function EvidenceBrief({
         <article>
           <ShieldCheck size={18} />
           <span>{labels.latestSignedAction}</span>
-          <strong>{latestEvent?.action ?? labels.noProof}</strong>
-          <small>{latestEvent ? labels.signedBy.replace("{role}", latestEvent.signerRole) : labels.waiting}</small>
+          <strong>{latestEvent ? formatAction(latestEvent.action, language) : labels.noProof}</strong>
+          <small>{latestEvent ? labels.signedBy.replace("{role}", formatRole(latestEvent.signerRole, language)) : labels.waiting}</small>
         </article>
         <article>
           <Fingerprint size={18} />

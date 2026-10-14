@@ -38,7 +38,7 @@ CAPTURE_START_SERVER=0 CAPTURE_BASE_URL=https://projects.cristian-nichifor.com/b
 3. Select the Ministry of Environment extension scenario to show legal
    deadlines and non-final states.
 4. Select the overdue cadastral-data scenario to show accountability when a file
-   misses the 30-day window.
+   misses the 10-day window (Law 544/2001 art. 7; 30 days only when extended).
 5. Run the guided request from submission through resolution.
 6. Export the public audit receipt and proof report, then show the schema,
    summary, privacy block, verification steps, and evidence sequence.

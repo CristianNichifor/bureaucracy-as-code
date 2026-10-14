@@ -1,3 +1,4 @@
+import { formatDate, useLanguage } from "../locale";
 import { AlertTriangle, Building2, CheckCircle2, Clock3, UsersRound } from "lucide-react";
 import type { Dictionary } from "../i18n";
 import { isOverdue } from "../law544/deadlines";
@@ -27,6 +28,7 @@ export function OperationsPanel({
   onApplyFilters: (filters: Partial<RequestExplorerFilters>) => void;
   onSelectRequest: (requestId: string) => void;
 }) {
+  const language = useLanguage();
   const workloads = getInstitutionWorkloads(items, labels);
   const totals = getOperationsTotals(items);
 
@@ -95,7 +97,7 @@ export function OperationsPanel({
               </div>
               <div>
                 <dt>{labels.nextDeadline}</dt>
-                <dd>{workload.urgent ? new Date(workload.urgent.deadlineAt).toLocaleDateString() : labels.none}</dd>
+                <dd>{workload.urgent ? formatDate(workload.urgent.deadlineAt, language) : labels.none}</dd>
               </div>
               <div>
                 <dt>{labels.ownerQueue}</dt>
@@ -104,7 +106,7 @@ export function OperationsPanel({
             </dl>
             <small>
               <Clock3 size={14} />
-              {workload.urgent ? formatLaw544Status(workload.urgent.status) : labels.closedQueue}
+              {workload.urgent ? formatLaw544Status(workload.urgent.status, language) : labels.closedQueue}
             </small>
           </button>
         ))}

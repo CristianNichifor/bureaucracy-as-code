@@ -1,3 +1,4 @@
+import { formatLaw544Status, useLanguage } from "../locale";
 import type { Dictionary } from "../i18n";
 import type { Law544Request } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
@@ -17,6 +18,7 @@ export function MachineryGraph({
   events: LedgerEvent[];
   labels: Dictionary["graph"];
 }) {
+  const language = useLanguage();
   const registryDone = Boolean(request.registryNumber);
   const routed = Boolean(request.assignedToDidHash);
   const resolved = request.status === "Resolved";
@@ -52,8 +54,8 @@ export function MachineryGraph({
     },
     {
       label: routed ? labels.publicServant : labels.unassigned,
-      detail: request.responseDocumentHash ? labels.hashEvidence : request.status,
-      state: resolved || overdue || rejected ? request.status : routed ? labels.current : labels.waiting,
+      detail: request.responseDocumentHash ? labels.hashEvidence : formatLaw544Status(request.status, language),
+      state: resolved || overdue || rejected ? formatLaw544Status(request.status, language) : routed ? labels.current : labels.waiting,
       tone: resolved ? "complete" : overdue || rejected ? "danger" : routed ? "current" : "waiting",
     },
   ];

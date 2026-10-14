@@ -1,7 +1,8 @@
+import { formatDateTime, useLanguage } from "../locale";
 import { CheckCircle2, ExternalLink, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 import type { BuildInfo } from "../buildInfo";
-import type { Dictionary } from "../i18n";
+import type { Dictionary, Language } from "../i18n";
 
 const HUB_URL = "https://projects.cristian-nichifor.com/bureaucracy-as-code/";
 
@@ -12,6 +13,8 @@ export function ReleaseReadiness({
   buildInfo: BuildInfo;
   labels: Dictionary["readiness"];
 }) {
+  const language = useLanguage();
+
   return (
     <section className="panel readinessPanel" aria-labelledby="release-readiness-title">
       <div className="panelHeader">
@@ -27,7 +30,7 @@ export function ReleaseReadiness({
           <ReadinessFact label={labels.commit} value={buildInfo.commitShortSha} title={buildInfo.commitSha} />
           <ReadinessFact label={labels.branch} value={buildInfo.branch} />
           <ReadinessFact label={labels.environment} value={buildInfo.environment} />
-          <ReadinessFact label={labels.builtAt} value={formatBuiltAt(buildInfo.builtAt)} />
+          <ReadinessFact label={labels.builtAt} value={formatBuiltAt(buildInfo.builtAt, language)} />
         </ReadinessGroup>
 
         <ReadinessGroup title={labels.deployTargets}>
@@ -91,9 +94,9 @@ function ReadinessLink({ label, href }: { label: string; href: string }) {
   );
 }
 
-function formatBuiltAt(value: string): string {
+function formatBuiltAt(value: string, language: Language): string {
   if (value === "local") return "local";
 
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? value : formatDateTime(value, language);
 }

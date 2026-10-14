@@ -1,5 +1,6 @@
+import { formatAction, formatDate, formatRole, useLanguage } from "../locale";
 import { Clock3, FileText, Fingerprint, Landmark } from "lucide-react";
-import type { Dictionary } from "../i18n";
+import type { Dictionary, Language } from "../i18n";
 import { isOverdue } from "../law544/deadlines";
 import type { Law544Request } from "../law544/types";
 import type { LedgerEvent } from "../ledger/types";
@@ -16,11 +17,12 @@ export function RequestDetail({
   source: "active" | "seed";
   labels: Dictionary["detail"];
 }) {
+  const language = useLanguage();
   const latestRole = getRequestLatestRole(events);
   const latestEvent = events.at(-1);
   const responsibility = getResponsibilityLabel(request, labels);
   const deadlineSummary = getDeadlineSummary(request, labels);
-  const handoffSteps = getHandoffSteps(request, events, labels);
+  const handoffSteps = getHandoffSteps(request, events, labels, language);
   const evidenceState = request.responseDocumentHash
     ? request.responseDocumentHash.slice(0, 18)
     : latestEvent?.documentHash
@@ -35,7 +37,7 @@ export function RequestDetail({
       </div>
       <div className="detailHero">
         <div>
-          <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status)}</span>
+          <span className={`status status-${request.status.toLowerCase()}`}>{formatLaw544Status(request.status, language)}</span>
           <h3>{request.id}</h3>
           <p>{request.subject}</p>
         </div>
@@ -43,11 +45,11 @@ export function RequestDetail({
       <div className="caseGlance" aria-label={labels.title}>
         <div>
           <span>{labels.currentStatus}</span>
-          <strong>{formatLaw544Status(request.status)}</strong>
+          <strong>{formatLaw544Status(request.status, language)}</strong>
         </div>
         <div>
           <span>{labels.latestAction}</span>
-          <strong>{latestEvent?.action ?? labels.noProof}</strong>
+          <strong>{latestEvent ? formatAction(latestEvent.action, language) : labels.noProof}</strong>
         </div>
         <div>
           <span>{labels.responsibility}</span>
@@ -65,7 +67,7 @@ export function RequestDetail({
         </div>
         <div>
           <span>{labels.deadline}</span>
-          <strong>{new Date(request.deadlineAt).toLocaleDateString()}</strong>
+          <strong>{formatDate(request.deadlineAt, language)}</strong>
         </div>
         <p>{deadlineSummary.copy}</p>
       </div>
@@ -94,13 +96,13 @@ export function RequestDetail({
           <Clock3 size={18} />
           <span>{labels.deadline}</span>
           <strong className={isOverdue(request.deadlineAt) ? "danger" : ""}>
-            {new Date(request.deadlineAt).toLocaleDateString()}
+            {formatDate(request.deadlineAt, language)}
           </strong>
         </div>
         <div className="metric">
           <Fingerprint size={18} />
           <span>{labels.latestSignerRole}</span>
-          <strong>{latestRole ?? labels.noSigner}</strong>
+          <strong>{latestRole ? formatRole(latestRole, language) : labels.noSigner}</strong>
         </div>
         <div className="metric">
           <FileText size={18} />
@@ -181,6 +183,7 @@ function getHandoffSteps(
   request: Law544Request,
   events: LedgerEvent[],
   labels: Dictionary["detail"],
+  language: Language,
 ): Array<{ label: string; owner: string; proof: string; state: "complete" | "current" | "waiting" }> {
   const registryEvent = events.find((event) => event.action === "Registry_Assigned");
   const routeEvent = events.find((event) => event.action === "Task_Routed");
@@ -192,25 +195,25 @@ function getHandoffSteps(
     {
       label: labels.registryStep,
       owner: request.registryNumber ?? labels.registryQueue,
-      proof: registryEvent ? labels.signedBy.replace("{role}", registryEvent.signerRole) : labels.waitingForSignature,
+      proof: registryEvent ? labels.signedBy.replace("{role}", formatRole(registryEvent.signerRole, language)) : labels.waitingForSignature,
       state: registryEvent ? "complete" : "current",
     },
     {
       label: labels.directorStep,
       owner: routeEvent ? labels.directorQueue : labels.notAssigned,
-      proof: routeEvent ? labels.signedBy.replace("{role}", routeEvent.signerRole) : labels.waitingForSignature,
+      proof: routeEvent ? labels.signedBy.replace("{role}", formatRole(routeEvent.signerRole, language)) : labels.waitingForSignature,
       state: routeEvent ? "complete" : registryEvent ? "current" : "waiting",
     },
     {
       label: labels.officerStep,
       owner: request.assignedToDidHash ? request.assignedToDidHash.slice(0, 18) : labels.notAssigned,
-      proof: processingEvent ? labels.signedBy.replace("{role}", processingEvent.signerRole) : labels.waitingForSignature,
+      proof: processingEvent ? labels.signedBy.replace("{role}", formatRole(processingEvent.signerRole, language)) : labels.waitingForSignature,
       state: isClosed ? "complete" : processingEvent ? "current" : "waiting",
     },
     {
       label: labels.responseStep,
       owner: request.responseDocumentHash ? request.responseDocumentHash.slice(0, 18) : labels.noResponse,
-      proof: finalEvent ? labels.signedBy.replace("{role}", finalEvent.signerRole) : labels.waitingForSignature,
+      proof: finalEvent ? labels.signedBy.replace("{role}", formatRole(finalEvent.signerRole, language)) : labels.waitingForSignature,
       state: finalEvent ? "complete" : "waiting",
     },
   ];

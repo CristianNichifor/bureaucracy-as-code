@@ -1,7 +1,7 @@
 import type { DemoIdentity, IdentityProvider } from "../identity/types";
 import { InMemoryRequestRepository } from "../api/InMemoryRequestRepository";
 import { TransitionIngestionService, createCanonicalSigningEnvelope, transitionPurpose } from "../api/transitionIngestion";
-import { calculateLaw544Deadline } from "../law544/deadlines";
+import { calculateExtendedLaw544Deadline, calculateLaw544Deadline } from "../law544/deadlines";
 import { assertAllowedTransition } from "../law544/stateMachine";
 import { findTransitionRule } from "../law544/transitions";
 import type { Law544Action, Law544Request } from "../law544/types";
@@ -90,6 +90,10 @@ export async function applyDemoAction(input: {
   return {
     ...input.request,
     status: rule.to,
+    deadlineAt:
+      input.action === "Extension_Requested"
+        ? calculateExtendedLaw544Deadline(input.request.createdAt)
+        : input.request.deadlineAt,
     registryNumber: input.metadata?.registryNumber ?? input.request.registryNumber,
     assignedToDidHash: input.metadata?.assignedToDidHash ?? input.request.assignedToDidHash,
     responseDocumentHash: input.documentHash ?? input.request.responseDocumentHash,

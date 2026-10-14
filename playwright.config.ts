@@ -14,6 +14,8 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:4173/bureaucracy-as-code/",
     trace: "on-first-retry",
+    // The app picks its first language from the browser, so pin it rather than inherit the host's.
+    locale: "en-US",
     launchOptions: {
       executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
     },

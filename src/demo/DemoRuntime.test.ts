@@ -9,6 +9,7 @@ import {
   verifyLedgerHeadAnchor,
 } from "../ledger/hashChain";
 import type { ChainVerificationResult, LedgerEvent, LedgerHeadAnchor, LedgerProvider, UnsignedTransition } from "../ledger/types";
+import { calculateExtendedLaw544Deadline, calculateLaw544Deadline } from "../law544/deadlines";
 import { DemoRuntime, createMemoryDemoRuntime } from "./DemoRuntime";
 import { browserGuidedScenarios } from "./guidedScenarios";
 
@@ -103,6 +104,19 @@ describe("DemoRuntime", () => {
     expect(second.events.some((event) => event.requestId === first.context.request.id)).toBe(false);
   });
 
+  it("gives a new request 10 days and an extended one 30 days", async () => {
+    const runtime = await createMemoryDemoRuntime({ ledger: memoryLedger });
+    const happy = await runtime.replayGuidedScenario("happy-path");
+    expect(happy.context.request.deadlineAt).toBe(calculateLaw544Deadline(happy.context.request.createdAt));
+
+    const warning = await runtime.replayGuidedScenario("deadline-warning");
+    const extendedDeadline = calculateExtendedLaw544Deadline(warning.context.request.createdAt);
+    expect(warning.context.request.deadlineAt).toBe(extendedDeadline);
+    expect(warning.events.find((event) => event.action === "Extension_Requested")?.metadata?.extensionDeadlineAt).toBe(
+      extendedDeadline.slice(0, 10),
+    );
+  });
+
   it("records scenario metadata and final documents on replayed flows", async () => {
     const runtime = await createMemoryDemoRuntime({ ledger: memoryLedger });
     const extension = await runtime.replayGuidedScenario("extension");
@@ -116,6 +130,7 @@ describe("DemoRuntime", () => {
     expect(extension.events.find((event) => event.action === "Extension_Requested")?.metadata).toMatchObject({
       reason: "large-volume-public-records",
     });
+    expect(extension.context.request.deadlineAt).toBe(calculateExtendedLaw544Deadline(extension.context.request.createdAt));
     expect(extension.context.request.responseDocumentHash).toBeTruthy();
     expect(extension.events.at(-1)?.documentHash).toBe(extension.context.request.responseDocumentHash);
   });
