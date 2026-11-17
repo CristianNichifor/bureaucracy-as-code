@@ -369,8 +369,7 @@ h2 {
 
 .buildMetadata span {
   color: var(--civic-subtle);
-  font-weight: 800;
-  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .buildMetadata strong {
@@ -426,9 +425,8 @@ h2 {
 .evidenceBriefGrid span,
 .demoCompletenessGrid span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .proofPreviewGrid strong,
@@ -507,9 +505,8 @@ h2 {
 
 .operationsMetrics span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .operationsMetrics strong {
@@ -573,9 +570,8 @@ h2 {
 
 .operationsRow dt {
   color: var(--civic-subtle);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .operationsRow dd {
@@ -663,9 +659,8 @@ h2 {
 
 .scenarioComparisonCard dt {
   color: var(--civic-subtle);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .scenarioComparisonCard dd {
@@ -717,10 +712,9 @@ h2 {
 .statusSummaryChip span {
   overflow: hidden;
   color: var(--civic-muted);
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: 0.8rem;
+  font-weight: 700;
   text-overflow: ellipsis;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -751,9 +745,8 @@ h2 {
 
 .filterBar label span {
   color: var(--civic-subtle);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  text-transform: uppercase;
 }
 
 .filterBar select,
@@ -805,9 +798,8 @@ h2 {
 .feedHeader {
   padding: 0 12px;
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .feedRow {
@@ -975,9 +967,8 @@ h2 {
 .dataFlowStep span,
 .dataFlowStep dt {
   color: var(--civic-subtle);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .dataFlowStep strong,
@@ -1046,9 +1037,8 @@ h2 {
 
 .caseGlance span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .caseGlance strong {
@@ -1077,9 +1067,8 @@ h2 {
 
 .deadlineStrip span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .deadlineStrip strong {
@@ -1129,9 +1118,8 @@ h2 {
 
 .handoffHeader span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .handoffHeader strong {
@@ -1163,9 +1151,8 @@ h2 {
 
 .handoffStep span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .handoffStep strong,
@@ -1208,9 +1195,8 @@ h2 {
 
 .metric span {
   color: var(--civic-subtle);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  text-transform: uppercase;
 }
 
 .metric strong {
@@ -1241,9 +1227,8 @@ dl {
 
 dt {
   color: var(--civic-subtle);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  text-transform: uppercase;
 }
 
 dd {
@@ -1273,9 +1258,8 @@ dd {
 
 .graphOwner span {
   color: var(--civic-subtle);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .graphOwner strong {
@@ -1298,9 +1282,8 @@ dd {
   padding: 10px;
   color: var(--civic-subtle);
   background: var(--civic-raised);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .exceptionSignal {
@@ -1359,9 +1342,8 @@ dd {
 
 .graphNode span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .graphNode strong {
@@ -1473,9 +1455,8 @@ dd {
 
 .scenarioFacts dt {
   color: var(--civic-subtle);
-  font-size: 0.7rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .scenarioFacts dd {
@@ -1508,9 +1489,8 @@ dd {
 
 .lastRecorded span {
   color: var(--civic-subtle);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .lastRecorded strong {
@@ -1579,9 +1559,8 @@ dd {
 .readinessFact span,
 .readinessLink span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .readinessFact strong,
@@ -1713,8 +1692,7 @@ dd {
 
 .explainBox strong {
   color: var(--civic-action-hover);
-  font-size: 0.78rem;
-  text-transform: uppercase;
+  font-size: 0.8rem;
 }
 
 .explainBox p {
@@ -1758,9 +1736,8 @@ dd {
 
 .receiptResult span {
   color: var(--civic-subtle);
-  font-size: 0.74rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .receiptResult strong {
@@ -1898,9 +1875,8 @@ dd {
   align-items: center;
   gap: 6px;
   color: var(--civic-subtle);
-  font-size: 0.78rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .presenterModeHeader strong {
@@ -1934,9 +1910,8 @@ dd {
 
 .presenterCue span {
   color: var(--civic-subtle);
-  font-size: 0.7rem;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .presenterCue strong {
@@ -1969,9 +1944,8 @@ dd {
   align-items: center;
   gap: 6px;
   color: var(--civic-subtle);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .presenterCommands code {
@@ -2086,9 +2060,8 @@ dd {
   .cellLabel {
     display: inline;
     color: var(--civic-subtle);
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 700;
   }
 
   .graphEdge {
@@ -2369,8 +2342,17 @@ dd {
   scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-5));
 }
 
+/* The act heading takes focus only so screen readers announce the new act; it is not a control. */
 .sectionHeader h2:focus {
   outline: none;
+  box-shadow: none;
+}
+
+.viewNav a:focus-visible,
+.actProgress a:focus-visible,
+.actPager a:focus-visible {
+  outline: 2px solid var(--civic-focus);
+  outline-offset: 2px;
 }
 
 .visuallyHidden {
@@ -2457,11 +2439,13 @@ dd {
   margin-bottom: 8px;
 }
 
+/* Badge over count, never side by side: a long status ("Extension requested") then cannot push
+   the count onto a line of its own and throw that card out of line with its neighbours. */
 .scenarioOutcome {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .scenarioOutcome .status {
@@ -2503,6 +2487,17 @@ dd {
 
   .actPager .civicButton {
     flex: 1 1 100%;
+  }
+
+  .dashboardSection {
+    scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-5) + 36px);
+  }
+
+  .handoffStep,
+  .metric,
+  .graphNode,
+  .proofPreviewGrid div {
+    min-height: 0;
   }
 }
 

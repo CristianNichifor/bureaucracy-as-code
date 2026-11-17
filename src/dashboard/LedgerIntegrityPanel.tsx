@@ -33,9 +33,6 @@ export function LedgerIntegrityPanel({
         {verification.valid ? <CheckCircle2 size={30} /> : <AlertTriangle size={30} />}
         <div>
           <strong>{verification.valid ? labels.validTitle : labels.failedTitle}</strong>
-          <p>
-            {verification.valid ? labels.validCopy : labels.failedCopy}
-          </p>
         </div>
       </div>
       <div className="explainBox">

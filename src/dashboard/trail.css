@@ -63,3 +63,30 @@
   font-size: 0.8rem;
   overflow-wrap: anywhere;
 }
+
+/* On a phone the hashes stay one tap away (copy button, full value under "Event proof") so the table fits. */
+@media (max-width: 560px) {
+  .trailTable {
+    font-size: 0.85rem;
+  }
+
+  .trailTable th,
+  .trailTable td {
+    padding: var(--civic-space-2) 4px;
+  }
+
+  .trailTable th {
+    white-space: normal;
+  }
+
+  .trailTable > tbody > tr:first-child .proofValue code,
+  .trailTable > tbody > tr:first-child .iconButton span {
+    display: none;
+  }
+
+  .trailTable > tbody > tr:first-child .iconButton {
+    width: 34px;
+    min-width: 34px;
+    padding: 0;
+  }
+}

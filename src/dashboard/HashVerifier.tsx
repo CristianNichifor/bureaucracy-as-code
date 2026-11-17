@@ -26,7 +26,6 @@ export function HashVerifier({ expectedHash, labels }: { expectedHash?: string; 
         <h2>{labels.title}</h2>
         <span className={verified ? "pill ok" : mismatch ? "pill dangerPill" : "pill"}>{status}</span>
       </div>
-      <p className="panelCopy">{labels.copy}</p>
       <div className="explainBox">
         <strong>{labels.explainLabel}</strong>
         <p>{labels.copy}</p>
