@@ -181,8 +181,11 @@ English demo strings in Romanian mode).
 ### BAC-14 Three-act layout — `done` (new Romanian labels: needs human review)
 
 - Given the main view
-  Then the page reads as three sections in order: Request, Machinery, Proof,
-  each a labelled landmark with a heading.
+  Then the page reads as three acts in order: Request, Machinery, Proof,
+  each a labelled landmark with a heading. Only one act is rendered at a
+  time; the step bar and the "Next: …" / "Back: …" pager switch acts through
+  the URL hash, and focus moves to the new act's heading. Hashes that are not
+  acts (for example `#privacy`) leave the open act alone.
 - Given the reader scrolls or steps through the scenario
   Then a sticky progress indicator shows "Step n/6" for the guided run and
   stays visible.

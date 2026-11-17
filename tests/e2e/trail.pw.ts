@@ -1,8 +1,11 @@
 import { expect, test } from "@playwright/test";
+import { openAct, showScenarios } from "./acts";
 
 test("lists the signed trail as a table with a copyable state hash per row", async ({ page }) => {
   await page.goto("./");
+  await showScenarios(page);
   await page.getByRole("button", { name: "Run full scenario" }).click();
+  await openAct(page, "Machinery");
 
   const table = page.getByRole("table", { name: "Signed audit trail" });
   await expect(table).toBeVisible();

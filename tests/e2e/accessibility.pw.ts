@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { openAct, openDisclosures } from "./acts";
 
 const fullScenarioSteps = [
   "Submit request",
@@ -28,6 +29,8 @@ for (const colorScheme of ["light", "dark"] as const) {
     // The tools menu starts closed, so scan its contents too.
     await page.locator(".toolsMenu > summary").click();
     await expect(page.getByRole("region", { name: "Demo actions" })).toBeVisible();
+    // So are the scenario shortcuts and the data flow.
+    await openDisclosures(page);
     await expectNoA11yViolations(page);
   });
 
@@ -56,6 +59,12 @@ for (const colorScheme of ["light", "dark"] as const) {
 
     await expect(page.getByText("Ledger verifies")).toBeVisible();
     await expectNoA11yViolations(page);
+
+    // Each act renders on its own, so each is scanned with the finished run in it.
+    for (const name of ["Machinery", "Proof"]) {
+      await openAct(page, name);
+      await expectNoA11yViolations(page);
+    }
   });
 }
 

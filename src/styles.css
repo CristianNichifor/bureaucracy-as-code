@@ -2260,21 +2260,16 @@ dd {
   margin: var(--civic-space-4) 0 0;
 }
 
-.viewNav,
-.actProgress {
+.viewNav {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--civic-space-4);
-}
-
-.viewNav {
   margin: var(--civic-space-4) 0;
   border-bottom: 1px solid var(--civic-border);
 }
 
-.viewNav a,
-.actProgress a {
+.viewNav a {
   display: inline-flex;
   min-height: var(--civic-control-height);
   align-items: center;
@@ -2288,18 +2283,115 @@ dd {
   text-decoration: none;
 }
 
+/* The three acts as steps: one act on the page at a time, picked here or with the pager below it. */
 .actProgress {
   position: sticky;
   top: 0;
   z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--civic-space-4);
   border: 1px solid var(--civic-border);
   border-radius: var(--civic-panel-radius);
-  padding: 0 var(--civic-space-4);
+  padding: 4px;
   background: var(--civic-surface);
 }
 
+.actProgress ol {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.actProgress li {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.actProgress a {
+  display: flex;
+  min-height: var(--civic-control-height);
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--civic-radius);
+  padding: 0 10px;
+  color: var(--civic-action);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.actProgress a:hover {
+  background: var(--civic-raised);
+}
+
+.actProgress a[aria-current="step"] {
+  color: var(--civic-on-action);
+  background: var(--civic-action);
+}
+
+.actNumber {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.actProgress > strong {
+  padding: 0 10px;
+  color: var(--civic-muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.actPager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: var(--civic-space-5);
+}
+
+.actPagerNext {
+  margin-left: auto;
+}
+
 .dashboardSection {
-  scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-4));
+  scroll-margin-top: calc(var(--civic-control-height) + var(--civic-space-5));
+}
+
+.sectionHeader h2:focus {
+  outline: none;
+}
+
+@media (max-width: 560px) {
+  .actNumber {
+    display: none;
+  }
+
+  .actProgress a {
+    padding: 0 6px;
+  }
+
+  .actProgress > strong {
+    flex: 1 1 100%;
+    padding: 2px 6px 4px;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  .actPager .civicButton {
+    flex: 1 1 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

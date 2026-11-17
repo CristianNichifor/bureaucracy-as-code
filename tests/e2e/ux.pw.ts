@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openAct, openDisclosures, showScenarios } from "./acts";
 
 const englishInRomanian = [
   /\bResolved\b/,
@@ -98,11 +99,18 @@ test("shows no English and Romanian dates in Romanian mode", async ({ page }, te
 
   await page.goto("./");
   await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
+  await showScenarios(page);
   await page.getByRole("button", { name: "Rulează complet" }).click();
   await expect(page.locator(".message")).toContainText("Scenariul Rulează complet a rulat");
   await page.getByText("Instrumente", { exact: true }).click();
 
-  const text = await page.evaluate(() => document.body.innerText);
+  // One act is on the page at a time: read all three, with their folded panels open.
+  let text = "";
+  for (const name of ["Cererea", "Mecanismul", "Dovada"]) {
+    await openAct(page, name);
+    await openDisclosures(page);
+    text += `${await page.evaluate(() => document.body.innerText)}\n`;
+  }
   const leftovers = englishInRomanian.flatMap((pattern) => {
     const match = text.match(pattern);
     return match ? [`${pattern} -> "${text.slice(Math.max(0, match.index! - 40), match.index! + 40)}"`] : [];
@@ -123,26 +131,59 @@ test("writes English dates without the US numeric format", async ({ page }) => {
   expect(text).not.toMatch(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/);
 });
 
-test("reads as three acts with a sticky step indicator", async ({ page }) => {
+test("shows one act at a time, picked from a sticky step bar", async ({ page }) => {
   await page.goto("./");
 
   const acts = page.locator(".dashboardSections > section");
-  await expect(acts).toHaveCount(3);
-  for (const [index, name] of ["Request", "Machinery", "Proof"].entries()) {
-    await expect(page.getByRole("region", { name, exact: true })).toBeVisible();
-    await expect(acts.nth(index).locator(".sectionHeader h2")).toHaveText(name);
-  }
+  await expect(acts).toHaveCount(1);
+  await expect(page.getByRole("region", { name: "Request", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Public request explorer" })).toHaveCount(0);
 
   const progress = page.getByRole("navigation", { name: "Request progress" });
+  for (const name of ["Request", "Machinery", "Proof"]) {
+    await expect(progress.getByRole("link", { name, exact: true })).toBeVisible();
+  }
+  await expect(progress.getByRole("link", { name: "Request", exact: true })).toHaveAttribute("aria-current", "step");
   await expect(progress).toContainText("Step 0/6");
   await expect(progress).toHaveCSS("position", "sticky");
 
   await page.getByRole("button", { name: "Start the request" }).click();
   await expect(progress).toContainText("Step 1/6");
 
-  await page.getByRole("region", { name: "Proof", exact: true }).scrollIntoViewIfNeeded();
-  await expect(progress).toBeInViewport();
+  const pager = page.getByRole("navigation", { name: "Previous and next section" });
+  for (const [name, hash] of [["Machinery", "request-accountability"], ["Proof", "proof-verification"]]) {
+    await pager.getByRole("link", { name: `Next: ${name}` }).click();
+    await expect(page).toHaveURL(new RegExp(`#${hash}$`));
+    await expect(acts).toHaveCount(1);
+    const heading = acts.locator(".sectionHeader h2");
+    await expect(heading).toHaveText(name);
+    // Keyboard and screen-reader users land on the act they asked for.
+    await expect(heading).toBeFocused();
+    await expect(progress.getByRole("link", { name, exact: true })).toHaveAttribute("aria-current", "step");
+    await expect(progress).toBeInViewport();
+  }
+  await expect(pager.getByRole("link", { name: "Back: Machinery" })).toBeVisible();
+
+  // The browser's back button returns to the previous act, and a deep link opens its act.
+  await page.goBack();
+  await expect(page.getByRole("region", { name: "Machinery", exact: true })).toBeVisible();
+  await page.goto("./#proof-verification");
+  await expect(page.getByRole("region", { name: "Proof", exact: true })).toBeVisible();
+
+  // Other anchors on the page leave the open act alone.
+  await page.evaluate(() => {
+    window.location.hash = "privacy";
+  });
+  await expect(page.getByRole("region", { name: "Proof", exact: true })).toBeVisible();
+});
+
+test("exports the receipt from the Proof act", async ({ page }) => {
+  await page.goto("./#proof-verification");
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.locator(".proofPreviewPanel").getByRole("button", { name: "Export this receipt" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/REQ-2026-[a-z0-9-]+-audit-receipt\.json/);
 });
 
 test("moves the explorer and operations to a second view", async ({ page }) => {
@@ -156,7 +197,7 @@ test("moves the explorer and operations to a second view", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Release readiness" })).toHaveCount(0);
 
   await page.getByRole("navigation", { name: "Views" }).getByRole("link", { name: "Demo" }).click();
-  await expect(page.getByRole("region", { name: "Machinery", exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Request", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Public request explorer" })).toHaveCount(0);
 });
 

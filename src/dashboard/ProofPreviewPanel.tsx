@@ -1,4 +1,4 @@
-import { FileJson, ListChecks, ShieldCheck } from "lucide-react";
+import { Download, FileJson, ListChecks, ShieldCheck } from "lucide-react";
 import type { Dictionary, Language } from "../i18n";
 import { buildPublicAuditReceipt, buildPublicProofReport } from "./auditReceipt";
 import type { RequestExplorerItem } from "./requestExplorer";
@@ -7,11 +7,13 @@ export function ProofPreviewPanel({
   items,
   language,
   selectedItem,
+  onExportReceipt,
   labels,
 }: {
   items: RequestExplorerItem[];
   language: Language;
   selectedItem: RequestExplorerItem;
+  onExportReceipt: () => void;
   labels: Dictionary["proofPreview"];
 }) {
   const receipt = buildPublicAuditReceipt({
@@ -72,6 +74,10 @@ export function ProofPreviewPanel({
           <dd>{report.summary.invalidChainCount}</dd>
         </div>
       </dl>
+      <button className="civicButton panelAction" onClick={onExportReceipt} type="button">
+        <Download aria-hidden="true" size={18} />
+        {labels.exportReceipt}
+      </button>
     </section>
   );
 }

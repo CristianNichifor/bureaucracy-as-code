@@ -32,7 +32,11 @@ In order, top to bottom:
    `Data: synthetic demo, generated in the browser`. This app has no live
    data; the line must say so.
 4. Primary task: the request (act 1), then machinery (act 2), then proof
-   (act 3) — the three-act layout in BAC-14.
+   (act 3) — the three-act layout in BAC-14. The acts are steps: one is on
+   the page at a time, chosen from the sticky step bar or the "Next: …" /
+   "Back: …" links under it, and each has its own hash (`#run-request`,
+   `#request-accountability`, `#proof-verification`) so the back button and
+   deep links work.
 5. Secondary views: public explorer (`#explorer`), tools menu (export, import,
    reset), presenter panels only behind `?presenter=1`.
 6. Footer: method (link to `docs/architecture.md` / the Law 544 caveat),
@@ -107,6 +111,7 @@ The machinery graph is the only chart-like view.
 
 | Rule | Test |
 | --- | --- |
+| One act at a time, act hashes, focus moves to the act heading | `tests/e2e/ux.pw.ts` "shows one act at a time…" |
 | One primary action and the Law 544 terms on the first screen | `tests/e2e/ux.pw.ts` "leads the first screen…" |
 | No English, and Romanian dates, in Romanian mode | `tests/e2e/ux.pw.ts` "shows no English…"; `src/i18n.test.ts` |
 | No US numeric dates in English | `tests/e2e/ux.pw.ts` "writes English dates…"; `src/locale.test.ts` |

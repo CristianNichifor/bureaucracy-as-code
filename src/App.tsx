@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
+  ArrowLeft,
+  ArrowRight,
   Moon,
   Download,
   PlayCircle,
@@ -62,12 +64,23 @@ const initialVerification: ChainVerificationResult = {
 type Theme = "light" | "dark";
 type View = "demo" | "explorer";
 
+// The three acts are steps: only one is on the page at a time, and its id is the URL hash.
+const ACTS = ["run-request", "request-accountability", "proof-verification"] as const;
+type Act = (typeof ACTS)[number];
+const actSections = { "run-request": "run", "request-accountability": "accountability", "proof-verification": "proof" } as const;
+
 // Anchors inside the explorer view open it too, so old links keep working.
 const explorerHashes = new Set(["#explorer", "#request-explorer", "#request-explorer-section"]);
 
 function viewFromHash(): View {
   if (typeof window === "undefined") return "demo";
   return explorerHashes.has(window.location.hash) ? "explorer" : "demo";
+}
+
+// Only an act's own hash picks an act; other anchors (#privacy, presenter panels) leave it alone.
+function actInHash(): Act | undefined {
+  if (typeof window === "undefined") return undefined;
+  return ACTS.find((act) => `#${act}` === window.location.hash);
 }
 
 type LocalizedText = (t: Dictionary, language: Language) => string;
@@ -113,8 +126,23 @@ export function App() {
   const [buildInfo, setBuildInfo] = useState<BuildInfo>(fallbackBuildInfo);
   const fileInput = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<View>(viewFromHash);
+  const [act, setAct] = useState<Act>(() => actInHash() ?? ACTS[0]);
+  // Set when the reader picks an act by its link, so the act is brought into view and focused once,
+  // after it renders. A ref, not state: other re-renders must not scroll the page again.
+  const pendingActFocus = useRef(actInHash() !== undefined);
+  const [actPicks, setActPicks] = useState(0);
   useEffect(() => {
-    const onHashChange = () => setView(viewFromHash());
+    const onHashChange = () => {
+      setView(viewFromHash());
+      const picked = actInHash();
+      if (picked) {
+        pendingActFocus.current = true;
+        setAct(picked);
+        setActPicks((count) => count + 1);
+      } else if (window.location.hash === "" || window.location.hash === "#") {
+        setAct(ACTS[0]);
+      }
+    };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
@@ -395,8 +423,21 @@ export function App() {
 
   async function startRequest() {
     if (context?.request.status === "Draft") await runAction("create");
-    document.getElementById("run-request")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (act === "run-request") {
+      document.getElementById("run-request")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.location.hash = "run-request";
+    }
   }
+
+  const ready = context !== null;
+  useEffect(() => {
+    if (!ready || !pendingActFocus.current || view !== "demo") return;
+    pendingActFocus.current = false;
+    const section = document.getElementById(act);
+    section?.querySelector<HTMLElement>("h2")?.focus({ preventScroll: true });
+    section?.scrollIntoView({ block: "start" });
+  }, [ready, actPicks, act, view]);
 
   const runNextStep = useCallback(() => {
     if (!context) return;
@@ -508,6 +549,8 @@ export function App() {
   const selectedRequest = selectedItem?.request ?? request;
   const selectedEvents = selectedItem?.events ?? activeEvents;
   const selectedSource = selectedItem?.source ?? "active";
+  const actIndex = ACTS.indexOf(act);
+  const requestComplete = demoSteps[getCurrentStepIndex(request.status, events.length)] === undefined;
 
   return (
     <LanguageContext.Provider value={language}>
@@ -611,18 +654,26 @@ export function App() {
       {view === "demo" ? (
         <>
           <nav className="actProgress" aria-label={t.progress.label}>
+            <ol>
+              {ACTS.map((id, index) => (
+                <li key={id}>
+                  <a aria-current={id === act ? "step" : undefined} href={`#${id}`}>
+                    <span aria-hidden="true" className="actNumber">{index + 1}</span>
+                    {t.sections[actSections[id]].title}
+                  </a>
+                </li>
+              ))}
+            </ol>
             <strong>
               {formatMessage(t.progress.step, {
                 current: getCurrentStepIndex(request.status, events.length),
                 total: demoSteps.length,
               })}
             </strong>
-            <a href="#run-request">{t.sections.run.title}</a>
-            <a href="#request-accountability">{t.sections.accountability.title}</a>
-            <a href="#proof-verification">{t.sections.proof.title}</a>
           </nav>
 
           <div className="dashboardSections">
+            {act === "run-request" && (
             <DashboardSection id="run-request" title={t.sections.run.title} copy={t.sections.run.copy}>
               <div className="grid sectionGrid sectionGridRun">
                 <GuidedProgress
@@ -641,7 +692,9 @@ export function App() {
                 <DataFlowPanel labels={t.dataFlow} />
               </div>
             </DashboardSection>
+            )}
 
+            {act === "request-accountability" && (
             <DashboardSection id="request-accountability" title={t.sections.accountability.title} copy={t.sections.accountability.copy}>
               <div className="grid sectionGrid selectedCaseWorkspace">
                 <EvidenceBrief request={selectedRequest} events={selectedEvents} labels={t.evidenceBrief} />
@@ -650,13 +703,16 @@ export function App() {
                 <RequestTrail events={selectedEvents} requestId={selectedRequest.id} labels={t.trail} />
               </div>
             </DashboardSection>
+            )}
 
+            {act === "proof-verification" && (
             <DashboardSection id="proof-verification" title={t.sections.proof.title} copy={t.sections.proof.copy}>
               <div className="grid sectionGrid sectionGridProof">
                 <ProofPreviewPanel
                   items={filteredItems}
                   language={language}
                   selectedItem={selectedItem ?? explorerItems[0]}
+                  onExportReceipt={exportAuditReceipt}
                   labels={t.proofPreview}
                 />
                 <HashVerifier expectedHash={selectedRequest.responseDocumentHash} labels={t.hash} />
@@ -671,7 +727,26 @@ export function App() {
                 />
               </div>
             </DashboardSection>
+            )}
           </div>
+
+          <nav className="actPager" aria-label={t.progress.pagerLabel}>
+            {actIndex > 0 && (
+              <a className="civicButton civicButtonSecondary" href={`#${ACTS[actIndex - 1]}`}>
+                <ArrowLeft aria-hidden="true" size={18} />
+                {formatMessage(t.progress.back, { act: t.sections[actSections[ACTS[actIndex - 1]]].title })}
+              </a>
+            )}
+            {actIndex < ACTS.length - 1 && (
+              <a
+                className={`civicButton actPagerNext ${actIndex === 0 && !requestComplete ? "civicButtonSecondary" : ""}`}
+                href={`#${ACTS[actIndex + 1]}`}
+              >
+                {formatMessage(t.progress.next, { act: t.sections[actSections[ACTS[actIndex + 1]]].title })}
+                <ArrowRight aria-hidden="true" size={18} />
+              </a>
+            )}
+          </nav>
         </>
       ) : (
         <div className="dashboardSections">
@@ -737,7 +812,7 @@ function DashboardSection({
     <section className="dashboardSection" aria-labelledby={titleId} id={id}>
       <div className="sectionHeader">
         <div>
-          <h2 id={titleId}>{title}</h2>
+          <h2 id={titleId} tabIndex={-1}>{title}</h2>
         </div>
         <p>{copy}</p>
       </div>

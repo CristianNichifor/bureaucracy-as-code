@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openAct, openDisclosures, showScenarios } from "./acts";
 
 const fullScenarioSteps = [
   "Submit request",
@@ -71,12 +72,11 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(toolbar.getByRole("button", { name: "Import" })).toBeVisible();
   await expect(toolbar.getByRole("button", { name: "Reset" })).toBeVisible();
   for (const name of ["Request", "Machinery", "Proof"]) {
-    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+    await expect(page.locator(".actProgress").getByRole("link", { name, exact: true })).toBeVisible();
   }
-  await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
-  await expect(page.getByText("Selected receipt")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Request", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guided Law 544 run" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
+  await showScenarios(page);
   await expect(page.getByRole("button", { name: /deadline warning/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /partial disclosure/i })).toBeVisible();
   await expect(page.getByRole("button", { name: "Redirected", exact: true })).toBeVisible();
@@ -88,6 +88,11 @@ test("loads the public demo with basic document landmarks", async ({ page }) => 
   await expect(page.locator(".message")).toContainText("Ready for a live run. Submit the request to record the first signed transition.");
   await expect(page.getByText("Ledger verifies")).toBeVisible();
   await expect(page.getByLabel("Deployed build")).toBeVisible();
+
+  await openAct(page, "Proof");
+  await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
+  await expect(page.getByText("Selected receipt")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ledger integrity" })).toBeVisible();
 
   await page.goto("./#explorer");
   await expect(page.getByRole("heading", { name: "Public explorer", exact: true })).toBeVisible();
@@ -122,10 +127,12 @@ test("keeps the browser demo usable on the configured viewport", async ({ page }
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
   await expect(page.getByRole("button", { name: "Start the request" })).toBeVisible();
+  await expect(page.getByText("Ledger verifies")).toBeVisible();
+  await openAct(page, "Machinery");
   await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
+  await openAct(page, "Proof");
   await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
-  await expect(page.getByText("Ledger verifies")).toBeVisible();
 
   await testInfo.attach(`browser-demo-${testInfo.project.name}.png`, {
     body: await page.screenshot({ fullPage: true }),
@@ -148,49 +155,64 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
     await page.getByRole("button", { name: /run full scenario/i }).click();
 
     await expect(page.getByRole("heading", { name: "Bureaucracy as Code", level: 1 })).toBeVisible();
-    for (const name of ["Request", "Machinery", "Proof"]) {
-      await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
-    }
-    await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
-    await expect(page.getByText("Accountability handoff")).toBeVisible();
-    await expect(page.getByLabel("Accountability handoff").getByText("Officer desk")).toBeVisible();
-    await expect(page.getByText("Deadline status")).toBeVisible();
-    // The full scenario ends resolved: the header says so and counts no days (BAC-17).
-    await expect(page.locator(".deadlineStrip")).toContainText("Closed");
-    await expect(page.locator(".deadlineStrip")).not.toContainText(/days? (remaining|overdue)/);
-    await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Signed audit trail" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Demo completeness" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Presenter checklist" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Release readiness" })).toBeVisible();
     await expect(page.getByText("Ledger verifies")).toBeVisible();
 
-    const overflow = await page.evaluate(() => ({
-      body: document.body.scrollWidth - window.innerWidth,
-      root: document.documentElement.scrollWidth - window.innerWidth,
-    }));
-    expect(overflow.body, `${viewport.name} body horizontal overflow`).toBeLessThanOrEqual(1);
-    expect(overflow.root, `${viewport.name} root horizontal overflow`).toBeLessThanOrEqual(1);
+    // One act is on the page at a time, so each act gets its own layout check.
+    for (const act of ["Request", "Machinery", "Proof"]) {
+      await openAct(page, act);
+      if (act === "Request") {
+        await openDisclosures(page);
+        await expect(page.getByText("Citizen submits")).toBeVisible();
+      }
+      if (act === "Machinery") {
+        await expect(page.getByRole("heading", { name: "Public evidence brief" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Request detail" })).toBeVisible();
+        await expect(page.getByText("Accountability handoff")).toBeVisible();
+        await expect(page.getByLabel("Accountability handoff").getByText("Officer desk")).toBeVisible();
+        await expect(page.getByText("Deadline status")).toBeVisible();
+        // The full scenario ends resolved: the header says so and counts no days (BAC-17).
+        await expect(page.locator(".deadlineStrip")).toContainText("Closed");
+        await expect(page.locator(".deadlineStrip")).not.toContainText(/days? (remaining|overdue)/);
+        await expect(page.getByRole("heading", { name: "Bureaucratic machinery" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Signed audit trail" })).toBeVisible();
+      }
+      if (act === "Proof") {
+        await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
+        await expect(page.getByRole("heading", { name: "Response hash verifier" })).toBeVisible();
+      }
 
-    const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .evidenceBriefGrid article, .transferSafetyGrid article, .demoCompletenessGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li, .siteFooter").evaluateAll((nodes) =>
-      nodes.map((node) => {
-        const rect = node.getBoundingClientRect();
-        return {
-          left: rect.left,
-          right: rect.right,
-          width: rect.width,
-          viewport: window.innerWidth,
-        };
-      }),
-    );
+      const overflow = await page.evaluate(() => ({
+        body: document.body.scrollWidth - window.innerWidth,
+        root: document.documentElement.scrollWidth - window.innerWidth,
+      }));
+      expect(overflow.body, `${viewport.name} ${act} body horizontal overflow`).toBeLessThanOrEqual(1);
+      expect(overflow.root, `${viewport.name} ${act} root horizontal overflow`).toBeLessThanOrEqual(1);
 
-    for (const box of boxes) {
-      expect(box.width, `${viewport.name} element collapsed`).toBeGreaterThan(0);
-      expect(box.left, `${viewport.name} element leaks left`).toBeGreaterThanOrEqual(-1);
-      expect(box.right, `${viewport.name} element leaks right`).toBeLessThanOrEqual(box.viewport + 1);
+      const boxes = await page.locator(".dashboardSection, .sectionHeader, .panel, .feedRow, .operationsRow, .scenarioComparisonCard, .scenarioCard, .evidenceBriefGrid article, .transferSafetyGrid article, .demoCompletenessGrid article, .graphNode, .caseGlance, .readinessLink, .presenterSteps li, .actProgress, .actPager, .siteFooter").evaluateAll((nodes) =>
+        nodes.map((node) => {
+          const rect = node.getBoundingClientRect();
+          return {
+            left: rect.left,
+            right: rect.right,
+            width: rect.width,
+            viewport: window.innerWidth,
+          };
+        }),
+      );
+
+      for (const box of boxes) {
+        expect(box.width, `${viewport.name} ${act} element collapsed`).toBeGreaterThan(0);
+        expect(box.left, `${viewport.name} ${act} element leaks left`).toBeGreaterThanOrEqual(-1);
+        expect(box.right, `${viewport.name} ${act} element leaks right`).toBeLessThanOrEqual(box.viewport + 1);
+      }
+
+      await testInfo.attach(`civic-ui-${viewport.width}-${act.toLowerCase()}.png`, {
+        body: await page.screenshot({ fullPage: true }),
+        contentType: "image/png",
+      });
     }
 
     const shell = await page.locator("main.appShell").evaluate((node) => {
@@ -211,11 +233,6 @@ test("keeps Civic UI layout stable across target viewports @ui", async ({ page }
       expect(shell.left, `${viewport.name} shell is centered`).toBeCloseTo((viewport.width - 1920) / 2, 0);
       expect(shell.right, `${viewport.name} shell is centered`).toBeCloseTo((viewport.width + 1920) / 2, 0);
     }
-
-    await testInfo.attach(`civic-ui-${viewport.width}.png`, {
-      body: await page.screenshot({ fullPage: true }),
-      contentType: "image/png",
-    });
 
     await page.goto("./?presenter=1#explorer");
     await expect(page.getByRole("heading", { name: "Institution workload" })).toBeVisible();
@@ -245,7 +262,7 @@ test("compares seeded Law 544 scenario outcomes", async ({ page }) => {
 });
 
 test("summarizes the selected request as a public evidence brief", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./#request-accountability");
 
   const panel = page.getByRole("region", { name: "Public evidence brief" });
   await expect(panel).toBeVisible();
@@ -254,7 +271,10 @@ test("summarizes the selected request as a public evidence brief", async ({ page
   await expect(panel.getByText("State evidence")).toBeVisible();
   await expect(panel.getByText("Citizen can verify")).toBeVisible();
 
+  await openAct(page, "Request");
+  await showScenarios(page);
   await page.getByRole("button", { name: /run full scenario/i }).click();
+  await openAct(page, "Machinery");
   await expect(panel.getByText("Response hash available")).toBeVisible();
   await expect(panel.getByText("Citizen can verify the receipt and response hash.")).toBeVisible();
 });
@@ -265,21 +285,26 @@ test("switches the public dashboard between English and Romanian", async ({ page
   await page.getByLabel("Language").getByRole("button", { name: "RO", exact: true }).click();
 
   await expect(page.getByRole("heading", { name: "Birocrație ca program", level: 1 })).toBeVisible();
+  const progress = page.getByRole("navigation", { name: "Progresul cererii" });
   for (const name of ["Cererea", "Mecanismul", "Dovada"]) {
-    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+    await expect(progress.getByRole("link", { name, exact: true })).toBeVisible();
   }
-  await expect(page.getByRole("navigation", { name: "Progresul cererii" })).toContainText("Pasul 0/6");
+  await expect(page.getByRole("heading", { name: "Cererea", exact: true })).toBeVisible();
+  await expect(progress).toContainText("Pasul 0/6");
   await openTools(page, "Instrumente");
   await expect(page.getByRole("heading", { name: "Siguranța transferului" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Rezumat public al dovezilor" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Flux ghidat Legea 544" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Completitudine demo" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pregătire release" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Checklist prezentare" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Depune cererea/i })).toBeVisible();
   await expect(page.getByText("Ciclul normal al cererii, cu dovadă și hash pentru răspunsul final.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Mai departe: Mecanismul" })).toBeVisible();
+  await openAct(page, "Mecanismul");
+  await expect(page.getByRole("heading", { name: "Rezumat public al dovezilor" })).toBeVisible();
   await expect(page.getByText("Status termen")).toBeVisible();
+  await openAct(page, "Dovada");
+  await expect(page.getByRole("heading", { name: "Previzualizare dovezi" })).toBeVisible();
   await expect(page.getByRole("region", { name: "Acțiuni demo" }).getByRole("button", { name: "Exportă dovada" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "ro");
 
@@ -359,7 +384,7 @@ test("exports a public audit receipt for the selected request", async ({ page })
 });
 
 test("exports a public proof report for visible requests", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./#proof-verification");
 
   await expect(page.getByRole("heading", { name: "Proof export preview" })).toBeVisible();
   await expect(page.getByText("Visible report")).toBeVisible();
@@ -396,7 +421,7 @@ test("exports a public proof report for visible requests", async ({ page }) => {
 test("shows detailed receipt verification results", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "Receipt verifier details are covered once on desktop.");
 
-  await page.goto("./");
+  await page.goto("./#proof-verification");
 
   const panel = page.locator(".verifierPanel").filter({ has: page.getByRole("heading", { name: "Receipt verifier" }) });
   await expect(panel.getByText("Verification verdict")).toBeVisible();
@@ -419,10 +444,12 @@ test("runs the guided Law 544 flow and proves edited exports are refused", async
 
   await expect(page.getByText("complete").first()).toBeVisible();
   await expect(page.getByText("Ledger verifies")).toBeVisible();
-  await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
+  await openAct(page, "Machinery");
   await expect(page.getByText("Resolved").first()).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText("Answer sent", { exact: true })).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText("Public servant", { exact: true }).first()).toBeVisible();
+  await openAct(page, "Proof");
+  await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
 
   await page.getByRole("button", { name: /test edited export/i }).click();
 
@@ -458,6 +485,7 @@ test("supports step and auto-run timeline controls", async ({ page }, testInfo) 
   await expect(page.locator(".message")).toContainText("Answer sent, signed by Public servant");
   await expect(page.getByText(/verified ledger events: 6/i)).toBeVisible();
   await expect(page.locator(".lastRecorded")).toContainText("Answer sent, signed by Public servant");
+  await openAct(page, "Proof");
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
 });
 
@@ -466,28 +494,39 @@ test("replays exceptional Law 544 simulations with signed metadata", async ({ pa
 
   await page.goto("./");
 
+  await showScenarios(page);
   await page.getByRole("button", { name: /deadline warning/i }).click();
+  await openAct(page, "Machinery");
   await expect(page.getByText("Extension Requested").first()).toBeVisible();
   const exceptionLane = page.getByLabel("Internal exception lane");
   await expect(exceptionLane).toBeVisible();
   await expect(exceptionLane.getByText("Extension", { exact: true })).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText("Deadline extended to 30 days", { exact: true })).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/extensionDeadlineAt: \d{4}-\d{2}-\d{2}/i)).toBeVisible();
+  await openAct(page, "Proof");
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");
 
+  await openAct(page, "Request");
+  await showScenarios(page);
   await page.getByRole("button", { name: /partial disclosure/i }).click();
+  await openAct(page, "Machinery");
   await expect(page.getByText("Resolved").first()).toBeVisible();
   await expect(exceptionLane.getByText("Partial disclosure")).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/disclosure: partial/i).first()).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/redactionBasis: third-party-personal-data/i).first()).toBeVisible();
+  await openAct(page, "Proof");
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("6");
 
+  await openAct(page, "Request");
+  await showScenarios(page);
   await page.getByRole("button", { name: "Redirected", exact: true }).click();
+  await openAct(page, "Machinery");
   await expect(page.getByText("Resolved").first()).toBeVisible();
   await expect(exceptionLane.getByText("Redirect")).toBeVisible();
   await expect(exceptionLane.getByText("Ministry of Development")).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/outcome: redirected/i)).toBeVisible();
   await expect(page.locator(".timelinePanel").getByText(/targetInstitution: Ministry of Development/i)).toBeVisible();
+  await openAct(page, "Proof");
   await expect(page.locator(".integrityPanel").getByText("Events checked").locator("..")).toContainText("5");
 });
 
@@ -498,6 +537,7 @@ test("verifies the final response hash locally in the browser", async ({ page },
   await freezeBrowserClock(page, fixedIso);
   await page.goto("./");
   await runFullLaw544Scenario(page);
+  await openAct(page, "Proof");
 
   const chooser = page.getByLabel("Choose file");
 

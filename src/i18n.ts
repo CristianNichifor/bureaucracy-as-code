@@ -64,7 +64,7 @@ export type Dictionary = {
     retry: string;
   };
   views: { label: string; demo: string; explorer: string; skipToDemo: string };
-  progress: { label: string; step: string };
+  progress: { label: string; step: string; pagerLabel: string; next: string; back: string };
   sections: {
     run: { title: string; copy: string };
     explorer: { title: string; copy: string };
@@ -368,6 +368,7 @@ export type Dictionary = {
     waiting: string;
   };
   proofPreview: {
+    exportReceipt: string;
     title: string;
     copy: string;
     localOnly: string;
@@ -539,7 +540,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       retry: "Retry",
     },
     views: { label: "Views", demo: "Demo", explorer: "Explorer", skipToDemo: "Skip to the request" },
-    progress: { label: "Request progress", step: "Step {current}/{total}" },
+    progress: {
+      label: "Request progress",
+      step: "Step {current}/{total}",
+      pagerLabel: "Previous and next section",
+      next: "Next: {act}",
+      back: "Back: {act}",
+    },
     sections: {
       run: {
         title: "Request",
@@ -920,6 +927,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       waiting: "Waiting for a file",
     },
     proofPreview: {
+      exportReceipt: "Export this receipt",
       title: "Proof export preview",
       copy:
         "Inspect the public evidence package before exporting. The preview is generated locally from the selected request and visible explorer scope.",
@@ -1165,7 +1173,13 @@ export const dictionaries: Record<Language, Dictionary> = {
       retry: "Reîncearcă",
     },
     views: { label: "Vizualizări", demo: "Demonstrație", explorer: "Explorer", skipToDemo: "Sari la cerere" },
-    progress: { label: "Progresul cererii", step: "Pasul {current}/{total}" },
+    progress: {
+      label: "Progresul cererii",
+      step: "Pasul {current}/{total}",
+      pagerLabel: "Secțiunea anterioară și următoare",
+      next: "Mai departe: {act}",
+      back: "Înapoi: {act}",
+    },
     sections: {
       run: {
         title: "Cererea",
@@ -1546,6 +1560,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       waiting: "În așteptarea unui fișier",
     },
     proofPreview: {
+      exportReceipt: "Exportă această dovadă",
       title: "Previzualizare dovezi",
       copy:
         "Inspectează pachetul public de dovezi înainte de export. Previzualizarea este generată local din cererea selectată și filtrul vizibil.",
