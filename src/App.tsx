@@ -687,6 +687,7 @@ export function App() {
                   onRunNext={runNextStep}
                   onAutoRun={() => setIsAutoRunning(true)}
                   onPause={() => setIsAutoRunning(false)}
+                  scenariosOpen={presenterMode}
                   labels={t.guided}
                 />
                 <DataFlowPanel labels={t.dataFlow} />

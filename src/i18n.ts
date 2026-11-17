@@ -78,6 +78,9 @@ export type Dictionary = {
     nextStep: string;
     signs: string;
     scenariosLabel: string;
+    scenariosCopy: string;
+    nextLabel: string;
+    completeHint: string;
     controlsLabel: string;
     stepNext: string;
     autoRun: string;
@@ -575,6 +578,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       nextStep: "next step",
       signs: "signs",
       scenariosLabel: "One-click scenario replay",
+      scenariosCopy: "Each shortcut replaces the current request with a finished run of that case.",
+      nextLabel: "Up next",
+      completeHint: "Request complete. Continue to Machinery to see who signed what.",
       controlsLabel: "Timeline controls",
       stepNext: "Step next",
       autoRun: "Auto-run",
@@ -1208,6 +1214,9 @@ export const dictionaries: Record<Language, Dictionary> = {
       nextStep: "pasul următor",
       signs: "semnează",
       scenariosLabel: "Reluare scenariu dintr-un click",
+      scenariosCopy: "Fiecare scurtătură înlocuiește cererea curentă cu parcursul complet al cazului respectiv.",
+      nextLabel: "Urmează",
+      completeHint: "Cererea este completă. Continuă la Mecanismul ca să vezi cine a semnat ce.",
       controlsLabel: "Controale cronologie",
       stepNext: "Pasul următor",
       autoRun: "Rulează automat",

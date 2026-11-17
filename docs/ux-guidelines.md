@@ -36,7 +36,9 @@ In order, top to bottom:
    the page at a time, chosen from the sticky step bar or the "Next: …" /
    "Back: …" links under it, and each has its own hash (`#run-request`,
    `#request-accountability`, `#proof-verification`) so the back button and
-   deep links work.
+   deep links work. Secondary panels inside an act (scenario shortcuts, the
+   signed data flow) start folded behind `details`; presenter mode opens the
+   scenario shortcuts.
 5. Secondary views: public explorer (`#explorer`), tools menu (export, import,
    reset), presenter panels only behind `?presenter=1`.
 6. Footer: method (link to `docs/architecture.md` / the Law 544 caveat),
@@ -112,6 +114,7 @@ The machinery graph is the only chart-like view.
 | Rule | Test |
 | --- | --- |
 | One act at a time, act hashes, focus moves to the act heading | `tests/e2e/ux.pw.ts` "shows one act at a time…" |
+| Scenario shortcuts and data flow folded on the public page | `tests/e2e/ux.pw.ts` "folds the scenario shortcuts…" |
 | One primary action and the Law 544 terms on the first screen | `tests/e2e/ux.pw.ts` "leads the first screen…" |
 | No English, and Romanian dates, in Romanian mode | `tests/e2e/ux.pw.ts` "shows no English…"; `src/i18n.test.ts` |
 | No US numeric dates in English | `tests/e2e/ux.pw.ts` "writes English dates…"; `src/locale.test.ts` |

@@ -177,6 +177,24 @@ test("shows one act at a time, picked from a sticky step bar", async ({ page }) 
   await expect(page.getByRole("region", { name: "Proof", exact: true })).toBeVisible();
 });
 
+test("folds the scenario shortcuts and the data flow on the public page", async ({ page }) => {
+  await page.goto("./");
+
+  const guided = page.locator(".guidedPanel");
+  await expect(guided.locator(".nextUp")).toContainText("Submit request · Citizen");
+  await expect(page.getByRole("button", { name: "Run full scenario" })).toBeHidden();
+  await expect(page.getByText("Citizen submits")).toBeHidden();
+
+  await page.getByText("One-click scenario replay").click();
+  await expect(page.getByRole("button", { name: "Run full scenario" })).toBeVisible();
+  await page.getByText("Signed data flow").click();
+  await expect(page.getByText("Citizen submits")).toBeVisible();
+
+  // The presenter needs the shortcuts at hand, so presenter mode opens them.
+  await page.goto("./?presenter=1");
+  await expect(page.getByRole("button", { name: "Run full scenario" })).toBeVisible();
+});
+
 test("exports the receipt from the Proof act", async ({ page }) => {
   await page.goto("./#proof-verification");
 

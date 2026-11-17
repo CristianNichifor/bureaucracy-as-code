@@ -19,6 +19,7 @@ export function GuidedProgress({
   onAutoRun,
   onPause,
   isRunningScenario,
+  scenariosOpen = false,
   labels,
 }: {
   status: Law544Status;
@@ -31,6 +32,8 @@ export function GuidedProgress({
   onAutoRun: () => void;
   onPause: () => void;
   isRunningScenario: boolean;
+  /** Presenter mode starts with the scenario shortcuts open; the public page keeps them folded. */
+  scenariosOpen?: boolean;
   labels: Dictionary["guided"];
 }) {
   const language = useLanguage();
@@ -56,7 +59,7 @@ export function GuidedProgress({
           {labels.stepNext}
         </button>
         <button
-          className="civicButton"
+          className="civicButton civicButtonSecondary"
           disabled={controlsDisabled || isAutoRunning}
           onClick={onAutoRun}
           type="button"
@@ -74,48 +77,25 @@ export function GuidedProgress({
           {labels.pause}
         </button>
       </div>
-      <div className="lastRecorded" aria-live="polite">
-        <span>{labels.recordedLabel}</span>
-        {lastEvent ? (
-          <strong>{describeEvent(lastEvent, language)}</strong>
-        ) : (
-          <strong>{labels.noRecordedEvent}</strong>
-        )}
-      </div>
-      <div className="scenarioDeck" aria-label={labels.scenariosLabel}>
-        {browserGuidedScenarios.map((scenario) => (
-          <article className="scenarioCard" key={scenario.id}>
-            <div className="scenarioCardHeader">
-              <strong>{labels.scenarios[scenario.id]}</strong>
-              <span className={`status status-${scenario.finalStatus.toLowerCase()}`}>
-                {formatLaw544Status(scenario.finalStatus, language)}
-              </span>
-            </div>
-            <p>{labels.scenarioSummaries[scenario.id]}</p>
-            <dl className="scenarioFacts">
-              <div>
-                <dt>{labels.scenarioOutcome}</dt>
-                <dd>{formatLaw544Status(scenario.finalStatus, language)}</dd>
-              </div>
-              <div>
-                <dt>{labels.scenarioEvents}</dt>
-                <dd>{scenario.steps.length}</dd>
-              </div>
-            </dl>
-            <small>{labels.scenarioProofs[scenario.id]}</small>
-            <button
-              aria-busy={isRunningScenario}
-              className="civicButton scenarioButton"
-              disabled={isRunningScenario || isAutoRunning}
-              onClick={() => onRunScenario(scenario.id)}
-              title={scenario.description}
-              type="button"
-            >
-              <PlayCircle size={16} />
-              {labels.scenarios[scenario.id]}
-            </button>
-          </article>
-        ))}
+      <div className="runStatus">
+        <div className="lastRecorded" aria-live="polite">
+          <span>{labels.recordedLabel}</span>
+          {lastEvent ? (
+            <strong>{describeEvent(lastEvent, language)}</strong>
+          ) : (
+            <strong>{labels.noRecordedEvent}</strong>
+          )}
+        </div>
+        <div className="nextUp">
+          <span>{labels.nextLabel}</span>
+          {nextStep ? (
+            <strong>
+              {labels.steps[nextStep.id].label} · {labels.steps[nextStep.id].actor}
+            </strong>
+          ) : (
+            <strong>{labels.completeHint}</strong>
+          )}
+        </div>
       </div>
       <div className="stepList">
         {demoSteps.map((step, index) => {
@@ -151,6 +131,42 @@ export function GuidedProgress({
           );
         })}
       </div>
+      <details className="scenarioShortcuts" open={scenariosOpen}>
+        <summary>
+          {labels.scenariosLabel}
+          <span className="pill">{browserGuidedScenarios.length}</span>
+        </summary>
+        <p className="panelCopy">{labels.scenariosCopy}</p>
+        <div className="scenarioDeck" aria-label={labels.scenariosLabel}>
+          {browserGuidedScenarios.map((scenario) => (
+            <article className="scenarioCard" key={scenario.id}>
+              <strong>{labels.scenarios[scenario.id]}</strong>
+              <p className="scenarioOutcome">
+                <span className="visuallyHidden">{labels.scenarioOutcome}: </span>
+                <span className={`status status-${scenario.finalStatus.toLowerCase()}`}>
+                  {formatLaw544Status(scenario.finalStatus, language)}
+                </span>
+                <span>
+                  {scenario.steps.length} {labels.scenarioEvents}
+                </span>
+              </p>
+              <p>{labels.scenarioSummaries[scenario.id]}</p>
+              <small>{labels.scenarioProofs[scenario.id]}</small>
+              <button
+                aria-busy={isRunningScenario}
+                className="civicButton scenarioButton"
+                disabled={isRunningScenario || isAutoRunning}
+                onClick={() => onRunScenario(scenario.id)}
+                title={scenario.description}
+                type="button"
+              >
+                <PlayCircle size={16} />
+                {labels.scenarios[scenario.id]}
+              </button>
+            </article>
+          ))}
+        </div>
+      </details>
     </section>
   );
 }
